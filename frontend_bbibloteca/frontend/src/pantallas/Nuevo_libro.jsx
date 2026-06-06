@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { crearLibro } from '../fetch/fetch_nuevo_libro'
 
 function Nuevo_libro() {
@@ -49,61 +50,84 @@ function Nuevo_libro() {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Titulo"
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Autor"
-                    value={autor}
-                    onChange={(e) => setAutor(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Editorial"
-                    value={editorial}
-                    onChange={(e) => setEditorial(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Año"
-                    value={anio}
-                    onChange={(e) => setAnio(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="ISBN"
-                    value={isbn}
-                    onChange={(e) => setIsbn(e.target.value)}
-                />
-                <button type="submit" disabled={guardando}>
+        <section className="library-page">
+            <Link className="library-link library-link--secondary" to="/">
+                Volver al inicio
+            </Link>
+
+            <h2 className="library-page__title">Registro de nuevo libro</h2>
+            <p className="library-page__text">
+                Complete los campos para incorporar una obra al catálogo.
+            </p>
+
+            <form className="library-form" onSubmit={handleSubmit}>
+                <div className="library-form__row library-form__row--full">
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Título"
+                        value={titulo}
+                        onChange={(e) => setTitulo(e.target.value)}
+                    />
+                </div>
+                <div className="library-form__row">
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Autor"
+                        value={autor}
+                        onChange={(e) => setAutor(e.target.value)}
+                    />
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Editorial"
+                        value={editorial}
+                        onChange={(e) => setEditorial(e.target.value)}
+                    />
+                </div>
+                <div className="library-form__row">
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Año"
+                        value={anio}
+                        onChange={(e) => setAnio(e.target.value)}
+                    />
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="ISBN"
+                        value={isbn}
+                        onChange={(e) => setIsbn(e.target.value)}
+                    />
+                </div>
+                <button className="library-button" type="submit" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar'}
                 </button>
             </form>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Autor</th>
-                        <th>descripcion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {libros.map((libro, index) => (
-                        <tr key={index}>
-                            <td>{libro.titulo}</td>
-                            <td>{libro.autor}</td>
-                            <td>{libro.descripcion}</td>
+
+            <div className="library-table-wrap">
+                <table className="library-table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Descripción</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {libros.map((libro, index) => (
+                            <tr key={index}>
+                                <td>{libro.titulo}</td>
+                                <td>{libro.autor}</td>
+                                <td>{libro.descripcion}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </section>
     )
 }
 
