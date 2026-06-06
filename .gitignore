@@ -1,6 +1,8 @@
 node_modules/
 dist/
-*.js
+# Ignorar colecciones de Postman
+*.postman_collection.json
+nuevo_libro.postman_collection
 *.js.map
 datos.json
 .env
