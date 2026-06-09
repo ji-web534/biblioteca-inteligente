@@ -21,6 +21,10 @@ router.post("/", async (request, response, next) => {
             throw new ServerError("La contraseña no es válida.", 400)
         }
 
+        if (password.length < 6) {
+            alert('La contraseña debe tener al menos 6 caracteres.')
+            return
+        }
         const hashedPassword = await bcrypt.hash(contraseña, 10)
 
         const nuevoUsuario = new USUARIO({

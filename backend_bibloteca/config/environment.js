@@ -6,7 +6,7 @@ export const ENVIRONMENT = {
     PORT: process.env.PORT ,
     MONGODB_URl: process.env.MONGODB_URl,
     URL_FRONTEND: process.env. URL_FRONTEND,
-    JWT_SECRET: process.env.  JWT_SECRE,
+    JWT_SECRET: process.env.  JWT_SECRET,
 };
 
 // 2. ¡LA LÍNEA MÁGICA! Esto le sirve a los archivos que NO usan llaves

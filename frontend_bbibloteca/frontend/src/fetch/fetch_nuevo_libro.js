@@ -39,7 +39,7 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
     }
 };
   
-  
+  export default crearLibro;
   
   
 
