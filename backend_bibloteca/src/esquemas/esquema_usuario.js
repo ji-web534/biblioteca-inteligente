@@ -17,6 +17,13 @@ const usuariosesquema = new mongoose.Schema(
             unique: true
          
         },
+        confirm: {
+            type: Boolean,
+            default: false,
+            required: true
+            
+         
+        },
     }
 )
     export const USUARIO_COLLECTION_NAME = 'usuario'

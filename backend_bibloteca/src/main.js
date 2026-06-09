@@ -31,7 +31,14 @@ app.use("/app/bibilo/buscador", buscador_libros)
 app.use("/app/bibilo/nuevo_usuario", nuevo_usuario)
 app.use((error, request, response, next) => {
     const status = error instanceof ServerError ? error.status : 500
-    const message = error.message ?? "Ocurrió un error interno en el servidor"
+    const message =
+        error instanceof ServerError
+            ? error.message
+            : error.name === "ValidationError"
+              ? Object.values(error.errors)
+                    .map((err) => err.message)
+                    .join(" ")
+              : (error.message ?? "Ocurrió un error interno en el servidor")
 
     return response.status(status).json({ message })
 })
