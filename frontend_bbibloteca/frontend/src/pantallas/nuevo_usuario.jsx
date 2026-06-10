@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { registrarUsuario } from '../fetch/fetch_nuevo_usuario' // 🚀 Cambiamos al fetch de usuarios
+import {fetch_nuevo_usuario } from '../fetch/fetch_nuevo_usuario' 
 
 function nuevo_usuario() {
     // los estados que vamos a usar para hacer el registro
@@ -22,16 +22,29 @@ function nuevo_usuario() {
 
         setGuardando(true)
         
-        //comunicacion con el fetch
-        const respuesta = await fetch_nuevo_usuario(
-            nombre.trim(), 
-            email.trim(), 
-            password.trim()
-        )
+        try {
+            const respuesta = await fetch_nuevo_usuario(nombre, password, email);
+            
+          
+            alert(respuesta.message || "¡Usuario registrado!");
+            
+        
+            setNombre('');
+            setEmail('');
+            setPassword('');
+    
+        } catch (error) {
+        
+            setErrorMensaje(error.message);
+        } finally {
+           
+            setGuardando(false);
+        }
+   
         
         setGuardando(false)
 
-        // asegurarnos que salio bien
+        
         if (respuesta && respuesta.ok) {
             alert(respuesta.message) 
             

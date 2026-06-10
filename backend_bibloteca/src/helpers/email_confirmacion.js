@@ -1,8 +1,10 @@
-import ENVIRONMENT from "../config/environment.js";
-import USUARIO from "../src/esquemas/esquema_usuario.js";
+import ENVIRONMENT from "../../config/environment.js";
+import USUARIO from "../esquemas/esquema_usuario.js";
 import { resend } from "./config/resend.js"; // Importas tu instancia configurada
-
-export const enviarCorreoBienvenida = async (emailDestino, nombreUsuario) => {
+import { Router } from "express";
+import jwt from "jsonwebtoken";
+const router = Router();
+router.get("/", async (nombreUsuario, emailDestino, next) => {
   try {
 // creamo un token cifrado con expiracion a una hora
 const TOKEN = jwt.sign(
@@ -54,7 +56,7 @@ const data = await resend.emails.send({
     return { success: true, id: data.id };
     
   } catch (error) {
-    console.error("Error al enviar el correo:", error);
-    return { success: false, error };
+    console.error("Error interno en Resend:", error);
+    throw error; 
   }
-};
+});

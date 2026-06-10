@@ -1,3 +1,6 @@
+
+import { backendError } from "../helpers/error_class";
+
 export const crearLibro = async (nombreLibro, descripcionLibro) => {
     try {
   
@@ -20,7 +23,7 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
   
         if (!response.ok) {
           
-            throw new Error(resultado.message || 'Hubo un problema al crear el libro.');
+            throw new backendError(resultado.message || 'Hubo un problema al crear el libro.');
         }
 
       

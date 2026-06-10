@@ -11,6 +11,10 @@ function Pantalla_principal() {
             <Link className="library-link" to="/nuevo-libro">
                 Agregar nuevo libro
             </Link>
+            <Link className="library-link" to="/nuevo-usuario">
+                no tiene cuenta? registrase!
+            </Link>
+            
         </section>
     )
 }

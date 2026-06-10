@@ -1,21 +1,20 @@
-import LIBRO from "../esquemas/esquema_libro.js"; // 1. Agregado el .js
-import ServerError from "../helpers/error_class.js"; // 2. IMPORTANTE: Importar tu clase de errores
-import { Router } from "express";
-
-const router = Router();
+import LIBRO from "../esquemas/esquema_libro.js"; 
+import ServerError from "../helpers/error_class.js"; 
 
 
-router.post("/", async (request, response, next) => {
+ const confir_email=async (request, response, next) => {
     try {
-        const { idUsuario } = request.body; // O request.params si viene por URL
+          // tomamos el id
+        const { idUsuario } = request.body;
 
-        // 🚀 Buscamos por ID y pasamos el campo a true con $set
+        // buscamos al usuario con findByIdAndUpdate
         const usuarioActualizado = await USUARIO.findByIdAndUpdate(
             idUsuario,
-            { $set: { verificado: true } }, // El campo que querés cambiar
-            { new: true } // Esto hace que te devuelva el usuario ya modificado
+            { $set: { verificado: true } }, // cambiamos a true
+            { new: true } //  lo devuelve
         );
-
+        // si no lo encontro no hay confirmacion
+        
         if (!usuarioActualizado) {
             throw new ServerError("No se encontró el usuario.", 404);
         }
@@ -32,6 +31,5 @@ router.post("/", async (request, response, next) => {
         
         return next(error);
     }
-});
-
-export default router;
+};
+export default confir_email
