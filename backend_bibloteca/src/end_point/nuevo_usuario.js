@@ -2,7 +2,7 @@ import USUARIO from "../esquemas/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 import bcrypt from "bcrypt"
-import  email_confirmacion from "../helpers/email_confirmacion.js"
+import confir_email from "./confir_email.js";
 
 
 
@@ -45,7 +45,7 @@ router.post("/", async (request, response, next) => {
 
 
         try {
-            await email_confirmacion(nuevoUsuario.nombre, nuevoUsuario.email)
+            await confir_email(nuevoUsuario.nombre, nuevoUsuario.email)
         } catch (mailError) {
           
             console.error("Error al enviar el mail de confirmación:", mailError)

@@ -1,6 +1,7 @@
+import { resend } from "../../config/email_config.js";
 import ENVIRONMENT from "../../config/environment.js";
 import USUARIO from "../esquemas/esquema_usuario.js";
-import { resend } from "./config/resend.js"; // Importas tu instancia configurada
+
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 const router = Router();
@@ -60,3 +61,4 @@ const data = await resend.emails.send({
     throw error; 
   }
 });
+export default router;

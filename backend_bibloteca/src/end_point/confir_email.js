@@ -20,7 +20,6 @@ import ServerError from "../helpers/error_class.js";
         }
         
    
-        await nuevoLibro.save();
 
         return response.status(201).json({
             message: "Libro creado y guardado en la base de datos con éxito.",

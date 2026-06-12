@@ -1,11 +1,12 @@
 import 'dotenv/config';
-import nodemailer from "nodemailer";
-import environment from "./enviroments.js"
+
+
 import { Resend } from 'resend';
-import environment from "./enviroments.js";
+import ENVIRONMENT from './environment.js';
 
 
-export const resend = new Resend(environment.API_KEY); 
+
+export const resend = new Resend(ENVIRONMENT.API_KEY); 
 
 
 
