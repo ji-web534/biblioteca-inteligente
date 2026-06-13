@@ -8,13 +8,14 @@ function Pantalla_principal() {
                 Bienvenido al catálogo. Desde aquí puede consultar el archivo
                 y registrar nuevas obras en la colección.
             </p>
-            <Link className="library-link" to="/nuevo-libro">
-                Agregar nuevo libro
-            </Link>
-            <Link className="library-link" to="/nuevo-usuario">
-                no tiene cuenta? registrase!
-            </Link>
-            
+            <div className="library-page__actions">
+                <Link className="library-link" to="/nuevo-libro">
+                    Agregar nuevo libro
+                </Link>
+                <Link className="library-link" to="/nuevo-usuario">
+                    ¿No tiene cuenta? Regístrese
+                </Link>
+            </div>
         </section>
     )
 }

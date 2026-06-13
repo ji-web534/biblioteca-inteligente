@@ -81,6 +81,12 @@ body {
   padding: 2.5rem 2rem;
 }
 
+.library-page__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .library-page__title {
   margin: 0 0 0.75rem;
   font-family: 'Cormorant Garamond', Georgia, serif;
