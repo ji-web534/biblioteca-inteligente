@@ -12,7 +12,20 @@ function Pantalla_principal() {
                 <Link className="library-link" to="/nuevo-libro">
                     Agregar nuevo libro
                 </Link>
-                <Link className="library-link" to="/nuevo-usuario">
+                <Link className="library-link" to="/iniciar-sesion">
+                    Iniciar sesión
+                </Link>
+            </div>
+            <div style={{ marginTop: '1rem' }}>
+                <Link
+                    to="/nuevo-usuario"
+                    style={{
+                        color: 'var(--leather-dark)',
+                        textDecoration: 'underline',
+                        fontStyle: 'italic',
+                        fontSize: '0.95rem',
+                    }}
+                >
                     ¿No tiene cuenta? Regístrese
                 </Link>
             </div>

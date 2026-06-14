@@ -1,6 +1,7 @@
 import Pantalla_principal from './pantallas/Pantalla_principal'
 import Nuevo_libro from './pantallas/Nuevo_libro'
 import Nuevo_usuario from './pantallas/nuevo_usuario'
+import Iniciar_sesion from './pantallas/Iniciar_sesion'
 import { Route, Routes } from 'react-router-dom'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/registro" element={<Nuevo_usuario />} />
           <Route path="/nuevo-libro" element={<Nuevo_libro />} />
           <Route path="/nuevo-usuario" element={<Nuevo_usuario />} />
+          <Route path="/iniciar-sesion" element={<Iniciar_sesion />} />
         </Routes>
       </main>
 
