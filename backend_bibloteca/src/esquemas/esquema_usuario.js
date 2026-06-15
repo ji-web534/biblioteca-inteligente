@@ -22,8 +22,12 @@ const usuariosesquema = new mongoose.Schema(
             default: false,
             required: true
             
-         
+          
         },
+        favoritos: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'libro'
+        }],
     }
 )
     export const USUARIO_COLLECTION_NAME = 'usuario'

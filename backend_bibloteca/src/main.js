@@ -8,6 +8,9 @@ import { connectDB } from "./db/connect.js"
 import buscador_libros from "./servicios/buscador_libros.js"
 import nuevo_usuario from "./end_point/nuevo_usuario.js"
 import confir_email from "./end_point/confir_email.js"
+import login from "./end_point/login.js"
+import mis_libros from "./end_point/mis_libros.js"
+import favoritos from "./end_point/favoritos.js"
 const app = express()
 const PORT = 8000
 
@@ -15,8 +18,8 @@ app.use(express.json())
 
 app.use((request, response, next) => {
     response.header("Access-Control-Allow-Origin", "http://localhost:5173")
-    response.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-    response.header("Access-Control-Allow-Headers", "Content-Type")
+    response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+    response.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
     if (request.method === "OPTIONS") {
         return response.sendStatus(204)
@@ -31,6 +34,9 @@ app.use("/app/bibilo/", id)
 app.use("/app/bibilo/buscador", buscador_libros)
 app.use("/app/bibilo/nuevo_usuario", nuevo_usuario)
 app.use("/app/bibilo/verificacion", confir_email)
+app.use("/app/bibilo/login", login)
+app.use("/app/bibilo/mis-libros", mis_libros)
+app.use("/app/bibilo/favoritos", favoritos)
 app.use((error, request, response, next) => {
     const status = error instanceof ServerError ? error.status : 500
     const message =

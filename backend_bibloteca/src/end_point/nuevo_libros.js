@@ -1,13 +1,12 @@
-import LIBRO from "../esquemas/esquema_libro.js"; // 1. Agregado el .js
-import ServerError from "../helpers/error_class.js"; // 2. IMPORTANTE: Importar tu clase de errores
+import LIBRO from "../esquemas/esquema_libro.js";
+import ServerError from "../helpers/error_class.js";
+import autenticacion from "../midleware/autenticacion.js";
 import { Router } from "express";
 
 const router = Router();
 
-// 3. CORREGIDO: Agregamos 'async' antes de los parámetros, y sumamos 'next'
-router.post("/", async (request, response, next) => {
+router.post("/", autenticacion, async (request, response, next) => {
     try {
-        // 4. CORREGIDO: Cambiada la coma del final por un punto y coma (;)
         const { descripcion, nombre } = request.body; 
         
         if (!descripcion) {
@@ -20,10 +19,10 @@ router.post("/", async (request, response, next) => {
         
         const nuevoLibro = new LIBRO({
             nombre: nombre,
-            descripcion: descripcion
+            descripcion: descripcion,
+            usuarioId: request.usuarioId
         });
         
-        // Ahora el await funciona perfectamente gracias al async de arriba
         await nuevoLibro.save();
 
         return response.status(201).json({
@@ -32,7 +31,6 @@ router.post("/", async (request, response, next) => {
         });
         
     } catch (error) {
-        // Ahora Express sabe qué es 'next' porque lo declaramos en los parámetros
         return next(error);
     }
 });

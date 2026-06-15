@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 function Iniciar_sesion() {
-    const [nombre, setNombre] = useState('')
+    const { login } = useAuth()
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [guardando, setGuardando] = useState(false)
@@ -17,7 +19,7 @@ function Iniciar_sesion() {
             const response = await fetch('http://localhost:8000/app/bibilo/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, contraseña: password }),
+                body: JSON.stringify({ email, contraseña: password }),
             })
 
             const resultado = await response.json()
@@ -26,10 +28,8 @@ function Iniciar_sesion() {
                 throw new Error(resultado.message || 'Error al iniciar sesión')
             }
 
-            alert('Sesión iniciada correctamente')
-            setNombre('')
-            setEmail('')
-            setPassword('')
+            login(resultado.token, resultado.data)
+            navigate('/')
         } catch (error) {
             setErrorMensaje(error.message)
         } finally {
@@ -52,22 +52,14 @@ function Iniciar_sesion() {
                 <div className="library-form__row library-form__row--full">
                     <input
                         className="library-input"
-                        type="text"
-                        placeholder="Nombre completo"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="library-form__row">
-                    <input
-                        className="library-input"
                         type="email"
                         placeholder="Correo electrónico"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
+                </div>
+                <div className="library-form__row">
                     <input
                         className="library-input"
                         type="password"

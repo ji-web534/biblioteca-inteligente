@@ -1,34 +1,31 @@
-import LIBRO from "../esquemas/esquema_libro.js"; 
+import USUARIO from "../esquemas/esquema_usuario.js"; 
 import ServerError from "../helpers/error_class.js"; 
+import { Router } from "express";
 
+const router = Router();
 
- const confir_email=async (request, response, next) => {
+router.post("/", async (request, response, next) => {
     try {
-          // tomamos el id
         const { idUsuario } = request.body;
 
-        // buscamos al usuario con findByIdAndUpdate
         const usuarioActualizado = await USUARIO.findByIdAndUpdate(
             idUsuario,
-            { $set: { verificado: true } }, // cambiamos a true
-            { new: true } //  lo devuelve
+            { $set: { confirm: true } },
+            { new: true }
         );
-        // si no lo encontro no hay confirmacion
         
         if (!usuarioActualizado) {
             throw new ServerError("No se encontró el usuario.", 404);
         }
-        
-   
 
         return response.status(201).json({
-            message: "Libro creado y guardado en la base de datos con éxito.",
-            data: nuevoLibro
+            message: "Usuario verificado con éxito.",
+            data: usuarioActualizado
         });
         
     } catch (error) {
-        
         return next(error);
     }
-};
-export default confir_email
+});
+
+export default router

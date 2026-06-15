@@ -7,13 +7,18 @@ const librosesquema = new mongoose.Schema(
         },
         genero: {
             type: String
-       
-         
+        
+          
         },
          descripcion: {
             type: String,
          required: true
-         
+          
+        },
+        usuarioId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'usuario',
+            required: false
         },
     }
 )
