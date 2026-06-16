@@ -29,7 +29,7 @@ function Iniciar_sesion() {
             }
 
             login(resultado.token, resultado.data)
-            navigate('/')
+            navigate('/perfil')
         } catch (error) {
             setErrorMensaje(error.message)
         } finally {

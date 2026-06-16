@@ -2,8 +2,8 @@ import Pantalla_principal from './pantallas/Pantalla_principal'
 import Nuevo_libro from './pantallas/Nuevo_libro'
 import Nuevo_usuario from './pantallas/nuevo_usuario'
 import Iniciar_sesion from './pantallas/Iniciar_sesion'
-import MisLibros from './pantallas/MisLibros'
-import Favoritos from './pantallas/Favoritos'
+import Perfil from './pantallas/Perfil'
+import Buscador from './pantallas/Buscador'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 
@@ -23,8 +23,8 @@ function App() {
             <Route path="/nuevo-libro" element={<Nuevo_libro />} />
             <Route path="/nuevo-usuario" element={<Nuevo_usuario />} />
             <Route path="/iniciar-sesion" element={<Iniciar_sesion />} />
-            <Route path="/mis-libros" element={<MisLibros />} />
-            <Route path="/favoritos" element={<Favoritos />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/buscador" element={<Buscador />} />
           </Routes>
         </main>
 
