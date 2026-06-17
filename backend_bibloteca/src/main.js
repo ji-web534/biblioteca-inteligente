@@ -11,6 +11,7 @@ import confir_email from "./end_point/confir_email.js"
 import login from "./end_point/login.js"
 import mis_libros from "./end_point/mis_libros.js"
 import favoritos from "./end_point/favoritos.js"
+import cambiar_contraseña from "./end_point/cambiar_contraseña.js"
 const app = express()
 const PORT = 8000
 
@@ -37,6 +38,7 @@ app.use("/app/bibilo/verificacion", confir_email)
 app.use("/app/bibilo/login", login)
 app.use("/app/bibilo/mis-libros", mis_libros)
 app.use("/app/bibilo/favoritos", favoritos)
+app.use("/app/bibilo/cambiar-contrasena", cambiar_contraseña)
 app.use(errorHandler)
 
 try {
