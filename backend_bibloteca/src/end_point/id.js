@@ -2,7 +2,7 @@
 import { Router } from "express"; 
 
 const router = Router();
-router.get("/app/bibilo/:id", (request, response) => {
+router.get("/app/bibilo/:id", (request, response, next) => {
     try {
       
         const idUsuario = parseInt(request.params.id);
@@ -21,9 +21,7 @@ router.get("/app/bibilo/:id", (request, response) => {
         }
 
     } catch (error) {
-      
-        console.error(error);
-        response.status(500).send("Ocurrió un error interno en el servidor");
+        next(error)
     }
 });
 export default router;

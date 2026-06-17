@@ -3,8 +3,8 @@ import express from "express"
 import nuevo_libros from "./end_point/nuevo_libros.js"
 import id from "./end_point/id.js"
 import autor from "./end_point/Autor.js"
-import ServerError from "./helpers/error_class.js"
 import { connectDB } from "./db/connect.js"
+import errorHandler from "./midleware/error_handler.js"
 import buscador_libros from "./servicios/buscador_libros.js"
 import nuevo_usuario from "./end_point/nuevo_usuario.js"
 import confir_email from "./end_point/confir_email.js"
@@ -37,19 +37,7 @@ app.use("/app/bibilo/verificacion", confir_email)
 app.use("/app/bibilo/login", login)
 app.use("/app/bibilo/mis-libros", mis_libros)
 app.use("/app/bibilo/favoritos", favoritos)
-app.use((error, request, response, next) => {
-    const status = error instanceof ServerError ? error.status : 500
-    const message =
-        error instanceof ServerError
-            ? error.message
-            : error.name === "ValidationError"
-              ? Object.values(error.errors)
-                    .map((err) => err.message)
-                    .join(" ")
-              : (error.message ?? "Ocurrió un error interno en el servidor")
-
-    return response.status(status).json({ message })
-})
+app.use(errorHandler)
 
 try {
     await connectDB()
