@@ -13,7 +13,7 @@ async function enviarEmailConfirmacion(nombreUsuario, emailDestino) {
     const urlFrontend = ENVIRONMENT.URL_FRONTEND ?? "http://localhost:5173";
     const enlaceVerificacion = `${urlFrontend}/confirmar-cuenta?token=${token}`;
 
-    const data = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'Biblioteca Inteligente <onboarding@resend.dev>', 
       to: emailDestino, 
       subject: `¡Hola ${nombreUsuario}, gracias por registrarte en mi proyecto!`,
@@ -46,6 +46,10 @@ async function enviarEmailConfirmacion(nombreUsuario, emailDestino) {
         </div> `,
     });
   
+    if (error) {
+      console.error("Error interno en Resend:", error);
+      throw new Error(error.message);
+    }
     console.log("Correo enviado con éxito. ID del mensaje:", data.id);
     return { success: true, id: data.id };
     

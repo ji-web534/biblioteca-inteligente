@@ -1,8 +1,27 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { solicitarCambioContraseña } from '../fetch/fetch_cambio_contraseña'
 
 function Pantalla_principal() {
     const { estaAutenticado, usuario } = useAuth()
+    const [mailEnviado, setMailEnviado] = useState(false)
+    const [mailCargando, setMailCargando] = useState(false)
+    const [mailError, setMailError] = useState('')
+
+    const handleEnviarMail = async () => {
+        setMailCargando(true)
+        setMailError('')
+        setMailEnviado(false)
+        try {
+            await solicitarCambioContraseña(usuario.email)
+            setMailEnviado(true)
+        } catch (error) {
+            setMailError(error.message)
+        } finally {
+            setMailCargando(false)
+        }
+    }
 
     return (
         <section className="library-page">
@@ -23,6 +42,26 @@ function Pantalla_principal() {
                         <Link className="library-link" to="/buscador">
                             Buscar libros
                         </Link>
+
+                        <button
+                            className="library-button"
+                            onClick={handleEnviarMail}
+                            disabled={mailCargando}
+                            style={{ width: '100%' }}
+                        >
+                            {mailCargando ? 'Enviando...' : 'Cambiar contraseña'}
+                        </button>
+
+                        {mailEnviado && (
+                            <p style={{ color: 'var(--leather)', fontWeight: 600, margin: 0 }}>
+                                Revisá tu correo electrónico para continuar con el cambio de contraseña.
+                            </p>
+                        )}
+                        {mailError && (
+                            <p style={{ color: 'red', fontWeight: 600, margin: 0 }}>
+                                {mailError}
+                            </p>
+                        )}
                     </div>
                 </>
             ) : (
