@@ -84,7 +84,7 @@ function Cambiar_contraseña() {
                 Ingresá tu nueva contraseña.
             </p>
 
-            <form className="library-form" onSubmit={handleSubmit}>
+            <form className="library-form" onSubmit={handleSubmit} style={{ maxWidth: '420px', marginLeft: 0, marginRight: 'auto' }}>
                 <div className="library-form__row library-form__row--full">
                     <input
                         className="library-input"

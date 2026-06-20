@@ -74,9 +74,6 @@ function Pantalla_principal() {
                         <Link className="library-link" to="/iniciar-sesion">
                             Iniciar sesión
                         </Link>
-                        <Link className="library-link" to="/nuevo-libro">
-                            Agregar nuevo libro
-                        </Link>
                         <div style={{ marginTop: '0.5rem' }}>
                             <Link
                                 to="/nuevo-usuario"
