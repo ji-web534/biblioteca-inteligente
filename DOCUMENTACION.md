@@ -254,6 +254,6 @@ Definidas en `App.tsx` con React Router:
 
 6. **Código duplicado**: `fetch_libros.js` exporta `crearLibro` que duplica a `fetch_nuevo_libro.js`.
 
-7. **Limitación de Resend**: La cuenta gratuita con `onboarding@resend.dev` solo puede enviar correos al email registrado en Resend. Para producción se necesita verificar un dominio propio.
+7. **Limitación de Resend**: La cuenta gratuita solo puede enviar correos al email registrado en Resend. Para producción se necesita verificar un dominio propio.
 
 8. **Sin ruta para el link de confirmación**: El componente `Cambiar_contraseña.jsx` existe y funciona, pero el flujo completo solo es testeable si el backend puede enviar el correo (ver punto 7) o si se usa el email registrado en Resend.
