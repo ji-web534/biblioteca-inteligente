@@ -7,8 +7,9 @@ const librosesquema = new mongoose.Schema(
         },
         genero: {
             type: String
-        
-          
+        },
+        autor: {
+            type: String
         },
          descripcion: {
             type: String,
