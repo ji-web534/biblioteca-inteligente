@@ -4,7 +4,7 @@ dotenv.config();
 // 1. Esto le sirve a los archivos que usan llaves {}
 export const ENVIRONMENT = {
     PORT: process.env.PORT ,
-    MONGODB_URl: process.env.MONGODB_URl,
+    MONGODB_URI: process.env.MONGODB_URI,
     URL_FRONTEND: process.env.URL_FRONTEND,
     JWT_SECRET: process.env.JWT_SECRET,
     API_KEY: process.env.API_KEY,

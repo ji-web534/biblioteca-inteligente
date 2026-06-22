@@ -240,11 +240,10 @@ Definidas en `App.tsx` con React Router:
 
 ---
 
-## 4. Problemas conocidos
+## 3. Problemas conocidos
 
-1. **`Autor.js` y `id.js` están rotos**: Referencian una variable local `libros` que no existe. Causan `ReferenceError` al ejecutarse.
 
-2. **Tipografía inconsistente en variables de entorno**: El `.env` usa `MONGODB_URl` (con `l` minúscula al final), pero `connect.js` busca `MONGODB_URI` y otras claves. La conexión puede caer al valor por defecto.
+
 
 3. **Ruta de confirmación faltante**: El email de verificación envía a `/confirmar-cuenta?token=...` pero no hay `<Route>` en `App.tsx` para esa ruta.
 

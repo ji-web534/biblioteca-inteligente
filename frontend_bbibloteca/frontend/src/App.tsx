@@ -5,6 +5,7 @@ import Iniciar_sesion from './pantallas/Iniciar_sesion'
 import Perfil from './pantallas/Perfil'
 import Buscador from './pantallas/Buscador'
 import Cambiar_contraseña from './pantallas/Cambiar_contraseña'
+import ConfirmarCuenta from './pantallas/ConfirmarCuenta'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/buscador" element={<Buscador />} />
             <Route path="/cambiar-contrasena" element={<Cambiar_contraseña />} />
+            <Route path="/confirmar-cuenta" element={<ConfirmarCuenta />} />
           </Routes>
         </main>
 
