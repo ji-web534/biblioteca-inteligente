@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { obtenerMisLibros } from '../fetch/fetch_libros'
+import { obtenerMisLibros, buscarLibros } from '../fetch/fetch_libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 import { useAuth } from '../context/AuthContext'
 
@@ -11,6 +11,8 @@ function Buscador() {
     const [todosLibros, setTodosLibros] = useState([])
     const [favoritos, setFavoritos] = useState([])
     const [cargando, setCargando] = useState(true)
+    const [buscando, setBuscando] = useState(false)
+    const [errorCarga, setErrorCarga] = useState('')
 
     useEffect(() => {
         if (!estaAutenticado) return
@@ -23,28 +25,31 @@ function Buscador() {
                 obtenerMisLibros(),
                 obtenerFavoritos()
             ])
-            setTodosLibros(libros)
-            setFavoritos(favs)
+            if (libros) setTodosLibros(libros)
+            if (favs) setFavoritos(favs)
         } catch (error) {
-            console.error(error.message)
+            setErrorCarga(error.message || 'Error al cargar los datos.')
         } finally {
             setCargando(false)
         }
     }
 
-    const handleBuscar = (e) => {
+    const handleBuscar = async (e) => {
         e.preventDefault()
-        const termino = consulta.toLowerCase().trim()
+        const termino = consulta.trim()
         if (!termino) {
             setResultados([])
             return
         }
-        const filtrados = todosLibros.filter(
-            (libro) =>
-                libro.nombre.toLowerCase().includes(termino) ||
-                libro.descripcion.toLowerCase().includes(termino)
-        )
-        setResultados(filtrados)
+        setBuscando(true)
+        try {
+            const libros = await buscarLibros(termino)
+            setResultados(libros || [])
+        } catch (error) {
+            setResultados([])
+        } finally {
+            setBuscando(false)
+        }
     }
 
     const esFavorito = (libroId) => favoritos.some((f) => f._id === libroId)
@@ -69,7 +74,7 @@ function Buscador() {
             </Link>
 
             <h2 className="library-page__title">Buscar libros</h2>
-            <p className="library-page__text">Busca en tu catálogo personal.</p>
+            <p className="library-page__text">Busca en el catálogo general.</p>
 
             <form className="library-form" onSubmit={handleBuscar}>
                 <div className="library-form__row library-form__row--full">
@@ -86,7 +91,11 @@ function Buscador() {
 
             {cargando && <p>Cargando catálogo...</p>}
 
-            {!cargando && resultados.length > 0 && (
+            {errorCarga && <p style={{ color: 'var(--ink-error, #c00)' }}>{errorCarga}</p>}
+
+            {buscando && <p>Buscando...</p>}
+
+            {resultados.length > 0 && (
                 <div className="library-table-wrap" style={{ marginTop: '1.5rem' }}>
                     <table className="library-table">
                         <thead>
@@ -117,7 +126,7 @@ function Buscador() {
                 </div>
             )}
 
-            {!cargando && consulta.trim() && resultados.length === 0 && (
+            {!buscando && consulta.trim() && resultados.length === 0 && (
                 <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)', marginTop: '1rem' }}>
                     No se encontraron libros para "{consulta}".
                 </p>

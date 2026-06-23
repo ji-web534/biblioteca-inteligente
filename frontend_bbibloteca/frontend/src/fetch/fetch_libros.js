@@ -36,13 +36,36 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
     }
 }
 
-export const obtenerMisLibros = async () => {
-    const response = await fetch(`${API}/mis-libros`, {
-        headers: getHeaders()
-    })
-    const resultado = await response.json()
-    if (!response.ok) {
-        throw new backendError(resultado.message || 'Error al obtener libros.')
+export const buscarLibros = async (termino) => {
+    try {
+        const response = await fetch(`${API}/libros/buscar?q=${encodeURIComponent(termino)}`)
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al buscar libros.')
+        }
+        return resultado.data
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
     }
-    return resultado.data
+}
+
+export const obtenerMisLibros = async () => {
+    try {
+        const response = await fetch(`${API}/mis-libros`, {
+            headers: getHeaders()
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al obtener libros.')
+        }
+        return resultado.data
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+    }
 }

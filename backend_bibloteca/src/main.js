@@ -6,6 +6,7 @@ import autor from "./end_point/Autor.js"
 import { connectDB } from "./db/connect.js"
 import errorHandler from "./midleware/error_handler.js"
 import buscador_libros from "./servicios/buscador_libros.js"
+import buscar_libros from "./end_point/buscar_libros.js"
 import nuevo_usuario from "./end_point/nuevo_usuario.js"
 import confir_email from "./end_point/confir_email.js"
 import login from "./end_point/login.js"
@@ -31,14 +32,15 @@ app.use((request, response, next) => {
 
 app.use("/app/bibilo/nuevo_libro", nuevo_libros)
 app.use("/app/bibilo/autor/", autor)
-app.use("/app/bibilo/", id)
 app.use("/app/bibilo/buscador", buscador_libros)
+app.use("/app/bibilo/libros", buscar_libros)
 app.use("/app/bibilo/nuevo_usuario", nuevo_usuario)
 app.use("/app/bibilo/verificacion", confir_email)
 app.use("/app/bibilo/login", login)
 app.use("/app/bibilo/mis-libros", mis_libros)
 app.use("/app/bibilo/favoritos", favoritos)
 app.use("/app/bibilo/cambiar-contrasena", cambiar_contraseña)
+app.use("/app/bibilo/", id)
 app.use(errorHandler)
 
 try {

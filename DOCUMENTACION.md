@@ -251,8 +251,5 @@ Definidas en `App.tsx` con React Router:
 
 5. **Duplicación de carpeta `frontend`**: `frontend_bbibloteca/package.json` está vacío (`{}`) pero tiene su propio `node_modules/`. El proyecto real está dentro de `frontend_bbibloteca/frontend/`. Posible error de anidamiento.
 
-6. **Código duplicado**: `fetch_libros.js` exporta `crearLibro` que duplica a `fetch_nuevo_libro.js`.
-
-7. **Limitación de Resend**: La cuenta gratuita solo puede enviar correos al email registrado en Resend. Para producción se necesita verificar un dominio propio.
 
 8. **Sin ruta para el link de confirmación**: El componente `Cambiar_contraseña.jsx` existe y funciona, pero el flujo completo solo es testeable si el backend puede enviar el correo (ver punto 7) o si se usa el email registrado en Resend.
