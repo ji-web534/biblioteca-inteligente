@@ -3,18 +3,21 @@ const librosesquema = new mongoose.Schema(
     {
         nombre: {
             type: String,
-            required: true
+            required: true,
+            maxlength: 50
         },
         genero: {
-            type: String
+            type: String,
+            maxlength: 15
         },
         autor: {
-            type: String
-        },
-         descripcion: {
             type: String,
-         required: true
-          
+            maxlength: 15
+        },
+        descripcion: {
+            type: String,
+            required: true,
+            maxlength: 150
         },
         usuarioId: {
             type: mongoose.Schema.Types.ObjectId,
