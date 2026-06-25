@@ -54,7 +54,7 @@ export const buscarLibros = async (termino) => {
 
 export const editarLibro = async (id, datos) => {
     try {
-        const response = await fetch(`${API}/libros/${id}`, {
+        const response = await fetch(`${API}/libro/${id}`, {
             method: 'PUT',
             headers: getHeaders(),
             body: JSON.stringify(datos)

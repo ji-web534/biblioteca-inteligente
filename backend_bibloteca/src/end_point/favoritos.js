@@ -16,10 +16,15 @@ router.post("/:libroId", autenticacion, async (request, response, next) => {
         }
 
         const usuario = await USUARIO.findById(request.usuarioId)
-        if (usuario.favoritos.includes(libroId)) {
+        if (!usuario) {
+            throw new ServerError("Usuario no encontrado.", 404)
+        }
+
+        if (usuario.favoritos?.includes(libroId)) {
             return response.json({ ok: true, message: "El libro ya está en favoritos." })
         }
 
+        usuario.favoritos = usuario.favoritos || []
         usuario.favoritos.push(libroId)
         await usuario.save()
 
@@ -34,7 +39,11 @@ router.delete("/:libroId", autenticacion, async (request, response, next) => {
         const { libroId } = request.params
 
         const usuario = await USUARIO.findById(request.usuarioId)
-        usuario.favoritos = usuario.favoritos.filter(
+        if (!usuario) {
+            throw new ServerError("Usuario no encontrado.", 404)
+        }
+
+        usuario.favoritos = (usuario.favoritos || []).filter(
             (id) => id.toString() !== libroId
         )
         await usuario.save()
@@ -49,7 +58,11 @@ router.get("/", autenticacion, async (request, response, next) => {
     try {
         const usuario = await USUARIO.findById(request.usuarioId).populate("favoritos")
 
-        return response.json({ ok: true, data: usuario.favoritos })
+        if (!usuario) {
+            return response.json({ ok: true, data: [] })
+        }
+
+        return response.json({ ok: true, data: usuario.favoritos || [] })
     } catch (error) {
         return next(error)
     }

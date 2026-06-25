@@ -12,21 +12,25 @@ function Buscador() {
     const [favoritos, setFavoritos] = useState([])
     const [cargando, setCargando] = useState(true)
     const [buscando, setBuscando] = useState(false)
+    const [busco, setBusco] = useState(false)
     const [errorCarga, setErrorCarga] = useState('')
 
     useEffect(() => {
-        if (!estaAutenticado) return
         cargarDatos()
     }, [estaAutenticado])
 
     const cargarDatos = async () => {
+        if (!estaAutenticado) {
+            setCargando(false)
+            return
+        }
         try {
             const [libros, favs] = await Promise.all([
                 obtenerMisLibros(),
                 obtenerFavoritos()
             ])
-            if (libros) setTodosLibros(libros)
-            if (favs) setFavoritos(favs)
+            setTodosLibros(libros || [])
+            setFavoritos(favs || [])
         } catch (error) {
             setErrorCarga(error.message || 'Error al cargar los datos.')
         } finally {
@@ -39,9 +43,11 @@ function Buscador() {
         const termino = consulta.trim()
         if (!termino) {
             setResultados([])
+            setBusco(false)
             return
         }
         setBuscando(true)
+        setBusco(true)
         try {
             const libros = await buscarLibros(termino)
             setResultados(libros || [])
@@ -52,7 +58,7 @@ function Buscador() {
         }
     }
 
-    const esFavorito = (libroId) => favoritos.some((f) => f._id === libroId)
+    const esFavorito = (libroId) => (favoritos || []).some((f) => f._id === libroId)
 
     const handleToggleFavorito = async (libroId) => {
         if (esFavorito(libroId)) {
@@ -126,7 +132,7 @@ function Buscador() {
                 </div>
             )}
 
-            {!buscando && consulta.trim() && resultados.length === 0 && (
+            {!buscando && busco && consulta.trim() && resultados.length === 0 && (
                 <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)', marginTop: '1rem' }}>
                     No se encontraron libros para "{consulta}".
                 </p>
