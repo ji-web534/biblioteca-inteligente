@@ -1,0 +1,15 @@
+{
+  "buildCommand": "cd frontend_bbibloteca/frontend && npm run build",
+  "outputDirectory": "frontend_bbibloteca/frontend/dist",
+  "installCommand": "cd frontend_bbibloteca/frontend && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "@api-url"
+  }
+}
