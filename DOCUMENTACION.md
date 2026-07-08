@@ -1,6 +1,6 @@
 # Documentación — Biblioteca Inteligente
 
-## Índice
+ ## Índice
 
 1. [Estructura del proyecto](#1-estructura-del-proyecto)
 2. [Backend](#2-backend)

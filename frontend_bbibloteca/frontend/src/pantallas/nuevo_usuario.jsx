@@ -4,7 +4,7 @@ import {fetch_nuevo_usuario } from '../fetch/fetch_nuevo_usuario'
 
 function nuevo_usuario() {
     // los estados que vamos a usar para hacer el registro
-    const [nombre, setNombre] = useState('')
+    // const [nombre, setNombre] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     

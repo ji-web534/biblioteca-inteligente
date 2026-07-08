@@ -2,7 +2,7 @@
 export class backendError extends Error {
     constructor(message, statusCode) {
         super(message);
-        this.name = "ServerError";
+         this.name = "ServerError";
         this.statusCode = statusCode; // Guardamos si fue un 400, 401, 500, etc.
     }
 }
