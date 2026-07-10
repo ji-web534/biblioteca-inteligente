@@ -4,7 +4,7 @@ import {fetch_nuevo_usuario } from '../fetch/fetch_nuevo_usuario'
 
 function nuevo_usuario() {
     // los estados que vamos a usar para hacer el registro
-    // const [nombre, setNombre] = useState('')
+    const [nombre, setNombre] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     
@@ -17,54 +17,34 @@ function nuevo_usuario() {
         e.preventDefault()
         setErrorMensaje('')
 
-      
-       
+        if (!nombre.trim() || !email.trim() || !password.trim()) {
+            setErrorMensaje('Todos los campos son obligatorios.')
+            return
+        }
 
         setGuardando(true)
-        
+
         try {
             const respuesta = await fetch_nuevo_usuario(nombre, password, email);
-            
-          
-            alert(respuesta.message || "¡Usuario registrado!");
-            
-        
-            setNombre('');
-            setEmail('');
-            setPassword('');
-    
-        } catch (error) {
-        
-            setErrorMensaje(error.message);
-        } finally {
-           
-            setGuardando(false);
-        }
-   
-        
-        setGuardando(false)
 
-        
-        if (respuesta && respuesta.ok) {
-            alert(respuesta.message) 
-            
-            //agregamos al usuario
+            alert(respuesta.message || "¡Usuario registrado!");
+
             setUsuarios((prev) => [
                 ...prev,
                 {
-                    id: respuesta.data.id,
-                    nombre: respuesta.data.nombre,
-                    email: respuesta.data.email,
+                    id: respuesta._id,
+                    nombre: respuesta.nombre,
+                    email: respuesta.email,
                 },
             ])
 
-            // Limpieza de los inputs del formulario
             setNombre('')
             setEmail('')
             setPassword('')
-        } else if (respuesta && respuesta.message) {
-            //por si salio un error controlado
-            setErrorMensaje(respuesta.message)
+        } catch (error) {
+            setErrorMensaje(error.message)
+        } finally {
+            setGuardando(false)
         }
     }
 
