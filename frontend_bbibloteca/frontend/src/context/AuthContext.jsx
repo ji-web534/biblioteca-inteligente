@@ -29,8 +29,30 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('usuario')
     }
 
+    const tieneRol = (rol) => {
+        return usuario?.role === rol
+    }
+
+    const tienePermiso = (permiso) => {
+        if (usuario?.role === 'admin') return true
+        return usuario?.permisos?.[permiso] === true
+    }
+
+    const esAdmin = () => tieneRol('admin')
+    const esModerador = () => usuario?.role === 'admin' || usuario?.role === 'moderator'
+
     return (
-        <AuthContext.Provider value={{ usuario, token, login, logout, estaAutenticado: !!token }}>
+        <AuthContext.Provider value={{
+            usuario,
+            token,
+            login,
+            logout,
+            estaAutenticado: !!token,
+            tieneRol,
+            tienePermiso,
+            esAdmin,
+            esModerador
+        }}>
             {children}
         </AuthContext.Provider>
     )

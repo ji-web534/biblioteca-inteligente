@@ -1,4 +1,13 @@
 import mongoose from 'mongoose'
+
+const permisosSchema = new mongoose.Schema({
+    can_delete_books: { type: Boolean, default: false },
+    can_suspend_users: { type: Boolean, default: false },
+    can_edit_others_books: { type: Boolean, default: false },
+    can_manage_categories: { type: Boolean, default: false },
+    can_manage_users: { type: Boolean, default: false }
+}, { _id: false })
+
 const usuariosesquema = new mongoose.Schema(
     {
         nombre: {
@@ -8,21 +17,25 @@ const usuariosesquema = new mongoose.Schema(
         contraseña: {
             type: String,
             required: true
-       
-         
         },
-         email: {
+        email: {
             type: String,
             required: true,
             unique: true
-         
         },
         confirm: {
             type: Boolean,
             default: false,
             required: true
-            
-          
+        },
+        role: {
+            type: String,
+            enum: ["user", "moderator", "admin"],
+            default: "user"
+        },
+        permisos: {
+            type: permisosSchema,
+            default: () => ({})
         },
         favoritos: [{
             type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +43,8 @@ const usuariosesquema = new mongoose.Schema(
         }],
     }
 )
-    export const USUARIO_COLLECTION_NAME = 'usuario'
-const USUARIO = mongoose.model(USUARIO_COLLECTION_NAME,usuariosesquema)
+
+export const USUARIO_COLLECTION_NAME = 'usuario'
+const USUARIO = mongoose.model(USUARIO_COLLECTION_NAME, usuariosesquema)
 
 export default USUARIO
