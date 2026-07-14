@@ -29,11 +29,28 @@ router.post("/", async (request, response, next) => {
         const token = jwt.sign(
             { id: usuario._id, email: usuario.email, nombre: usuario.nombre, role: usuario.role },
             ENVIRONMENT.JWT_SECRET,
+            { expiresIn: "15m" }
+        )
+
+        const refreshToken = jwt.sign(
+            { id: usuario._id },
+            ENVIRONMENT.JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
         )
 
+        usuario.refreshToken = refreshToken
+        await usuario.save()
+
+        response.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.MODE === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+
         const usuarioData = usuario.toObject()
         delete usuarioData.contraseña
+        delete usuarioData.refreshToken
 
         return response.json({
             ok: true,
