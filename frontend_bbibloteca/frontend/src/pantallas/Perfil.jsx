@@ -70,9 +70,21 @@ function Perfil() {
                 <h2 className="library-page__title" style={{ borderBottom: 'none', paddingBottom: 0 }}>
                     {usuario?.nombre}
                 </h2>
-                <p style={{ color: 'var(--ink-soft)', fontStyle: 'italic', margin: 0 }}>
+                <p style={{ color: 'var(--ink-soft)', fontStyle: 'italic', margin: '0 0 0.5rem' }}>
                     {usuario?.email}
                 </p>
+                <span style={{
+                    display: 'inline-block',
+                    padding: '0.25rem 0.75rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    borderRadius: '4px',
+                    background: usuario?.role === 'admin' ? 'var(--leather)' : usuario?.role === 'moderator' ? 'var(--gold)' : 'var(--border)',
+                    color: usuario?.role === 'user' ? 'var(--ink)' : 'var(--parchment)'
+                }}>
+                    {usuario?.role || 'user'}
+                </span>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem' }}>

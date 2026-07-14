@@ -16,19 +16,7 @@ function Iniciar_sesion() {
         setGuardando(true)
 
         try {
-            const response = await fetch('http://localhost:8000/app/bibilo/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, contraseña: password }),
-            })
-
-            const resultado = await response.json()
-
-            if (!response.ok) {
-                throw new Error(resultado.message || 'Error al iniciar sesión')
-            }
-
-            login(resultado.token, resultado.data)
+            await login(email, password)
             navigate('/perfil')
         } catch (error) {
             setErrorMensaje(error.message)

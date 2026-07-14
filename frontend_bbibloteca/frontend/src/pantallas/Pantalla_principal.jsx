@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { solicitarCambioContraseña } from '../fetch/fetch_cambio_contraseña'
 
 function Pantalla_principal() {
-    const { estaAutenticado, usuario } = useAuth()
+    const { estaAutenticado, usuario, logout } = useAuth()
     const [mailEnviado, setMailEnviado] = useState(false)
     const [mailCargando, setMailCargando] = useState(false)
     const [mailError, setMailError] = useState('')
@@ -50,6 +50,14 @@ function Pantalla_principal() {
                             style={{ width: '100%' }}
                         >
                             {mailCargando ? 'Enviando...' : 'Cambiar contraseña'}
+                        </button>
+
+                        <button
+                            className="library-button library-button--outline"
+                            onClick={logout}
+                            style={{ width: '100%' }}
+                        >
+                            Cerrar sesión
                         </button>
 
                         {mailEnviado && (

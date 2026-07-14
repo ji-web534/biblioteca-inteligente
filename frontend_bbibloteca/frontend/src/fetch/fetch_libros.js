@@ -1,20 +1,12 @@
 import { backendError } from "../helpers/error_class"
+import { authFetch } from "./authFetch"
 
 const API = 'http://localhost:8000/app/bibilo'
 
-function getHeaders() {
-    const token = localStorage.getItem('token')
-    return {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-    }
-}
-
 export const crearLibro = async (nombreLibro, descripcionLibro) => {
     try {
-        const response = await fetch(`${API}/nuevo_libro`, {
+        const response = await authFetch(`${API}/nuevo_libro`, {
             method: 'POST',
-            headers: getHeaders(),
             body: JSON.stringify({
                 nombre: nombreLibro,
                 descripcion: descripcionLibro
@@ -54,9 +46,8 @@ export const buscarLibros = async (termino) => {
 
 export const editarLibro = async (id, datos) => {
     try {
-        const response = await fetch(`${API}/libro/${id}`, {
+        const response = await authFetch(`${API}/libro/${id}`, {
             method: 'PUT',
-            headers: getHeaders(),
             body: JSON.stringify(datos)
         })
         const resultado = await response.json()
@@ -74,9 +65,7 @@ export const editarLibro = async (id, datos) => {
 
 export const obtenerMisLibros = async () => {
     try {
-        const response = await fetch(`${API}/mis-libros`, {
-            headers: getHeaders()
-        })
+        const response = await authFetch(`${API}/mis-libros`)
         const resultado = await response.json()
         if (!response.ok) {
             throw new backendError(resultado.message || 'Error al obtener libros.')
