@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { setTokenRefresher } from '../fetch/authFetch'
 
 const AuthContext = createContext(null)
 
@@ -8,6 +9,10 @@ export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(null)
     const [token, setToken] = useState(null)
     const [cargando, setCargando] = useState(true)
+
+    useEffect(() => {
+        setTokenRefresher(setToken)
+    }, [])
 
     useEffect(() => {
         const storedUsuario = localStorage.getItem('usuario')
@@ -78,50 +83,6 @@ export function AuthProvider({ children }) {
         }
     }
 
-    const authFetch = useCallback(async (url, options = {}) => {
-        let response = await fetch(url, {
-            ...options,
-            credentials: 'include',
-            headers: {
-                ...options.headers,
-                'Authorization': `Bearer ${token}`
-            }
-        })
-
-        if (response.status === 401) {
-            try {
-                const refreshResponse = await fetch(`${API}/refresh`, {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-
-                if (refreshResponse.ok) {
-                    const refreshData = await refreshResponse.json()
-                    setToken(refreshData.token)
-
-                    response = await fetch(url, {
-                        ...options,
-                        credentials: 'include',
-                        headers: {
-                            ...options.headers,
-                            'Authorization': `Bearer ${refreshData.token}`
-                        }
-                    })
-                } else {
-                    setToken(null)
-                    setUsuario(null)
-                    localStorage.removeItem('usuario')
-                }
-            } catch (error) {
-                setToken(null)
-                setUsuario(null)
-                localStorage.removeItem('usuario')
-            }
-        }
-
-        return response
-    }, [token])
-
     const tieneRol = (rol) => {
         return usuario?.role === rol
     }
@@ -142,7 +103,6 @@ export function AuthProvider({ children }) {
             login,
             logout,
             refreshAccessToken,
-            authFetch,
             estaAutenticado: !!token,
             tieneRol,
             tienePermiso,

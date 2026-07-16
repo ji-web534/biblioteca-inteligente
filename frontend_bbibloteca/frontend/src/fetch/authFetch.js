@@ -1,14 +1,15 @@
 const API = 'http://localhost:8000/app/bibilo'
 
 let tokenActual = null
-let setTokenCallback = null
-
-export function setToken(token) {
-    tokenActual = token
-}
+let onTokenChange = null
 
 export function setTokenRefresher(callback) {
-    setTokenCallback = callback
+    onTokenChange = callback
+}
+
+function actualizarToken(nuevoToken) {
+    tokenActual = nuevoToken
+    if (onTokenChange) onTokenChange(nuevoToken)
 }
 
 async function refreshYReintentar(url, options) {
@@ -23,17 +24,14 @@ async function refreshYReintentar(url, options) {
         }
 
         const refreshData = await refreshResponse.json()
-        tokenActual = refreshData.token
-
-        if (setTokenCallback) {
-            setTokenCallback(refreshData.token)
-        }
+        actualizarToken(refreshData.token)
 
         return await fetch(url, {
             ...options,
             credentials: 'include',
             headers: {
                 ...options.headers,
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${refreshData.token}`
             }
         })
@@ -60,4 +58,8 @@ export async function authFetch(url, options = {}) {
     }
 
     return response
+}
+
+export function getToken() {
+    return tokenActual
 }

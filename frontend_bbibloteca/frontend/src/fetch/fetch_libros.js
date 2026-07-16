@@ -25,6 +25,7 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
             ? 'No se pudo conectar con el servidor.'
             : error.message
         alert(mensaje)
+        return null
     }
 }
 
@@ -41,6 +42,7 @@ export const buscarLibros = async (termino) => {
             ? 'No se pudo conectar con el servidor.'
             : error.message
         alert(mensaje)
+        return []
     }
 }
 
@@ -60,6 +62,7 @@ export const editarLibro = async (id, datos) => {
             ? 'No se pudo conectar con el servidor.'
             : error.message
         alert(mensaje)
+        return null
     }
 }
 
@@ -75,6 +78,7 @@ export const obtenerMisLibros = async () => {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
             : error.message
-        alert(mensaje)
+        console.error(mensaje)
+        return []
     }
 }

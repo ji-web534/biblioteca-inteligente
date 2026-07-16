@@ -24,9 +24,10 @@ function Perfil() {
     const cargarLibros = async () => {
         try {
             const data = await obtenerMisLibros()
-            setLibros(data)
+            setLibros(data || [])
         } catch (error) {
             console.error(error.message)
+            setLibros([])
         } finally {
             setCargandoLibros(false)
         }
@@ -35,9 +36,10 @@ function Perfil() {
     const cargarFavoritos = async () => {
         try {
             const data = await obtenerFavoritos()
-            setFavoritos(data)
+            setFavoritos(data || [])
         } catch (error) {
             console.error(error.message)
+            setFavoritos([])
         } finally {
             setCargandoFavs(false)
         }
@@ -58,7 +60,7 @@ function Perfil() {
         }
     }
 
-    const esFavorito = (libroId) => favoritos.some((f) => f._id === libroId)
+    const esFavorito = (libroId) => (favoritos || []).some((f) => f._id === libroId)
 
     if (!estaAutenticado) return null
 

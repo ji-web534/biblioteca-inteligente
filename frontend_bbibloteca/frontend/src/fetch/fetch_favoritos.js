@@ -4,32 +4,47 @@ import { authFetch } from "./authFetch"
 const API = 'http://localhost:8000/app/bibilo'
 
 export const obtenerFavoritos = async () => {
-    const response = await authFetch(`${API}/favoritos`)
-    const resultado = await response.json()
-    if (!response.ok) {
-        throw new backendError(resultado.message || 'Error al obtener favoritos.')
+    try {
+        const response = await authFetch(`${API}/favoritos`)
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al obtener favoritos.')
+        }
+        return resultado.data
+    } catch (error) {
+        console.error('Error al obtener favoritos:', error.message)
+        return []
     }
-    return resultado.data
 }
 
 export const agregarFavorito = async (libroId) => {
-    const response = await authFetch(`${API}/favoritos/${libroId}`, {
-        method: 'POST'
-    })
-    const resultado = await response.json()
-    if (!response.ok) {
-        throw new backendError(resultado.message || 'Error al agregar favorito.')
+    try {
+        const response = await authFetch(`${API}/favoritos/${libroId}`, {
+            method: 'POST'
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al agregar favorito.')
+        }
+        return resultado
+    } catch (error) {
+        console.error('Error al agregar favorito:', error.message)
+        return null
     }
-    return resultado
 }
 
 export const quitarFavorito = async (libroId) => {
-    const response = await authFetch(`${API}/favoritos/${libroId}`, {
-        method: 'DELETE'
-    })
-    const resultado = await response.json()
-    if (!response.ok) {
-        throw new backendError(resultado.message || 'Error al quitar favorito.')
+    try {
+        const response = await authFetch(`${API}/favoritos/${libroId}`, {
+            method: 'DELETE'
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al quitar favorito.')
+        }
+        return resultado
+    } catch (error) {
+        console.error('Error al quitar favorito:', error.message)
+        return null
     }
-    return resultado
 }
