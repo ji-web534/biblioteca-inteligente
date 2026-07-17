@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { setTokenRefresher } from '../fetch/authFetch'
+import { setTokenRefresher, actualizarToken } from '../fetch/authFetch'
 
 const AuthContext = createContext(null)
 
@@ -23,6 +23,12 @@ export function AuthProvider({ children }) {
             setCargando(false)
         }
     }, [])
+
+    useEffect(() => {
+        if (usuario) {
+            actualizarToken(token)
+        }
+    }, [usuario, token])
 
     const refreshAccessToken = async () => {
         try {
@@ -63,6 +69,7 @@ export function AuthProvider({ children }) {
         setToken(resultado.token)
         setUsuario(resultado.data)
         localStorage.setItem('usuario', JSON.stringify(resultado.data))
+        actualizarToken(resultado.token)
 
         return resultado
     }
@@ -80,6 +87,7 @@ export function AuthProvider({ children }) {
             setToken(null)
             setUsuario(null)
             localStorage.removeItem('usuario')
+            actualizarToken(null)
         }
     }
 

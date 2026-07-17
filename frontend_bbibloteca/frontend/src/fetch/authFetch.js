@@ -7,7 +7,7 @@ export function setTokenRefresher(callback) {
     onTokenChange = callback
 }
 
-function actualizarToken(nuevoToken) {
+export function actualizarToken(nuevoToken) {
     tokenActual = nuevoToken
     if (onTokenChange) onTokenChange(nuevoToken)
 }
@@ -36,6 +36,7 @@ async function refreshYReintentar(url, options) {
             }
         })
     } catch (error) {
+        actualizarToken(null)
         throw error
     }
 }

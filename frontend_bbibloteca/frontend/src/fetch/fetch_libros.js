@@ -71,6 +71,11 @@ export const obtenerMisLibros = async () => {
         const response = await authFetch(`${API}/mis-libros`)
         const resultado = await response.json()
         if (!response.ok) {
+            if (response.status === 401) {
+                const mensaje = 'Token de autenticación requerido.'
+                console.error(mensaje)
+                return []
+            }
             throw new backendError(resultado.message || 'Error al obtener libros.')
         }
         return resultado.data

@@ -8,6 +8,11 @@ export const obtenerFavoritos = async () => {
         const response = await authFetch(`${API}/favoritos`)
         const resultado = await response.json()
         if (!response.ok) {
+            if (response.status === 401) {
+                const mensaje = 'Token de autenticación requerido.'
+                console.error('Error al obtener favoritos:', mensaje)
+                return []
+            }
             throw new backendError(resultado.message || 'Error al obtener favoritos.')
         }
         return resultado.data
