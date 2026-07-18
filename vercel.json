@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd frontend_bbibloteca/frontend && npm run build",
-  "outputDirectory": "frontend_bbibloteca/frontend/dist",
-  "installCommand": "cd frontend_bbibloteca/frontend && npm install",
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "cd frontend && npm install",
   "framework": "vite",
   "rewrites": [
     {
