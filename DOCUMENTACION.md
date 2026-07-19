@@ -15,6 +15,7 @@
    - [Arquitectura](#32-arquitectura)
    - [Componentes (pantallas)](#33-componentes-pantallas)
 4. [Problemas conocidos](#4-problemas-conocidos)
+5. [Cambios recientes](#5-cambios-recientes)
 
 ---
 
@@ -63,38 +64,37 @@ biblo/
 │       └── servicios/
 │           └── buscador_libros.js    → POST / - busca libro por nombre
 │
-└── frontend_bbibloteca/
-    ├── package.json                  → VACÍO ({}), nodo padre sin uso
-    └── frontend/                     → Aplicación React + Vite
-        ├── package.json
-        ├── vite.config.ts
-        ├── tsconfig.json / tsconfig.app.json / tsconfig.node.json
-        └── src/
-            ├── main.tsx              → Renderiza <App> dentro de <BrowserRouter>
-            ├── App.tsx               → AuthProvider + definición de rutas
-            ├── index.css             → Estilos globales (tema "biblioteca clásica")
-            ├── assets/               → hero.png, react.svg, vite.svg
-            ├── context/
-            │   └── AuthContext.jsx   → Contexto de autenticación (token, usuario, login, logout)
-            ├── fetch/                → Llamadas a la API
-            │   ├── fetch_nuevo_usuario.js
-            │   ├── fetch_nuevo_libro.js
-            │   ├── fetch_libros.js
-            │   ├── fetch_favoritos.js
-            │   ├── fetch_cambio_contraseña.js
-            │   └── fetche_confirmacion_mail.js
-            ├── helpers/
-            │   └── error_class.js    → Clase backendError
-            └── pantallas/            → Componentes de página
-                ├── Pantalla_principal.jsx
-                ├── Iniciar_sesion.jsx
-                ├── nuevo_usuario.jsx
-                ├── Nuevo_libro.jsx
-                ├── Perfil.jsx
-                ├── Buscador.jsx
-                ├── MisLibros.jsx
-                ├── Favoritos.jsx
-                └── Cambiar_contraseña.jsx
+└── frontend/                         → Aplicación React + Vite
+    ├── package.json
+    ├── vite.config.ts
+    ├── tsconfig.json / tsconfig.app.json / tsconfig.node.json
+    └── src/
+        ├── main.tsx                  → Renderiza <App> dentro de <BrowserRouter>
+        ├── App.tsx                   → AuthProvider + definición de rutas
+        ├── index.css                 → Estilos globales (tema "biblioteca clásica")
+        ├── assets/                   → hero.png, react.svg, vite.svg
+        ├── context/
+        │   └── AuthContext.jsx       → Contexto de autenticación (token, usuario, login, logout)
+        ├── fetch/                    → Llamadas a la API
+        │   ├── authFetch.js          → Módulo central de fetch con JWT y refresh automático
+        │   ├── fetch_nuevo_usuario.js
+        │   ├── fetch_nuevo_libro.js
+        │   ├── fetch_libros.js
+        │   ├── fetch_favoritos.js
+        │   ├── fetch_cambio_contraseña.js
+        │   └── fetche_confirmacion_mail.js
+        ├── helpers/
+        │   └── error_class.js        → Clase backendError
+        └── pantallas/                → Componentes de página
+            ├── Pantalla_principal.jsx
+            ├── Iniciar_sesion.jsx
+            ├── nuevo_usuario.jsx
+            ├── Nuevo_libro.jsx
+            ├── Perfil.jsx
+            ├── Buscador.jsx
+            ├── MisLibros.jsx
+            ├── Favoritos.jsx
+            └── Cambiar_contraseña.jsx
 ```
 
 ---
@@ -126,11 +126,13 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 ### 2.2 Flujo de autenticación
 
 1. **Registro**: Formulario en `nuevo_usuario.jsx` → `POST /app/bibilo/nuevo_usuario` → backend hashea contraseña con bcrypt, guarda en MongoDB, envía correo de confirmación.
-2. **Login**: Formulario en `Iniciar_sesion.jsx` → `POST /app/bibilo/login` → backend verifica email+contraseña con bcrypt, devuelve JWT (payload: `{ id, email, nombre }`, expira en 7 días). Frontend almacena token y usuario en localStorage via `AuthContext`.
-3. **Sesión**: `AuthContext` hidrata estado desde localStorage al montar. `estaAutenticado` deriva de `!!token`.
-4. **Peticiones autenticadas**: Los archivos de `fetch/` leen el token de localStorage y lo envían como `Authorization: Bearer <token>`.
-5. **Middleware de autenticación** (`autenticacion.js`): Extrae el Bearer token, verifica con `jwt.verify()` usando `JWT_SECRET`, establece `request.usuarioId = decoded.id`.
-6. **Logout**: `AuthContext.logout()` limpia token y usuario del estado y localStorage.
+2. **Login**: Formulario en `Iniciar_sesion.jsx` → `POST /app/bibilo/login` → backend verifica email+contraseña con bcrypt, devuelve JWT (payload: `{ id, email, nombre, role }`, expira en 15 min) + refreshToken (7d). Frontend llama a `AuthContext.login()` que ejecuta `setToken(resultado.token)` y `actualizarToken(resultado.token)` para sincronizar con `authFetch.js`.
+3. **Sesión**: `AuthContext` hidrata estado desde localStorage al montar. `estaAutenticado` deriva de `!!token`. El token se sincroniza automáticamente con `authFetch.js` mediante un `useEffect` que llama a `actualizarToken(token)`.
+4. **Peticiones autenticadas**: Se usa `authFetch()` en lugar de `fetch()` directamente. `authFetch.js` mantiene una variable interna `tokenActual` y la envía como `Authorization: Bearer <token>`.
+5. **Refresh automático**: Si el backend responde 401 y `tokenActual` existe, `authFetch()` intenta renovar el token mediante `refreshYReintentar()` que hace `POST /app/bibilo/refresh` con las cookies incluidas. Si el refresh falla, `actualizarToken(null)` limpia el token y propaga el error.
+6. **Manejo de errores 401**: `fetch_libros.js` y `fetch_favoritos.js` capturan específicamente status 401 y devuelven `[]` en vez de lanzar errores no manejados, evitando crashes en los componentes.
+7. **Logout**: `AuthContext.logout()` limpia token y usuario del estado y localStorage, y también llama a `actualizarToken(null)` para limpiar el token en `authFetch.js`.
+8. **Middleware de autenticación** (`autenticacion.js`): Extrae el Bearer token, verifica con `jwt.verify()` usando `JWT_SECRET`, establece `request.usuarioId = decoded.id`.
 
 ### 2.3 Flujo de envío de correos
 
@@ -149,7 +151,7 @@ Usa **Resend** como proveedor de correos. Configuración en `config/email_config
   - `baseUrl` se obtiene de `ENVIRONMENT.URL_FRONTEND` o por defecto `http://localhost:5173`.
   - Usa `new URL(ENVIRONMENT.URL_FRONTEND).origin` para normalizar la URL.
 
-**⚠️ Limitación de Resend**: La cuenta gratuita  solo envía emails al correo con el que te registraste en Resend. Para enviar a destinatarios reales hay que verificar un dominio propio.
+**Limitación de Resend**: La cuenta gratuita solo envía emails al correo con el que te registraste en Resend. Para enviar a destinatarios reales hay que verificar un dominio propio.
 
 ### 2.4 Flujo de cambio de contraseña
 
@@ -184,7 +186,7 @@ En `src/db/connect.js`:
 2. Si falla y la URI contiene `localhost` o `127.0.0.1`, usa `mongodb-memory-server` como fallback (base de datos en memoria).
 3. Si se define `USE_MEMORY_DB=true`, fuerza el uso de la base en memoria.
 
-**⚠️ Problema**: El `.env` tiene `MONGODB_URl` (con `l` minúscula al final), pero `connect.js` también busca `MONGODB_URI` y `MONGO_DB_CONNECTION_STRING`. Esto puede causar que la conexión caiga al valor hardcodeado por defecto.
+**Problema**: El `.env` tiene `MONGODB_URl` (con `l` minúscula al final), pero `connect.js` también busca `MONGODB_URI` y `MONGO_DB_CONNECTION_STRING`. Esto puede causar que la conexión caiga al valor hardcodeado por defecto.
 
 ### 2.6 Manejo de errores
 
@@ -214,7 +216,7 @@ Definidas en `App.tsx` con React Router:
 | `/buscador` | `Buscador` | Buscar libros |
 | `/cambiar-contrasena` | `Cambiar_contraseña` | Restablecer contraseña (lee `?token=`) |
 
-**⚠️ Ruta faltante**: El email de confirmación envía un enlace a `/confirmar-cuenta?token=...` pero no existe una ruta en `App.tsx` para esa URL.
+**Ruta faltante**: El email de confirmación envía un enlace a `/confirmar-cuenta?token=...` pero no existe una ruta en `App.tsx` para esa URL.
 
 ### 3.2 Arquitectura
 
@@ -240,16 +242,29 @@ Definidas en `App.tsx` con React Router:
 
 ---
 
-## 3. Problemas conocidos
+## 4. Problemas conocidos
 
+1. **Ruta de confirmación faltante**: El email de verificación envía a `/confirmar-cuenta?token=...` pero no hay `<Route>` en `App.tsx` para esa ruta.
 
+2. **URL incorrecta en fetch de confirmación**: `fetche_confirmacion_mail.js` envía a `/app/usuarios/confirmar` en vez de `/app/bibilo/verificacion`. Se considera un archivo legacy/roto.
 
+3. **Sin ruta para el link de confirmación**: El componente `Cambiar_contraseña.jsx` existe y funciona, pero el flujo completo solo es testeable si el backend puede enviar el correo o si se usa el email registrado en Resend.
 
-3. **Ruta de confirmación faltante**: El email de verificación envía a `/confirmar-cuenta?token=...` pero no hay `<Route>` en `App.tsx` para esa ruta.
+---
 
-4. **URL incorrecta en fetch de confirmación**: `fetche_confirmacion_mail.js` envía a `/app/usuarios/confirmar` en vez de `/app/bibilo/verificacion`. Se considera un archivo legacy/roto.
+## 5. Cambios recientes
 
-5. **Duplicación de carpeta `frontend`**: `frontend_bbibloteca/package.json` está vacío (`{}`) pero tiene su propio `node_modules/`. El proyecto real está dentro de `frontend_bbibloteca/frontend/`. Posible error de anidamiento.
+### 5.1 Reestructuración de carpetas
+- Se aplanó la estructura del frontend: `frontend_bbibloteca/frontend/` → `frontend/`
+- Se eliminó el directorio redundante `frontend_bbibloteca/`
+- Se actualizó `vercel.json` con las nuevas rutas
 
-
-8. **Sin ruta para el link de confirmación**: El componente `Cambiar_contraseña.jsx` existe y funciona, pero el flujo completo solo es testeable si el backend puede enviar el correo (ver punto 7) o si se usa el email registrado en Resend.
+### 5.2 Fix de autenticación (authFlow)
+- **Problema**: `login()` seteaba el token en React state (`setToken`) pero **no** en `authFetch.js`, por lo que `tokenActual` seguía en `null`. Las requests se enviaban sin `Authorization: Bearer <token>` → backend respondía 401.
+- **Solución**:
+  - `actualizarToken` se exportó como `export function` para ser importable desde `AuthContext`
+  - `login()` ahora llama `actualizarToken(resultado.token)` además de `setToken(resultado.token)`
+  - Se agregó `useEffect` en `AuthContext` que sincroniza `actualizarToken(token)` al cambiar usuario/token
+  - `logout()` llama `actualizarToken(null)` para limpiar el token también en authFetch
+  - `refreshYReintentar()` limpia el token con `actualizarToken(null)` cuando el refresh falla
+  - `obtenerMisLibros()` y `obtenerFavoritos()` capturan status 401 y devuelven `[]` en vez de lanzar errores no manejados
