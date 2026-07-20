@@ -1,4 +1,5 @@
 import LIBRO from "../esquemas/esquema_libro.js"
+import { escaparRegex } from "../helpers/regex_utils.js"
 import { Router } from "express"
 
 const router = Router()
@@ -11,7 +12,11 @@ router.get("/buscar", async (request, response, next) => {
         }
 
         const termino = q.trim()
-        const regex = new RegExp(termino, "i")
+        if (termino.length > 100) {
+            return response.status(400).json({ message: "Búsqueda demasiado larga." })
+        }
+
+        const regex = new RegExp(escaparRegex(termino), "i")
 
         const libros = await LIBRO.find({
             $or: [

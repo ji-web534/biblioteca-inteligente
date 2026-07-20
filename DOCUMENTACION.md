@@ -268,3 +268,15 @@ Definidas en `App.tsx` con React Router:
   - `logout()` llama `actualizarToken(null)` para limpiar el token también en authFetch
   - `refreshYReintentar()` limpia el token con `actualizarToken(null)` cuando el refresh falla
   - `obtenerMisLibros()` y `obtenerFavoritos()` capturan status 401 y devuelven `[]` en vez de lanzar errores no manejados
+
+### 5.3 Seguridad — ReDoS y NoSQL injection
+
+**Problemas detectados:**
+- `Autor.js` y `buscar_libros.js` usaban `new RegExp(input, "i")` con input de URL sin sanitizar → **ReDoS** (un input como `(a|aa)+` congela el motor de regex)
+- `id.js` usaba `findById(id)` sin validar que `id` fuera un ObjectId válido → **NoSQL injection** (input como `{ "$gt": "" }` podía filtrar documentos no esperados)
+
+**Solución:**
+- Se creó `helpers/regex_utils.js` con función `escaparRegex()` que escapa `.*+?^${}()|[]\`
+- `Autor.js`: input sanitizado con `escaparRegex()`, validación de longitud máxima 100
+- `buscar_libros.js`: input sanitizado con `escaparRegex()`, validación de longitud máxima 100
+- `id.js`: se valida con `mongoose.Types.ObjectId.isValid()` antes de pasar a `findById`
