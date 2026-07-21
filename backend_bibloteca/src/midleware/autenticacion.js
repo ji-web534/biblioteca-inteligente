@@ -14,6 +14,8 @@ async function autenticacion(request, response, next) {
         const decoded = jwt.verify(token, ENVIRONMENT.JWT_SECRET)
 
         request.usuarioId = decoded.id
+        request.usuarioRole = decoded.role
+        request.usuarioPermisos = decoded.permisos || {}
         return next()
     } catch (error) {
         if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {

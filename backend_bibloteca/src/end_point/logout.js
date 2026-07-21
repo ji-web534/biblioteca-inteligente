@@ -1,4 +1,4 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
+import REFRESH_TOKEN from "../esquemas/esquema_refresh_token.js"
 import autenticacion from "../midleware/autenticacion.js"
 import { Router } from "express"
 
@@ -6,11 +6,13 @@ const router = Router()
 
 router.post("/", autenticacion, async (request, response, next) => {
     try {
-        const usuario = await USUARIO.findById(request.usuarioId)
+        const refreshTokenCookie = request.cookies?.refreshToken
 
-        if (usuario) {
-            usuario.refreshToken = null
-            await usuario.save()
+        if (refreshTokenCookie) {
+            await REFRESH_TOKEN.updateOne(
+                { token: refreshTokenCookie },
+                { status: "revoked" }
+            )
         }
 
         response.clearCookie("refreshToken")

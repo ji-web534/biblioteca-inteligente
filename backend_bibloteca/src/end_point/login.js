@@ -1,4 +1,6 @@
+import crypto from "crypto"
 import USUARIO from "../esquemas/esquema_usuario.js"
+import REFRESH_TOKEN from "../esquemas/esquema_refresh_token.js"
 import ServerError from "../helpers/error_class.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
@@ -27,7 +29,7 @@ router.post("/", async (request, response, next) => {
         }
 
         const token = jwt.sign(
-            { id: usuario._id, email: usuario.email, nombre: usuario.nombre, role: usuario.role },
+            { id: usuario._id, email: usuario.email, nombre: usuario.nombre, role: usuario.role, permisos: usuario.permisos },
             ENVIRONMENT.JWT_SECRET,
             { expiresIn: "15m" }
         )
@@ -38,8 +40,14 @@ router.post("/", async (request, response, next) => {
             { expiresIn: "7d" }
         )
 
-        usuario.refreshToken = refreshToken
-        await usuario.save()
+        const familia = crypto.randomUUID()
+
+        await REFRESH_TOKEN.create({
+            token: refreshToken,
+            usuarioId: usuario._id,
+            familia,
+            status: "active"
+        })
 
         response.cookie("refreshToken", refreshToken, {
             httpOnly: true,

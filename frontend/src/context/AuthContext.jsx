@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { setTokenRefresher, actualizarToken } from '../fetch/authFetch'
+import { actualizarToken } from '../fetch/authFetch'
 
 const AuthContext = createContext(null)
 
@@ -10,27 +10,7 @@ export function AuthProvider({ children }) {
     const [token, setToken] = useState(null)
     const [cargando, setCargando] = useState(true)
 
-    useEffect(() => {
-        setTokenRefresher(setToken)
-    }, [])
-
-    useEffect(() => {
-        const storedUsuario = localStorage.getItem('usuario')
-        if (storedUsuario) {
-            setUsuario(JSON.parse(storedUsuario))
-            refreshAccessToken()
-        } else {
-            setCargando(false)
-        }
-    }, [])
-
-    useEffect(() => {
-        if (usuario) {
-            actualizarToken(token)
-        }
-    }, [usuario, token])
-
-    const refreshAccessToken = async () => {
+    const refreshAccessToken = useCallback(async () => {
         try {
             const response = await fetch(`${API}/refresh`, {
                 method: 'POST',
@@ -43,14 +23,26 @@ export function AuthProvider({ children }) {
 
             const resultado = await response.json()
             setToken(resultado.token)
+            actualizarToken(resultado.token)
         } catch (error) {
             setToken(null)
             setUsuario(null)
             localStorage.removeItem('usuario')
+            actualizarToken(null)
         } finally {
             setCargando(false)
         }
-    }
+    }, [])
+
+    useEffect(() => {
+        const storedUsuario = localStorage.getItem('usuario')
+        if (storedUsuario) {
+            setUsuario(JSON.parse(storedUsuario))
+            refreshAccessToken()
+        } else {
+            setCargando(false)
+        }
+    }, [refreshAccessToken])
 
     const login = async (email, contraseña) => {
         const response = await fetch(`${API}/login`, {

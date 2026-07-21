@@ -259,24 +259,101 @@ Definidas en `App.tsx` con React Router:
 - Se eliminó el directorio redundante `frontend_bbibloteca/`
 - Se actualizó `vercel.json` con las nuevas rutas
 
-### 5.2 Fix de autenticación (authFlow)
-- **Problema**: `login()` seteaba el token en React state (`setToken`) pero **no** en `authFetch.js`, por lo que `tokenActual` seguía en `null`. Las requests se enviaban sin `Authorization: Bearer <token>` → backend respondía 401.
-- **Solución**:
-  - `actualizarToken` se exportó como `export function` para ser importable desde `AuthContext`
-  - `login()` ahora llama `actualizarToken(resultado.token)` además de `setToken(resultado.token)`
-  - Se agregó `useEffect` en `AuthContext` que sincroniza `actualizarToken(token)` al cambiar usuario/token
-  - `logout()` llama `actualizarToken(null)` para limpiar el token también en authFetch
-  - `refreshYReintentar()` limpia el token con `actualizarToken(null)` cuando el refresh falla
-  - `obtenerMisLibros()` y `obtenerFavoritos()` capturan status 401 y devuelven `[]` en vez de lanzar errores no manejados
+### 5.2 Arquitectura de autenticación (JWT + Refresh Token)
 
-### 5.3 Seguridad — ReDoS y NoSQL injection
+**Modelo de seguridad implementado:**
+
+| Token | Almacenamiento | Duración | Propósito |
+|---|---|---|---|
+| Access Token (JWT) | Memoria del frontend (React state + variable authFetch) | 15 min | Autorizar cada petición HTTP |
+| Refresh Token | Cookie HttpOnly (JS no puede leerla) | 7 días | Renovar el Access Token silenciosamente |
+
+**Flujo completo:**
+
+```
+Login (email+contraseña)
+  → Backend crea Access Token (15 min) + Refresh Token (7 días)
+  → Access Token → response.body.token (memoria frontend)
+  → Refresh Token → cookie HttpOnly (inaccesible para JS)
+  → Frontend guarda token en React state + authFetch.tokenActual
+
+Petición a /mis-libros
+  → authFetch() envía Authorization: Bearer <token>
+
+Access Token expira (15 min)
+  → Backend responde 401
+  → authFetch.refreshYReintentar() hace POST /refresh
+    → Cookie HttpOnly se envía automáticamente (credentials: 'include')
+    → Backend verifica, rota tokens, devuelve nuevo Access Token
+  → Reintenta la petición original con el nuevo token
+
+Logout
+  → POST /logout con Bearer token
+  → Backend revoca Refresh Token en la colección → cookie eliminada
+  → Frontend limpia token de estado y authFetch
+```
+
+### 5.3 Refresh Token Rotation (RTR) + Detección de reutilización
+
+**Nuevo modelo `esquema_refresh_token.js`:**
+```javascript
+{
+  token: String,        // JWT del refresh token
+  usuarioId: ObjectId,  // Referencia al usuario
+  familia: String,      // Grupo familiar de tokens (misma sesión)
+  status: String,       // "active" | "used" | "revoked"
+  createdAt: Date       // Auto-expira a los 30 días
+}
+```
+
+**Rotación (RTR):** Cada vez que se usa un Refresh Token para renovar:
+1. El token actual se marca como `"used"`
+2. Se crea un nuevo token `"active"` con la misma `familia`
+3. El viejo token ya no sirve aunque un atacante lo intercepte
+
+**Detección de reutilización (alerta de intrusión):**
+Si el servidor recibe un token con status `"used"` (alguien intentó reutilizar una llave vieja):
+1. Asume que hubo una brecha de seguridad
+2. Revoca TODOS los tokens de esa familia
+3. Responde `401 "Sesión comprometida. Todos los dispositivos fueron desconectados."`
+4. El usuario debe volver a iniciar sesión
+
+**Revocación activa (logout):**
+- `logout.js` marca el Refresh Token como `"revoked"`
+- La cookie se elimina con `clearCookie()`
+- Cualquier intento de refresco con un token `"revoked"` → 401
+
+### 5.4 Backend — payload completo en el middleware
+
+`autenticacion.js` ahora adjunta al request:
+- `request.usuarioId` → ID del usuario
+- `request.usuarioRole` → role (user / moderator / admin)
+- `request.usuarioPermisos` → objeto de permisos granular
+
+Esto permite que los middlewares de autorización (`autorizacion.js`) y las rutas validen permisos sin consultar la base de datos nuevamente (validación criptográfica local, ultra rápida).
+
+### 5.5 Frontend — simplificación de authFetch
+
+- Se eliminó `setTokenRefresher` y el callback `onTokenChange`
+- `authFetch.js` ahora es solo un módulo de utilidad que lee `tokenActual`
+- `AuthContext.jsx` es la **única fuente de verdad** del token
+- Login/logout/refresh llaman directamente a `actualizarToken()` para sincronizar
+
+### 5.6 Seguridad — ReDoS y NoSQL injection
 
 **Problemas detectados:**
-- `Autor.js` y `buscar_libros.js` usaban `new RegExp(input, "i")` con input de URL sin sanitizar → **ReDoS** (un input como `(a|aa)+` congela el motor de regex)
-- `id.js` usaba `findById(id)` sin validar que `id` fuera un ObjectId válido → **NoSQL injection** (input como `{ "$gt": "" }` podía filtrar documentos no esperados)
+- `Autor.js` y `buscar_libros.js` usaban `new RegExp(input, "i")` con input de URL sin sanitizar → **ReDoS**
+- `id.js` usaba `findById(id)` sin validar que `id` fuera un ObjectId válido → **NoSQL injection**
 
 **Solución:**
-- Se creó `helpers/regex_utils.js` con función `escaparRegex()` que escapa `.*+?^${}()|[]\`
-- `Autor.js`: input sanitizado con `escaparRegex()`, validación de longitud máxima 100
-- `buscar_libros.js`: input sanitizado con `escaparRegex()`, validación de longitud máxima 100
-- `id.js`: se valida con `mongoose.Types.ObjectId.isValid()` antes de pasar a `findById`
+- Se creó `helpers/regex_utils.js` con función `escaparRegex()`
+- `Autor.js`: input sanitizado, validación de longitud máxima 100
+- `buscar_libros.js`: input sanitizado, validación de longitud máxima 100
+- `id.js`: validación con `mongoose.Types.ObjectId.isValid()`
+
+### 5.7 Regla de seguridad general
+
+> **El Frontend decide qué mostrar (experiencia de usuario), pero el Backend decide qué permitir (seguridad).**
+
+- **Frontend (UI)**: Lee el rol/permisos del usuario en memoria para ocultar/mostrar botones y vistas
+- **Backend (API)**: El middleware `autenticacion.js` verifica el JWT y los permisos en cada petición

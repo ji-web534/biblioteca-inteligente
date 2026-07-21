@@ -1,15 +1,9 @@
 const API = 'http://localhost:8000/app/bibilo'
 
 let tokenActual = null
-let onTokenChange = null
-
-export function setTokenRefresher(callback) {
-    onTokenChange = callback
-}
 
 export function actualizarToken(nuevoToken) {
     tokenActual = nuevoToken
-    if (onTokenChange) onTokenChange(nuevoToken)
 }
 
 async function refreshYReintentar(url, options) {
