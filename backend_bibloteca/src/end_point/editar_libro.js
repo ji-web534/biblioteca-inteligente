@@ -1,21 +1,21 @@
 import LIBRO from "../esquemas/esquema_libro.js"
 import autenticacion from "../midleware/autenticacion.js"
+import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 
 const router = Router()
 
-router.put("/:id", autenticacion, async (request, response, next) => {
+router.put("/:id", autenticacion, validarCampos({
+    params: { id: { requerido: true, tipo: "objectId" } },
+    body: {
+        nombre: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "El nombre del libro es obligatorio." },
+        descripcion: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "La descripción es obligatoria." }
+    }
+}), async (request, response, next) => {
     try {
         const { id } = request.params
         const { nombre, descripcion, autor, genero } = request.body
-
-        if (!nombre || nombre.trim() === "") {
-            throw new ServerError("El nombre del libro es obligatorio.", 400)
-        }
-        if (!descripcion || descripcion.trim() === "") {
-            throw new ServerError("La descripción es obligatoria.", 400)
-        }
 
         const libro = await LIBRO.findById(id)
 
@@ -27,8 +27,8 @@ router.put("/:id", autenticacion, async (request, response, next) => {
             throw new ServerError("No tiene permiso para editar este libro.", 403)
         }
 
-        libro.nombre = nombre.trim()
-        libro.descripcion = descripcion.trim()
+        libro.nombre = nombre
+        libro.descripcion = descripcion
         libro.autor = autor?.trim() || ""
         libro.genero = genero?.trim() || ""
 

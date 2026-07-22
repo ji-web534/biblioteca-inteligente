@@ -1,17 +1,14 @@
-import mongoose from "mongoose"
 import LIBRO from "../esquemas/esquema_libro.js"
 import { Router } from "express"
+import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
-router.get("/:id", async (request, response, next) => {
+router.get("/:id", validarCampos({
+    params: { id: { requerido: true, tipo: "objectId", mensaje: "ID inválido." } }
+}), async (request, response, next) => {
     try {
-        const idUsuario = request.params.id
-
-        if (!mongoose.Types.ObjectId.isValid(idUsuario)) {
-            return response.status(400).json({ message: "ID inválido." })
-        }
-
-        const buscador = await LIBRO.findById(idUsuario)
+        const { id } = request.params
+        const buscador = await LIBRO.findById(id)
 
         if (buscador) {
             response.json(buscador)

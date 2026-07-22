@@ -5,6 +5,7 @@ import USUARIO from "../esquemas/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import ENVIRONMENT from "../../config/environment.js"
 import verificarUsuario from "../midleware/verificar_usuario.js"
+import validarCampos from "../midleware/validar_campos.js"
 import enviarEmailCambioContraseña from "../helpers/email_cambio_contraseña.js"
 
 const router = Router()
@@ -24,23 +25,12 @@ router.post("/solicitar", verificarUsuario, async (request, response, next) => {
     }
 })
 
-router.post("/", verificarUsuario, async (request, response, next) => {
+router.post("/", verificarUsuario, validarCampos({
+    body: { nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "La nueva contraseña es obligatoria." } }
+}), async (request, response, next) => {
     try {
-        const { contraseñaActual, nuevaContraseña } = request.body
+        const { nuevaContraseña } = request.body
         const usuario = response.locals.usuario
-
-        if (!contraseñaActual || !nuevaContraseña) {
-            throw new ServerError("La contraseña actual y la nueva son obligatorias.", 400)
-        }
-
-        if (nuevaContraseña.length < 6) {
-            throw new ServerError("La nueva contraseña debe tener al menos 6 caracteres.", 400)
-        }
-
-        const contraseñaValida = await bcrypt.compare(contraseñaActual, usuario.contraseña)
-        if (!contraseñaValida) {
-            throw new ServerError("La contraseña actual no es correcta.", 401)
-        }
 
         const hashedPassword = await bcrypt.hash(nuevaContraseña, 10)
         usuario.contraseña = hashedPassword
@@ -55,17 +45,14 @@ router.post("/", verificarUsuario, async (request, response, next) => {
     }
 })
 
-router.post("/restablecer", async (request, response, next) => {
+router.post("/restablecer", validarCampos({
+    body: {
+        token: { requerido: true, tipo: "string", mensaje: "Token y nueva contraseña son obligatorios." },
+        nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "Token y nueva contraseña son obligatorios." }
+    }
+}), async (request, response, next) => {
     try {
         const { token, nuevaContraseña } = request.body
-
-        if (!token || !nuevaContraseña) {
-            throw new ServerError("Token y nueva contraseña son obligatorios.", 400)
-        }
-
-        if (nuevaContraseña.length < 6) {
-            throw new ServerError("La contraseña debe tener al menos 6 caracteres.", 400)
-        }
 
         const decoded = jwt.verify(token, ENVIRONMENT.JWT_SECRET)
         const email = decoded.email

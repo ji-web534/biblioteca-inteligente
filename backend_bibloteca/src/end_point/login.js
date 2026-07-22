@@ -6,18 +6,19 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import ENVIRONMENT from "../../config/environment.js"
 import { Router } from "express"
+import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
 
-router.post("/", async (request, response, next) => {
+router.post("/", validarCampos({
+    body: {
+        email: { requerido: true, tipo: "string", sanitizar: ["trim", "lowercase"], mensaje: "Email y contraseña son obligatorios." },
+        contraseña: { requerido: true, tipo: "string", mensaje: "Email y contraseña son obligatorios." }
+    }
+}), async (request, response, next) => {
     try {
         const { email, contraseña } = request.body
-
-        if (!email || !contraseña) {
-            throw new ServerError("Email y contraseña son obligatorios.", 400)
-        }
-
-        const usuario = await USUARIO.findOne({ email: email.toLowerCase().trim() })
+        const usuario = await USUARIO.findOne({ email })
 
         if (!usuario) {
             throw new ServerError("Credenciales inválidas.", 401)
@@ -58,7 +59,6 @@ router.post("/", async (request, response, next) => {
 
         const usuarioData = usuario.toObject()
         delete usuarioData.contraseña
-        delete usuarioData.refreshToken
 
         return response.json({
             ok: true,

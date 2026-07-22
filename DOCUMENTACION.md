@@ -186,7 +186,7 @@ En `src/db/connect.js`:
 2. Si falla y la URI contiene `localhost` o `127.0.0.1`, usa `mongodb-memory-server` como fallback (base de datos en memoria).
 3. Si se define `USE_MEMORY_DB=true`, fuerza el uso de la base en memoria.
 
-**Problema**: El `.env` tiene `MONGODB_URl` (con `l` minúscula al final), pero `connect.js` también busca `MONGODB_URI` y `MONGO_DB_CONNECTION_STRING`. Esto puede causar que la conexión caiga al valor hardcodeado por defecto.
+El `.env` usa `MONGODB_URI` correctamente. Si no se define la variable, `connect.js` construye la URI desde `MONGO_DB_CONNECTION_STRING` y `MONGO_DB_NAME` con sus valores por defecto.
 
 ### 2.6 Manejo de errores
 

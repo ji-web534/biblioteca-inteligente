@@ -1,22 +1,19 @@
 import LIBRO from "../esquemas/esquema_libro.js"
-import { escaparRegex } from "../helpers/regex_utils.js"
 import { Router } from "express"
+import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
 
-router.get("/buscar", async (request, response, next) => {
+router.get("/buscar", validarCampos({
+    query: { q: { tipo: "string", max: 100, sanitizar: ["trim", "escaparRegex"], mensaje: "Búsqueda demasiado larga." } }
+}), async (request, response, next) => {
     try {
         const { q } = request.query
-        if (!q || q.trim() === "") {
+        if (!q) {
             return response.json({ ok: true, data: [] })
         }
 
-        const termino = q.trim()
-        if (termino.length > 100) {
-            return response.status(400).json({ message: "Búsqueda demasiado larga." })
-        }
-
-        const regex = new RegExp(escaparRegex(termino), "i")
+        const regex = new RegExp(q, "i")
 
         const libros = await LIBRO.find({
             $or: [

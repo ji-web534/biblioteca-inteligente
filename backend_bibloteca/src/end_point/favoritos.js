@@ -1,12 +1,15 @@
 import USUARIO from "../esquemas/esquema_usuario.js"
 import LIBRO from "../esquemas/esquema_libro.js"
 import autenticacion from "../midleware/autenticacion.js"
+import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 
 const router = Router()
 
-router.post("/:libroId", autenticacion, async (request, response, next) => {
+router.post("/:libroId", autenticacion, validarCampos({
+    params: { libroId: { requerido: true, tipo: "objectId" } }
+}), async (request, response, next) => {
     try {
         const { libroId } = request.params
 
@@ -34,7 +37,9 @@ router.post("/:libroId", autenticacion, async (request, response, next) => {
     }
 })
 
-router.delete("/:libroId", autenticacion, async (request, response, next) => {
+router.delete("/:libroId", autenticacion, validarCampos({
+    params: { libroId: { requerido: true, tipo: "objectId" } }
+}), async (request, response, next) => {
     try {
         const { libroId } = request.params
 
