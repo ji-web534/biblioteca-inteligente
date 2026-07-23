@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-
 const moderacionSchema = new mongoose.Schema(
     {
         usuarioId: {

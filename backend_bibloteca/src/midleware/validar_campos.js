@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import ServerError from "../helpers/error_class.js"
 import { escaparRegex } from "../helpers/regex_utils.js"
-
+che wewewewe
 const sanitizadores = {
   trim: (v) => (typeof v === "string" ? v.trim() : v),
   escaparRegex: (v) => (typeof v === "string" ? escaparRegex(v) : v),
