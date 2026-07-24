@@ -1,8 +1,10 @@
-import { backendError } from "../helpers/error_class";
+import { backendError } from "../helpers/error_class"
+
+const API = 'http://localhost:8000/app/bibilo'
 
 export async function solicitarCambioContraseña(email) {
     try {
-        const response = await fetch('http://localhost:8000/app/bibilo/cambiar-contrasena/solicitar', {
+        const response = await fetch(`${API}/cambiar-contrasena/solicitar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email }),
@@ -25,7 +27,7 @@ export async function solicitarCambioContraseña(email) {
 
 export async function restablecerContraseña(token, nuevaContraseña) {
     try {
-        const response = await fetch('http://localhost:8000/app/bibilo/cambiar-contrasena/restablecer', {
+        const response = await fetch(`${API}/cambiar-contrasena/restablecer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token, nuevaContraseña }),

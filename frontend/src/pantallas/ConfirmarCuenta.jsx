@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { confirmarEmail } from '../fetch/fetche_confirmacion_mail'
+import { confirmarEmail } from '../fetch/auth'
 
 function ConfirmarCuenta() {
     const [searchParams] = useSearchParams()

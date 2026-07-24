@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { solicitarCambioContraseña } from '../fetch/fetch_cambio_contraseña'
+import { solicitarCambioContraseña } from '../fetch/cuenta'
 
 function Pantalla_principal() {
     const { estaAutenticado, usuario, logout } = useAuth()

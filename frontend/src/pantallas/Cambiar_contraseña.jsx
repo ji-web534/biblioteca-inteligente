@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { restablecerContraseña } from '../fetch/fetch_cambio_contraseña'
+import { restablecerContraseña } from '../fetch/cuenta'
 
 function Cambiar_contraseña() {
     const [searchParams] = useSearchParams()

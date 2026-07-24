@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { crearLibro } from '../fetch/fetch_nuevo_libro'
+import { crearLibro } from '../fetch/libros'
 
 function Nuevo_libro() {
     const [titulo, setTitulo] = useState('')

@@ -1,9 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { actualizarToken } from '../fetch/authFetch'
+import { iniciarSesion } from '../fetch/auth'
 
 const AuthContext = createContext(null)
-
-const API = 'http://localhost:8000/app/bibilo'
 
 export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(null)
@@ -12,7 +11,7 @@ export function AuthProvider({ children }) {
 
     const refreshAccessToken = useCallback(async () => {
         try {
-            const response = await fetch(`${API}/refresh`, {
+            const response = await fetch('http://localhost:8000/app/bibilo/refresh', {
                 method: 'POST',
                 credentials: 'include'
             })
@@ -45,18 +44,7 @@ export function AuthProvider({ children }) {
     }, [refreshAccessToken])
 
     const login = async (email, contraseña) => {
-        const response = await fetch(`${API}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ email, contraseña })
-        })
-
-        const resultado = await response.json()
-
-        if (!response.ok) {
-            throw new Error(resultado.message || 'Error al iniciar sesión')
-        }
+        const resultado = await iniciarSesion(email, contraseña)
 
         setToken(resultado.token)
         setUsuario(resultado.data)
