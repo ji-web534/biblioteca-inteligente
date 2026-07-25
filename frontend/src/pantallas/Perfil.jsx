@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { obtenerMisLibros } from '../fetch/fetch_libros'
+import { obtenerMisLibros } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 
 function Perfil() {

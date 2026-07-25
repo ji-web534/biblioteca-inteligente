@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { obtenerMisLibros, buscarLibros } from '../fetch/fetch_libros'
+import { obtenerMisLibros, buscarLibros } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 import { useAuth } from '../context/AuthContext'
 
