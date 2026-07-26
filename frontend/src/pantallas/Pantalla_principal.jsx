@@ -47,7 +47,7 @@ function Pantalla_principal() {
                             className="library-button"
                             onClick={handleEnviarMail}
                             disabled={mailCargando}
-                            style={{ width: '100%' }}
+                            style={{ width: '100%', textAlign: 'left' }}
                         >
                             {mailCargando ? 'Enviando...' : 'Cambiar contraseña'}
                         </button>
@@ -55,7 +55,7 @@ function Pantalla_principal() {
                         <button
                             className="library-button library-button--outline"
                             onClick={logout}
-                            style={{ width: '100%' }}
+                            style={{ width: '100%', textAlign: 'left' }}
                         >
                             Cerrar sesión
                         </button>
