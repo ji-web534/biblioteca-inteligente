@@ -1,5 +1,6 @@
 import LIBRO from "../esquemas/esquema_libro.js"
 import autenticacion from "../midleware/autenticacion.js"
+import { tienePermiso } from "../midleware/autorizacion.js"
 import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
@@ -24,7 +25,15 @@ router.put("/:id", autenticacion, validarCampos({
         }
 
         if (libro.usuarioId?.toString() !== request.usuarioId) {
-            throw new ServerError("No tiene permiso para editar este libro.", 403)
+            const permisoMiddleware = tienePermiso("can_edit_others_books")
+            return permisoMiddleware(request, response, (err) => {
+                if (err) return next(err)
+                libro.nombre = nombre
+                libro.descripcion = descripcion
+                libro.autor = autor?.trim() || ""
+                libro.genero = genero?.trim() || ""
+                libro.save().then(() => response.json({ ok: true, data: libro })).catch(next)
+            })
         }
 
         libro.nombre = nombre
