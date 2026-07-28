@@ -18,6 +18,10 @@ router.post("/:libroId", autenticacion, validarCampos({
             throw new ServerError("Libro no encontrado.", 404)
         }
 
+        if (!libro.activo) {
+            throw new ServerError("El libro fue eliminado.", 404)
+        }
+
         const usuario = await USUARIO.findById(request.usuarioId)
         if (!usuario) {
             throw new ServerError("Usuario no encontrado.", 404)

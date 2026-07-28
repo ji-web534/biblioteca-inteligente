@@ -9,7 +9,7 @@ async function libros_autenticador(request, response, next) {
             throw new ServerError("El nombre del libro es obligatorio.", 400)
         }
 
-        const libroencontrado = await LIBRO.findOne({ nombre })
+        const libroencontrado = await LIBRO.findOne({ nombre, activo: true })
 
         if (!libroencontrado) {
             throw new ServerError("Libro no encontrado.", 404)

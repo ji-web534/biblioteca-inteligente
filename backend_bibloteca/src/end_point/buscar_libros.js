@@ -21,7 +21,8 @@ router.get("/buscar", validarCampos({
                 { descripcion: regex },
                 { autor: regex },
                 { genero: regex }
-            ]
+            ],
+            activo: true
         }).sort({ _id: -1 }).limit(50)
 
         response.json({ ok: true, data: libros })

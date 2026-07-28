@@ -9,7 +9,7 @@ router.get("/:autor", validarCampos({
     try {
         const { autor } = request.params
         const regex = new RegExp(autor, "i")
-        const buscadorAutor = await LIBRO.find({ autor: { $regex: regex } })
+        const buscadorAutor = await LIBRO.find({ autor: { $regex: regex }, activo: true })
 
         if (buscadorAutor.length > 0) {
             response.json(buscadorAutor)

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { obtenerMisLibros } from '../fetch/libros'
+import { obtenerMisLibros, removerLibro, eliminarLibro } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 
 function Perfil() {
@@ -60,6 +60,24 @@ function Perfil() {
         }
     }
 
+    const handleRemoverLibro = async (libroId) => {
+        const result = await removerLibro(libroId)
+        if (result) {
+            setLibros((prev) => prev.filter((l) => l._id !== libroId))
+            alert(result.message)
+        }
+    }
+
+    const handleEliminarLibro = async (libroId) => {
+        const confirmar = window.confirm('¿Eliminar este libro permanentemente? Esta acción no se puede deshacer.')
+        if (!confirmar) return
+        const result = await eliminarLibro(libroId)
+        if (result) {
+            setLibros((prev) => prev.filter((l) => l._id !== libroId))
+            alert(result.message)
+        }
+    }
+
     const esFavorito = (libroId) => (favoritos || []).some((f) => f._id === libroId)
 
     if (!estaAutenticado) return null
@@ -115,16 +133,30 @@ function Perfil() {
                                             <td>{libro.nombre}</td>
                                             <td style={{ fontSize: '0.85rem' }}>{libro.descripcion}</td>
                                             <td>
-                                                {esFavorito(libro._id) ? (
-                                                    <button className="library-button" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => handleQuitarFavorito(libro._id)}>
-                                                        Quitar favorito
-                                                    </button>
-                                                ) : (
-                                                    <button className="library-button" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }} onClick={() => handleAgregarFavorito(libro._id)}>
-                                                        Favorito
-                                                    </button>
-                                                )}
-                                            </td>
+                                        {esFavorito(libro._id) ? (
+                                            <button className="library-button" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.25rem' }} onClick={() => handleQuitarFavorito(libro._id)}>
+                                                Quitar favorito
+                                            </button>
+                                        ) : (
+                                            <button className="library-button" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.25rem' }} onClick={() => handleAgregarFavorito(libro._id)}>
+                                                Favorito
+                                            </button>
+                                        )}
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.25rem', background: 'var(--gold)', color: 'var(--ink)' }}
+                                            onClick={() => handleRemoverLibro(libro._id)}
+                                        >
+                                            Remover libro
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', background: 'var(--ink-error, #c00)', color: 'var(--parchment)' }}
+                                            onClick={() => handleEliminarLibro(libro._id)}
+                                        >
+                                            Eliminar libro
+                                        </button>
+                                    </td>
                                         </tr>
                                     ))}
                                 </tbody>

@@ -24,6 +24,10 @@ const librosesquema = new mongoose.Schema(
             ref: 'usuario',
             required: false
         },
+        activo: {
+            type: Boolean,
+            default: true
+        }
     }
 )
 export const LIBRO_COLLECTION_NAME = 'libro'

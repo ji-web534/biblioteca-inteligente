@@ -6,7 +6,7 @@ const router = Router()
 
 router.get("/", autenticacion, async (request, response, next) => {
     try {
-        const libros = await LIBRO.find({ usuarioId: request.usuarioId }).sort({ _id: -1 })
+        const libros = await LIBRO.find({ usuarioId: request.usuarioId, activo: true }).sort({ _id: -1 })
         return response.json({ ok: true, data: libros })
     } catch (error) {
         return next(error)

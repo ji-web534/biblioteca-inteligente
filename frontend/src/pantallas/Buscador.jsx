@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { obtenerMisLibros, buscarLibros } from '../fetch/libros'
+import { obtenerMisLibros, buscarLibros, removerLibro, eliminarLibro } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 import { useAuth } from '../context/AuthContext'
 
@@ -73,6 +73,26 @@ function Buscador() {
         }
     }
 
+    const handleRemoverLibro = async (libroId) => {
+        const result = await removerLibro(libroId)
+        if (result) {
+            setResultados((prev) => prev.filter((l) => l._id !== libroId))
+            setTodosLibros((prev) => prev.filter((l) => l._id !== libroId))
+            alert(result.message)
+        }
+    }
+
+    const handleEliminarLibro = async (libroId) => {
+        const confirmar = window.confirm('¿Eliminar este libro permanentemente? Esta acción no se puede deshacer.')
+        if (!confirmar) return
+        const result = await eliminarLibro(libroId)
+        if (result) {
+            setResultados((prev) => prev.filter((l) => l._id !== libroId))
+            setTodosLibros((prev) => prev.filter((l) => l._id !== libroId))
+            alert(result.message)
+        }
+    }
+
     return (
         <section className="library-page">
             <Link className="library-link library-link--secondary" to={estaAutenticado ? '/perfil' : '/'}>
@@ -119,10 +139,24 @@ function Buscador() {
                                     <td>
                                         <button
                                             className="library-button"
-                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.25rem' }}
                                             onClick={() => handleToggleFavorito(libro._id)}
                                         >
                                             {esFavorito(libro._id) ? 'Quitar favorito' : 'Favorito'}
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginRight: '0.25rem', background: 'var(--gold)', color: 'var(--ink)' }}
+                                            onClick={() => handleRemoverLibro(libro._id)}
+                                        >
+                                            Remover
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', background: 'var(--ink-error, #c00)', color: 'var(--parchment)' }}
+                                            onClick={() => handleEliminarLibro(libro._id)}
+                                        >
+                                            Eliminar
                                         </button>
                                     </td>
                                 </tr>

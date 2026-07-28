@@ -8,7 +8,7 @@ router.get("/:id", validarCampos({
 }), async (request, response, next) => {
     try {
         const { id } = request.params
-        const buscador = await LIBRO.findById(id)
+        const buscador = await LIBRO.findOne({ _id: id, activo: true })
 
         if (buscador) {
             response.json(buscador)

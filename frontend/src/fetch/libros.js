@@ -87,3 +87,41 @@ export const obtenerMisLibros = async () => {
         return []
     }
 }
+
+export const removerLibro = async (libroId) => {
+    try {
+        const response = await authFetch(`${API}/libro/${libroId}`, {
+            method: 'DELETE'
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al remover el libro.')
+        }
+        return resultado
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+        return null
+    }
+}
+
+export const eliminarLibro = async (libroId) => {
+    try {
+        const response = await authFetch(`${API}/libro/${libroId}/hard`, {
+            method: 'DELETE'
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al eliminar el libro permanentemente.')
+        }
+        return resultado
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+        return null
+    }
+}

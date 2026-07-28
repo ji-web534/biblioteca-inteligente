@@ -24,6 +24,10 @@ router.put("/:id", autenticacion, validarCampos({
             throw new ServerError("Libro no encontrado.", 404)
         }
 
+        if (!libro.activo) {
+            throw new ServerError("El libro fue eliminado y no se puede editar.", 404)
+        }
+
         if (libro.usuarioId?.toString() !== request.usuarioId) {
             const permisoMiddleware = tienePermiso("can_edit_others_books")
             return permisoMiddleware(request, response, (err) => {
