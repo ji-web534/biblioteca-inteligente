@@ -19,6 +19,7 @@ import cambiar_contraseña from "./end_point/cambiar_contraseña.js"
 import editar_libro from "./end_point/editar_libro.js"
 import eliminar_libro from "./end_point/eliminar_libro.js"
 import hard_delete_libro from "./end_point/hard_delete_libro.js"
+import admin_usuarios from "./end_point/admin_usuarios.js"
 const app = express()
 const PORT = 8000
 
@@ -51,6 +52,7 @@ app.use("/app/bibilo/mis-libros", mis_libros)
 app.use("/app/bibilo/libro", editar_libro)
 app.use("/app/bibilo/libro", eliminar_libro)
 app.use("/app/bibilo/libro", hard_delete_libro)
+app.use("/app/bibilo/admin/usuarios", admin_usuarios)
 app.use("/app/bibilo/favoritos", favoritos)
 app.use("/app/bibilo/cambiar-contrasena", cambiar_contraseña)
 app.use("/app/bibilo/", id)
