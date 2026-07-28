@@ -113,12 +113,16 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 | `/app/bibilo/verificacion` | `confir_email.js` | `POST /` | No |
 | `/app/bibilo/login` | `login.js` | `POST /` | No |
 | `/app/bibilo/nuevo_libro` | `nuevo_libros.js` | `POST /` | JWT |
+| `/app/bibilo/libro` | `editar_libro.js` | `PUT /:id` | JWT |
+| `/app/bibilo/libro` | `eliminar_libro.js` | `DELETE /:id` (soft) | JWT + `can_delete_books` |
+| `/app/bibilo/libro` | `hard_delete_libro.js` | `DELETE /:id/hard` (permanent) | JWT + `can_delete_books` |
 | `/app/bibilo/mis-libros` | `mis_libros.js` | `GET /` | JWT |
 | `/app/bibilo/favoritos` | `favoritos.js` | `GET /`, `POST /:libroId`, `DELETE /:libroId` | JWT |
 | `/app/bibilo/buscador` | `buscador_libros.js` | `POST /` | No |
-| `/app/bibilo/cambiar-contrasena` | `cambiar_contraseÃ±a.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
+| `/app/bibilo/cambiar-contrasena` | `cambiar_contraseña.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
 | `/app/bibilo/autor/` | `Autor.js` | `GET /:autor` | No |
 | `/app/bibilo/` | `id.js` | `GET /:id` | No |
+| `/app/bibilo/admin/usuarios` | `admin_usuarios.js` | `GET /`, `PUT /:id/role`, `PUT /:id/permisos` | JWT + admin |
 
 **Detalle de endpoints de `cambiar-contrasena`:**
 - `POST /solicitar` â€” Requiere `{ email }`. Middleware `verificarUsuario` busca el email en DB. EnvÃ­a correo con link de restablecimiento.
@@ -360,3 +364,10 @@ Esto permite que los middlewares de autorizaciÃ³n (`autorizacion.js`) y las ru
 - **Frontend (UI)**: Lee el rol/permisos del usuario en memoria para ocultar/mostrar botones y vistas
 - **Backend (API)**: El middleware `autenticacion.js` verifica el JWT y los permisos en cada peticiÃ³n
 
+---
+
+## Pendientes Frontend
+
+- [ ] Página de administración de usuarios (`/admin/usuarios`) para listar, cambiar roles y permisos.
+- [ ] Botones de acción (remover/eliminar libro) en `MisLibros.jsx` y `Buscador.jsx`.
+- [ ] Ruta `/admin` protegida con `autorizacion("admin")` en el frontend.
