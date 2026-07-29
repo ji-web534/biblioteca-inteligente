@@ -7,8 +7,8 @@
    - [Rutas de la API](#21-rutas-de-la-api)
    - [Flujo de autenticacion](#22-flujo-de-autenticacion)
    - [Flujo de envio de correos](#23-flujo-de-envio-de-correos)
-   - [Flujo de cambio de contrasena](#24-flujo-de-cambio-de-contrasena)
-   - [Conexion a la base de datos](#25-conexion-a-la-base-de-datos)
+   - [Flujo de cambio de contraseña](#24-flujo-de-cambio-de-contraseña)
+   - [Conexión a la base de datos](#25-conexión-a-la-base-de-datos)
    - [Manejo de errores](#26-manejo-de-errores)
    - [Middleware de validacion generica](#27-middleware-de-validacion-generica)
    - [Eliminacion de libros (soft/hard delete)](#28-eliminacion-de-libros)
@@ -42,7 +42,7 @@ biblo/
 │   └── src/
 │       ├── main.js                   -> Punto de entrada: Express, CORS, rutas, DB, listen
 │       ├── db/
-│       │   └── connect.js            -> Conexion Mongoose con fallback a MongoDB en memoria
+│       │   └── connect.js            -> Conexión Mongoose con fallback a MongoDB en memoria
 │       ├── end_point/                -> Routers de Express (uno por recurso)
 │       │   ├── Autor.js              -> GET /:autor
 │       │   ├── cambiar_contraseña.js -> POST /solicitar, POST /, POST /restablecer
@@ -70,7 +70,7 @@ biblo/
 │       ├── midleware/                -> Middlewares de Express
 │       │   ├── autenticacion.js      -> Verifica JWT Bearer token
 │       │   ├── autorizacion.js       -> Middleware de roles y permisos
-│       │   ├── check_passwords.js    -> Script de debug de contrasenas
+│       │   ├── check_passwords.js    -> Script de debug de contraseñas
 │       │   ├── check_users.js        -> Script de debug de usuarios
 │       │   ├── error_handler.js      -> Manejador global de errores
 │       │   ├── libros_autenticador.js-> Busca libro por nombre desde el body
@@ -94,7 +94,7 @@ biblo/
         │   ├── authFetch.js          -> Modulo central de fetch con JWT y refresh automatico
         │   ├── auth.js               -> iniciarSesion, registrarUsuario, confirmarEmail
         │   ├── libros.js             -> crearLibro, buscarLibros, editarLibro, obtenerMisLibros, removerLibro, eliminarLibro
-        │   ├── cuenta.js             -> solicitarCambioContraseña, restablecerContraseña
+        │   ├── cuenta.js             -> solicitarCambioContrasena, restablecerContrasena
         │   └── fetch_favoritos.js    -> obtenerFavoritos, agregarFavorito, quitarFavorito
         ├── helpers/
         │   └── error_class.js        -> Clase backendError
@@ -122,7 +122,7 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 | Ruta base | Archivo | Endpoints | Auth |
 |---|---|---|---|
 | `/app/bibilo/nuevo_usuario` | `nuevo_usuario.js` | `POST /` | No |
-| `/app/bibilo/verificacion` | `confir_email.js` | `POST /` | No |
+| `/app/bibilo/verificación` | `confir_email.js` | `POST /` | No |
 | `/app/bibilo/login` | `login.js` | `POST /` | No |
 | `/app/bibilo/nuevo_libro` | `nuevo_libros.js` | `POST /` | JWT |
 | `/app/bibilo/libro` | `editar_libro.js` | `PUT /:id` | JWT |
@@ -131,18 +131,18 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 | `/app/bibilo/mis-libros` | `mis_libros.js` | `GET /` | JWT |
 | `/app/bibilo/favoritos` | `favoritos.js` | `GET /`, `POST /:libroId`, `DELETE /:libroId` | JWT |
 | `/app/bibilo/buscador` | `buscador_libros.js` | `POST /` | No |
-| `/app/bibilo/cambiar-contrasena` | `cambiar_contraseña.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
+| `/app/bibilo/cambiar-contraseña` | `cambiar_contraseña.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
 | `/app/bibilo/autor/` | `Autor.js` | `GET /:autor` | No |
 | `/app/bibilo/` | `id.js` | `GET /:id` | No |
 | `/app/bibilo/admin/usuarios` | `admin_usuarios.js` | `GET /`, `PUT /:id/role`, `PUT /:id/permisos` | JWT + admin |
 
-**Detalle de endpoints de `cambiar-contrasena`:**
+**Detalle de endpoints de `cambiar-contraseña`:**
 - `POST /solicitar` — Requiere `{ email }`. Middleware `verificarUsuario` busca el email en DB. Envia correo con link de restablecimiento.
-- `POST /` — Requiere `{ nuevaContraseña }`. Usuario autenticado. Cambia la contraseña sin necesidad de la actual.
-- `POST /restablecer` — Requiere `{ token, nuevaContraseña }`. Verifica el JWT, busca al usuario por email, actualiza la contraseña.
+- `POST /` — Requiere `{ nuevaContrasena }`. Usuario autenticado. Cambia la contraseña sin necesidad de la actual.
+- `POST /restablecer` — Requiere `{ token, nuevaContrasena }`. Verifica el JWT, busca al usuario por email, actualiza la contraseña.
 
 **Detalle de endpoints de `admin/usuarios`:**
-- `GET /` — Lista todos los usuarios (sin contrasena). Solo admin.
+- `GET /` — Lista todos los usuarios (sin contraseña). Solo admin.
 - `PUT /:id/role` — Cambia el role de un usuario. Requiere `{ role }`. Solo admin.
 - `PUT /:id/permisos` — Cambia los permisos granulares de un usuario. Requiere `{ permisos }`. Solo admin.
 
@@ -152,7 +152,7 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 
 ### 2.2 Flujo de autenticacion
 
-1. **Registro**: Formulario en `nuevo_usuario.jsx` -> `POST /app/bibilo/nuevo_usuario` -> backend hashea contrasena con bcrypt, guarda en MongoDB, envia correo de confirmacion.
+1. **Registro**: Formulario en `nuevo_usuario.jsx` -> `POST /app/bibilo/nuevo_usuario` -> backend hashea contraseña con bcrypt, guarda en MongoDB, envia correo de confirmacion.
 2. **Login**: Formulario en `Iniciar_sesion.jsx` -> `POST /app/bibilo/login` -> backend verifica email+contraseña con bcrypt, devuelve JWT (payload: `{ id, email, nombre, role, permisos }`, expira en 15 min) + refreshToken (7d). Frontend llama a `AuthContext.login()` que ejecuta `setToken(resultado.token)` y `actualizarToken(resultado.token)` para sincronizar con `authFetch.js`.
 3. **Sesión**: `AuthContext` hidrata estado desde localStorage al montar. `estaAutenticado` deriva de `!!token`. El token se sincroniza automaticamente con `authFetch.js` mediante un `useEffect` que llama a `actualizarToken(token)`.
 4. **Peticiones autenticadas**: Se usa `authFetch()` en lugar de `fetch()` directamente. `authFetch.js` mantiene una variable interna `tokenActual` y la envia como `Authorization: Bearer <token>`.
@@ -171,38 +171,38 @@ Usa **Resend** como proveedor de correos. Configuracion en `config/email_config.
 - Construye URL: `{URL_FRONTEND}/confirmar-cuenta?token={token}`.
 - Envia desde `onboarding@resend.dev`.
 
-**Cambio de contrasena** (`email_cambio_contraseña.js`):
+**Cambio de contraseña** (`email_cambio_contraseña.js`):
 - Se llama desde `cambiar_contraseña.js` -> `POST /solicitar`.
 - Genera JWT con `{ email }` (expira en 1h).
-- Construye URL: `{baseUrl}/cambiar-contrasena?token={token}` usando `ENVIRONMENT.URL_FRONTEND`.
+- Construye URL: `{baseUrl}/cambiar-contraseña?token={token}` usando `ENVIRONMENT.URL_FRONTEND`.
 
-### 2.4 Flujo de cambio de contrasena
+### 2.4 Flujo de cambio de contraseña
 
 ```
-Usuario hace clic en "Cambiar contrasena" (Pantalla_principal.jsx)
-  -> solicitarCambioContraseña(email)
-    -> POST /app/bibilo/cambiar-contrasena/solicitar { email }
+Usuario hace clic en "Cambiar contraseña" (Pantalla_principal.jsx)
+  -> solicitarCambioContrasena(email)
+    -> POST /app/bibilo/cambiar-contraseña/solicitar { email }
       -> Middleware verificarUsuario busca email en DB
-        -> enviarEmailCambioContraseña(nombre, email)
+        -> enviarEmailCambioContrasena(nombre, email)
           -> Genera JWT con el email (1h exp)
-          -> Construye enlace: {baseUrl}/cambiar-contrasena?token={token}
+          -> Construye enlace: {baseUrl}/cambiar-contraseña?token={token}
           -> Envia correo con Resend
 
 Usuario recibe el email, hace clic en el enlace
-  -> Abre http://localhost:5173/cambiar-contrasena?token=...
+  -> Abre http://localhost:5173/cambiar-contraseña?token=...
     -> Ruta en App.tsx renderiza Cambiar_contraseña.jsx
       -> Lee token de query params con useSearchParams()
 
-Usuario ingresa nueva contrasena y confirma
-  -> restablecerContraseña(token, nuevaContraseña)
-    -> POST /app/bibilo/cambiar-contrasena/restablecer { token, nuevaContraseña }
+Usuario ingresa nueva contraseña y confirma
+  -> restablecerContrasena(token, nuevaContrasena)
+    -> POST /app/bibilo/cambiar-contraseña/restablecer { token, nuevaContrasena }
       -> Verifica JWT, extrae email
       -> Busca usuario por email
-      -> Hashea nueva contrasena con bcrypt
+      -> Hashea nueva contraseña con bcrypt
       -> Guarda en DB
 ```
 
-### 2.5 Conexion a la base de datos
+### 2.5 Conexión a la base de datos
 
 En `src/db/connect.js`:
 1. Intenta conectar a MongoDB usando `MONGODB_URI` del `.env`.
@@ -268,7 +268,7 @@ router.post("/", verificarUsuario, validarCampos({
 
 **Archivo**: `admin_usuarios.js`
 
-- `GET /app/bibilo/admin/usuarios` — Lista todos los usuarios sin contrasena. Requiere role `admin`.
+- `GET /app/bibilo/admin/usuarios` — Lista todos los usuarios sin contraseña. Requiere role `admin`.
 - `PUT /app/bibilo/admin/usuarios/:id/role` — Cambia el role de un usuario. Requiere `{ role: "user" | "moderator" | "admin" }`. Requiere role `admin`.
 - `PUT /app/bibilo/admin/usuarios/:id/permisos` — Cambia los permisos granulares. Requiere `{ permisos: { can_delete_books: bool, ... } }`. Requiere role `admin`.
 
@@ -289,7 +289,7 @@ Definidas en `App.tsx` con React Router:
 | `/iniciar-sesion` | `Iniciar_sesion` | Inicio de sesion |
 | `/perfil` | `Perfil` | Perfil del usuario |
 | `/buscador` | `Buscador` | Buscar libros |
-| `/cambiar-contrasena` | `Cambiar_contraseña` | Restablecer contrasena (lee `?token=`) |
+| `/cambiar-contraseña` | `Cambiar_contraseña` | Restablecer contraseña (lee `?token=`) |
 
 ### 3.2 Arquitectura
 
@@ -303,7 +303,7 @@ Definidas en `App.tsx` con React Router:
 
 | Componente | Funcionalidad |
 |---|---|
-| `Pantalla_principal.jsx` | Home. Si autenticado: saludo, links a perfil/buscador/libros, boton "Cambiar contrasena", boton "Cerrar sesión". Si no: links a login/registro. |
+| `Pantalla_principal.jsx` | Home. Si autenticado: saludo, links a perfil/buscador/libros, boton "Cambiar contraseña", boton "Cerrar sesión". Si no: links a login/registro. |
 | `Iniciar_sesion.jsx` | Formulario email+contraseña. Llama a `/login` directamente con `fetch`. Usa `AuthContext.login()` y redirige a `/perfil`. |
 | `nuevo_usuario.jsx` | Formulario de registro. Llama a `registrarUsuario()`. Muestra tabla de usuarios creados. |
 | `Nuevo_libro.jsx` | Formulario nombre+descripción. Llama a `crearLibro()`. Muestra tabla de libros enviados. |
@@ -318,8 +318,8 @@ Definidas en `App.tsx` con React Router:
 
 ## 4. Problemas conocidos
 
-1. **Ruta de confirmacion faltante**: El email de verificacion envia a `/confirmar-cuenta?token=...` pero no hay `<Route>` en `App.tsx` para esa ruta.
-2. **URL incorrecta en fetch de confirmacion**: `fetche_confirmacion_mail.js` (ya eliminado) enviaba a `/app/usuarios/confirmar` en vez de `/app/bibilo/verificacion`. Este archivo ya fue eliminado.
+1. **Ruta de confirmacion faltante**: El email de verificación envia a `/confirmar-cuenta?token=...` pero no hay `<Route>` en `App.tsx` para esa ruta.
+2. **URL incorrecta en fetch de confirmacion**: `fetche_confirmacion_mail.js` (ya eliminado) enviaba a `/app/usuarios/confirmar` en vez de `/app/bibilo/verificación`. Este archivo ya fue eliminado.
 3. **Sin pagina de administracion**: Los endpoints `/admin/usuarios` existen en el backend pero la interfaz frontend para administrar usuarios no existe todavia (pendiente).
 
 ---
@@ -342,7 +342,7 @@ Definidas en `App.tsx` con React Router:
 
 **Flujo completo:**
 ```
-Login (email+contrasena)
+Login (email+contraseña)
   -> Backend crea Access Token (15 min) + Refresh Token (7 dias)
   -> Access Token -> response.body.token (memoria frontend)
   -> Refresh Token -> cookie HttpOnly (inaccesible para JS)
@@ -364,7 +364,7 @@ Logout
   -> Frontend limpia token de estado y authFetch
 ```
 
-### 5.3 Refresh Token Rotation (RTR) + Deteccion de reutilizacion
+### 5.3 Refresh Token Rotation (RTR) + Deteccion de reutilización
 
 **Nuevo modelo `esquema_refresh_token.js`:**
 ```javascript
@@ -382,7 +382,7 @@ Logout
 2. Se crea un nuevo token `"active"` con la misma `familia`
 3. El viejo token ya no sirve aunque un atacante lo intercepte
 
-**Deteccion de reutilizacion (alerta de intrusion):**
+**Deteccion de reutilización (alerta de intrusion):**
 Si el servidor recibe un token con status `"used"` (alguien intento reutilizar una llave vieja):
 1. Asume que hubo una brecha de seguridad
 2. Revoca TODOS los tokens de esa familia
@@ -431,13 +431,13 @@ Se implemento `midleware/validar_campos.js` que recibe un schema de reglas y val
 Los 7 archivos de fetch del frontend se redujeron a 5, agrupados por dominio:
 - `fetch/auth.js`: iniciarSesion, registrarUsuario, confirmarEmail
 - `fetch/libros.js`: crearLibro, buscarLibros, editarLibro, obtenerMisLibros, removerLibro, eliminarLibro
-- `fetch/cuenta.js`: solicitarCambioContraseña, restablecerContraseña
+- `fetch/cuenta.js`: solicitarCambioContrasena, restablecerContrasena
 - `fetch/fetch_favoritos.js`: obtenerFavoritos, agregarFavorito, quitarFavorito
 - `fetch/authFetch.js`: gestión de tokens (sin cambios)
 
 ### 5.9 Soft delete y hard delete
 
-- Añadido campo `activo` a `esquema_libro.js`
+- Anadido campo `activo` a `esquema_libro.js`
 - `eliminar_libro.js`: soft delete (setea `activo: false`)
 - `hard_delete_libro.js`: hard delete (elimina permanentemente)
 - Todos los endpoints de busqueda filtran por `activo: true`
