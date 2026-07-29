@@ -131,7 +131,7 @@ Todas las rutas se montan en `src/main.js` con prefijo base `app.use()`.
 | `/app/bibilo/mis-libros` | `mis_libros.js` | `GET /` | JWT |
 | `/app/bibilo/favoritos` | `favoritos.js` | `GET /`, `POST /:libroId`, `DELETE /:libroId` | JWT |
 | `/app/bibilo/buscador` | `buscador_libros.js` | `POST /` | No |
-| `/app/bibilo/cambiar-contrasena` | `cambiar_contraseÃ±a.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
+| `/app/bibilo/cambiar-contraseña` | `cambiar_contraseÃ±a.js` | `POST /solicitar`, `POST /`, `POST /restablecer` | Variable |
 | `/app/bibilo/autor/` | `Autor.js` | `GET /:autor` | No |
 | `/app/bibilo/` | `id.js` | `GET /:id` | No |
 | `/app/bibilo/admin/usuarios` | `admin_usuarios.js` | `GET /`, `PUT /:id/role`, `PUT /:id/permisos` | JWT + admin |
@@ -181,7 +181,7 @@ Usa **Resend** como proveedor de correos. Configuracion en `config/email_config.
 ```
 Usuario hace clic en "Cambiar contraseÃ±a" (Pantalla_principal.jsx)
   -> solicitarCambioContrasena(email)
-    -> POST /app/bibilo/cambiar-contrasena/solicitar { email }
+    -> POST /app/bibilo/cambiar-contraseña/solicitar { email }
       -> Middleware verificarUsuario busca email en DB
         -> enviarEmailCambioContrasena(nombre, email)
           -> Genera JWT con el email (1h exp)
@@ -189,13 +189,13 @@ Usuario hace clic en "Cambiar contraseÃ±a" (Pantalla_principal.jsx)
           -> Envia correo con Resend
 
 Usuario recibe el email, hace clic en el enlace
-  -> Abre http://localhost:5173/cambiar-contrasena?token=...
+  -> Abre http://localhost:5173/cambiar-contraseña?token=...
     -> Ruta en App.tsx renderiza Cambiar_contraseÃ±a.jsx
       -> Lee token de query params con useSearchParams()
 
 Usuario ingresa nueva contraseÃ±a y confirma
   -> restablecerContrasena(token, nuevaContrasena)
-    -> POST /app/bibilo/cambiar-contrasena/restablecer { token, nuevaContrasena }
+    -> POST /app/bibilo/cambiar-contraseña/restablecer { token, nuevaContrasena }
       -> Verifica JWT, extrae email
       -> Busca usuario por email
       -> Hashea nueva contraseÃ±a con bcrypt
@@ -473,4 +473,5 @@ El archivo `seed.js` crea 3 usuarios de prueba:
 | maria@test.com | 123456 | user |
 
 Ejecutar con `node seed.js` desde el directorio `backend_bibloteca/`.
+
 

@@ -54,7 +54,7 @@ app.use("/app/bibilo/libro", eliminar_libro)
 app.use("/app/bibilo/libro", hard_delete_libro)
 app.use("/app/bibilo/admin/usuarios", admin_usuarios)
 app.use("/app/bibilo/favoritos", favoritos)
-app.use("/app/bibilo/cambiar-contrasena", cambiar_contraseña)
+app.use("/app/bibilo/cambiar-contraseña", cambiar_contraseña)
 app.use("/app/bibilo/", id)
 app.use(errorHandler)
 
