@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { solicitarCambioContraseña } from '../fetch/cuenta'
 
 function Pantalla_principal() {
-    const { estaAutenticado, usuario, logout } = useAuth()
+    const { estaAutenticado, usuario, logout, tieneRol } = useAuth()
     const [mailEnviado, setMailEnviado] = useState(false)
     const [mailCargando, setMailCargando] = useState(false)
     const [mailError, setMailError] = useState('')
@@ -51,6 +51,12 @@ function Pantalla_principal() {
                         >
                             {mailCargando ? 'Enviando...' : 'Cambiar contraseña'}
                         </button>
+
+                        {tieneRol('admin') && (
+                            <Link className="library-link" to="/admin/usuarios" style={{ display: 'block', textAlign: 'center' }}>
+                                Dar roles a usuarios
+                            </Link>
+                        )}
 
                         <button
                             className="library-button library-button--outline"
