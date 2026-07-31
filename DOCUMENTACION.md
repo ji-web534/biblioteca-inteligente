@@ -55,18 +55,18 @@ biblo/
 │       ├──── db/
 │       │   └──── connect.js            -> Conexion Mongoose con fallback a MongoDB en memoria
 │       ├──── end_point/                -> Routers de Express (uno por recurso)
-│       │   ├──── Autor.js              -> GET /:autor
-│       │   ├──── cambiar_contraseña.js -> POST /solicitar, POST /, POST /restablecer
-│       │   ├──── confir_email.js       -> POST /
-│       │   ├──── editar_libro.js       -> PUT /:id
+│       │   ├──── author.js              -> GET /:autor
+│       │   ├──── changePassword.js -> POST /solicitar, POST /, POST /restablecer
+│       │   ├──── confirmEmail.js       -> POST /
+│       │   ├──── editBook.js       -> PUT /:id
 │       │   ├──── eliminar_libro.js     -> DELETE /:id (soft delete, activo: false)
 │       │   ├──── hard_delete_libro.js  -> DELETE /:id/hard (eliminacion permanente)
-│       │   ├──── favoritos.js          -> GET /, POST /:libroId, DELETE /:libroId
+│       │   ├──── favorites.js          -> GET /, POST /:libroId, DELETE /:libroId
 │       │   ├──── id.js                 -> GET /:id
 │       │   ├──── login.js              -> POST /
-│       │   ├──── mis_libros.js         -> GET /
-│       │   ├──── nuevo_libros.js       -> POST /
-│       │   ├──── nuevo_usuario.js      -> POST /
+│       │   ├──── myBooks.js         -> GET /
+│       │   ├──── createBook.js       -> POST /
+│       │   ├──── register.js      -> POST /
 │       │   └──── admin_usuarios.js     -> GET /, PUT /:id/role, PUT /:id/permisos
 │       ├──── esquemas/                 -> Modelos de Mongoose
 │       │   ├──── esquema_libro.js
@@ -106,37 +106,37 @@ biblo/
         │   ├──── auth.js               -> iniciarSesion, registrarUsuario, confirmarEmail
         │   ├──── libros.js             -> crearLibro, buscarLibros, editarLibro, obtenerMisLibros, removerLibro, eliminarLibro
         │   ├──── cuenta.js             -> solicitarCambioContrasena, restablecerContrasena
-        │   └──── fetch_favoritos.js    -> obtenerFavoritos, agregarFavorito, quitarFavorito
+        │   └──── fetch_favorites.js    -> obtenerFavoritos, agregarFavorito, quitarFavorito
         ├──── helpers/
         │   └──── error_class.js        -> Clase backendError
         └──── pantallas/                -> Componentes de pagina
             ├──── Pantalla_principal.jsx
             ├──── Iniciar_sesion.jsx
-            ├──── nuevo_usuario.jsx
+            ├──── register.jsx
             ├──── Nuevo_libro.jsx
             ├──── Perfil.jsx
             ├──── Buscador.jsx
             ├──── MisLibros.jsx
             ├──── Favoritos.jsx
             ├──── ConfirmarCuenta.jsx
-            └──── Cambiar_contraseña.jsx
+            └──── ChangePassword.jsx
 2. Backend
 2.1 Rutas de la API
 Todas las rutas se montan en src/main.js con prefijo base app.use().
 
 Ruta base	Archivo	Endpoints	Auth
-/app/bibilo/nuevo_usuario	nuevo_usuario.js	POST /	No
-/app/bibilo/verificacion	confir_email.js	POST /	No
+/app/bibilo/nuevo_usuario	register.js	POST /	No
+/app/bibilo/verificacion	confirmEmail.js	POST /	No
 /app/bibilo/login	login.js	POST /	No
-/app/bibilo/nuevo_libro	nuevo_libros.js	POST /	JWT
-/app/bibilo/libro	editar_libro.js	PUT /:id	JWT
+/app/bibilo/nuevo_libro	createBook.js	POST /	JWT
+/app/bibilo/libro	editBook.js	PUT /:id	JWT
 /app/bibilo/libro	eliminar_libro.js	DELETE /:id (soft delete)	JWT + can_delete_books
 /app/bibilo/libro	hard_delete_libro.js	DELETE /:id/hard (permanent)	JWT + can_delete_books
-/app/bibilo/mis-libros	mis_libros.js	GET /	JWT
-/app/bibilo/favoritos	favoritos.js	GET /, POST /:libroId, DELETE /:libroId	JWT
+/app/bibilo/mis-libros	myBooks.js	GET /	JWT
+/app/bibilo/favoritos	favorites.js	GET /, POST /:libroId, DELETE /:libroId	JWT
 /app/bibilo/buscador	buscador_libros.js	POST /	No
-/app/bibilo/cambiar-contraseña	cambiar_contraseña.js	POST /solicitar, POST /, POST /restablecer	Variable
-/app/bibilo/autor/	Autor.js	GET /:autor	No
+/app/bibilo/cambiar-contraseña	changePassword.js	POST /solicitar, POST /, POST /restablecer	Variable
+/app/bibilo/autor/	author.js	GET /:autor	No
 /app/bibilo/	id.js	GET /:id	No
 /app/bibilo/admin/usuarios	admin_usuarios.js	GET /, PUT /:id/role, PUT /:id/permisos	JWT + admin
 Detalle de endpoints de cambiar-contraseña:
@@ -160,7 +160,7 @@ Roles disponibles: user, moderator, admin.
 Permisos granulares: can_delete_books, can_edit_others_books, can_manage_categories, can_suspend_users, can_manage_users.
 
 2.2 Flujo de autenticacion
-Registro: Formulario en nuevo_usuario.jsx -> POST /app/bibilo/nuevo_usuario -> backend hashea contraseña con bcrypt, guarda en MongoDB, envia correo de confirmacion.
+Registro: Formulario en register.jsx -> POST /app/bibilo/nuevo_usuario -> backend hashea contraseña con bcrypt, guarda en MongoDB, envia correo de confirmacion.
 
 Login: Formulario en Iniciar_sesion.jsx -> POST /app/bibilo/login -> backend verifica email+contraseña con bcrypt, devuelve JWT (payload: { id, email, nombre, role, permisos }, expira en 15 min) + refreshToken (7d). Frontend llama a AuthContext.login() que ejecuta setToken(resultado.token) y actualizarToken(resultado.token) para sincronizar con authFetch.js.
 
@@ -170,7 +170,7 @@ Peticiones autenticadas: Se usa authFetch() en lugar de fetch() directamente. au
 
 Refresh automatico: Si el backend responde 401 y tokenActual existe, authFetch() intenta renovar el token mediante refreshYReintentar() que hace POST /app/bibilo/refresh con las cookies incluidas. Si el refresh falla, actualizarToken(null) limpia el token y propaga el error.
 
-Manejo de errores 401: fetch/libros.js y fetch/fetch_favoritos.js capturan especificamente status 401 y devuelven [] en vez de lanzar errores no manejados, evitando crashes en los componentes.
+Manejo de errores 401: fetch/libros.js y fetch/fetch_favorites.js capturan especificamente status 401 y devuelven [] en vez de lanzar errores no manejados, evitando crashes en los componentes.
 
 Logout: AuthContext.logout() limpia token y usuario del estado y localStorage, y tambien llama a actualizarToken(null) para limpiar el token en authFetch.js.
 
@@ -181,7 +181,7 @@ Usa Resend como proveedor de correos. Configuracion en config/email_config.js.
 
 Confirmacion de cuenta (email_confirmacion.js):
 
-Se llama desde nuevo_usuario.js tras crear el usuario.
+Se llama desde register.js tras crear el usuario.
 
 Genera JWT con { email } (expira en 1h).
 
@@ -191,7 +191,7 @@ Envia desde onboarding@resend.dev.
 
 Cambio de contraseña (email_cambio_contraseña.js):
 
-Se llama desde cambiar_contraseña.js -> POST /solicitar.
+Se llama desde changePassword.js -> POST /solicitar.
 
 Genera JWT con { email } (expira en 1h).
 
@@ -209,7 +209,7 @@ Usuario hace clic en "Cambiar contraseña" (Pantalla_principal.jsx)
 
 Usuario recibe el email, hace clic en el enlace
   -> Abre http://localhost:5173/cambiar-contraseña?token=...
-    -> Ruta en App.tsx renderiza Cambiar_contraseña.jsx
+    -> Ruta en App.tsx renderiza ChangePassword.jsx
       -> Lee token de query params con useSearchParams()
 
 Usuario ingresa nueva contraseña y confirma
@@ -319,20 +319,20 @@ TypeScript nominal pero codigo JSX: El proyecto usa TypeScript (tsconfig.json, e
 
 CSS en un solo archivo: Todo el estilo esta en index.css con un sistema de diseño consistente (variables CSS para tema de "biblioteca clasica" con colores pergamino, cuero y dorado).
 
-Fetch helpers: Cada grupo de llamadas API esta en un archivo separado dentro de fetch/, agrupados por dominio (auth.js, libros.js, cuenta.js, fetch_favoritos.js).
+Fetch helpers: Cada grupo de llamadas API esta en un archivo separado dentro de fetch/, agrupados por dominio (auth.js, libros.js, cuenta.js, fetch_favorites.js).
 
 3.3 Componentes (pantallas)
 Componente	Funcionalidad
 Pantalla_principal.jsx	Home. Si autenticado: saludo, links a perfil/buscador/libros, boton "Cambiar contraseña", boton "Cerrar sesion". Si no: links a login/registro.
 Iniciar_sesion.jsx	Formulario email+contraseña. Llama a /login directamente con fetch. Usa AuthContext.login() y redirige a /perfil.
-nuevo_usuario.jsx	Formulario de registro. Llama a registrarUsuario(). Muestra tabla de usuarios creados.
+register.jsx	Formulario de registro. Llama a registrarUsuario(). Muestra tabla de usuarios creados.
 Nuevo_libro.jsx	Formulario nombre+descripcion. Llama a crearLibro(). Muestra tabla de libros enviados.
 Perfil.jsx	Datos del usuario, tabla "Mis Libros" (con botones remover/eliminar libro), tabla "Favoritos". Boton de cerrar sesion.
 Buscador.jsx	Busqueda local (client-side) sobre los libros del usuario autenticado. Con botones remover/eliminar para cada libro en resultados.
 MisLibros.jsx	Lista de libros del usuario con botones Favorito, Remover libro (soft delete), Eliminar libro (hard delete).
 Favoritos.jsx	Lista de favoritos con boton para quitar.
 ConfirmarCuenta.jsx	Lee ?token= de la URL. Confirma cuenta llamando al backend.
-Cambiar_contraseña.jsx	Lee ?token= de la URL. Formulario de nueva contraseña + confirmacion. Maneja errores y exito.
+ChangePassword.jsx	Lee ?token= de la URL. Formulario de nueva contraseña + confirmacion. Maneja errores y exito.
 4. Problemas conocidos
 Ruta de confirmacion faltante: El email de verificacion envia a /confirmar-cuenta?token=... pero no hay <Route> en App.tsx para esa ruta.
 
@@ -437,7 +437,7 @@ Login/logout/refresh llaman directamente a actualizarToken() para sincronizar
 5.6 Seguridad - ReDoS y NoSQL injection
 Problemas detectados:
 
-Autor.js y buscar_libros.js usaban new RegExp(input, "i") con input de URL sin sanitizar -> ReDoS
+author.js y searchBooks.js usaban new RegExp(input, "i") con input de URL sin sanitizar -> ReDoS
 
 id.js usaba findById(id) sin validar que id fuera un ObjectId valido -> NoSQL injection
 
@@ -445,9 +445,9 @@ Solucion:
 
 Se creo helpers/regex_utils.js con funcion escaparRegex()
 
-Autor.js: input sanitizado, validacion de longitud maxima 100
+author.js: input sanitizado, validacion de longitud maxima 100
 
-buscar_libros.js: input sanitizado, validacion de longitud maxima 100
+searchBooks.js: input sanitizado, validacion de longitud maxima 100
 
 id.js: validacion con mongoose.Types.ObjectId.isValid()
 
@@ -463,7 +463,7 @@ fetch/libros.js: crearLibro, buscarLibros, editarLibro, obtenerMisLibros, remove
 
 fetch/cuenta.js: solicitarCambioContrasena, restablecerContrasena
 
-fetch/fetch_favoritos.js: obtenerFavoritos, agregarFavorito, quitarFavorito
+fetch/fetch_favorites.js: obtenerFavoritos, agregarFavorito, quitarFavorito
 
 fetch/authFetch.js: gestion de tokens (sin cambios)
 
