@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { obtenerMisLibros, buscarLibros, removerLibro, eliminarLibro } from '../fetch/libros'
+import { obtenerMisLibros, buscarLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 import { useAuth } from '../context/AuthContext'
 
@@ -93,6 +93,14 @@ function Buscador() {
         }
     }
 
+    const handleRestaurarLibro = async (libroId) => {
+        const result = await restaurarLibro(libroId)
+        if (result) {
+            alert(result.message)
+            cargarLibros()
+        }
+    }
+
     return (
         <section className="library-page">
             <Link className="library-link library-link--secondary" to={estaAutenticado ? '/perfil' : '/'}>
@@ -157,6 +165,13 @@ function Buscador() {
                                             onClick={() => handleEliminarLibro(libro._id)}
                                         >
                                             Eliminar
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginLeft: '0.25rem', background: 'var(--leather)', color: 'var(--parchment)' }}
+                                            onClick={() => handleRestaurarLibro(libro._id)}
+                                        >
+                                            Restaurar
                                         </button>
                                     </td>
                                 </tr>

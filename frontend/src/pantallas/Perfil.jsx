@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { obtenerMisLibros, removerLibro, eliminarLibro } from '../fetch/libros'
+import { obtenerMisLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
 import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
 
 function Perfil() {
@@ -75,6 +75,14 @@ function Perfil() {
         if (result) {
             setLibros((prev) => prev.filter((l) => l._id !== libroId))
             alert(result.message)
+        }
+    }
+
+    const handleRestaurarLibro = async (libroId) => {
+        const result = await restaurarLibro(libroId)
+        if (result) {
+            alert(result.message)
+            cargarLibros()
         }
     }
 
@@ -155,6 +163,13 @@ function Perfil() {
                                             onClick={() => handleEliminarLibro(libro._id)}
                                         >
                                             Eliminar libro
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem', marginLeft: '0.25rem', background: 'var(--leather)', color: 'var(--parchment)' }}
+                                            onClick={() => handleRestaurarLibro(libro._id)}
+                                        >
+                                            Restaurar libro
                                         </button>
                                     </td>
                                         </tr>

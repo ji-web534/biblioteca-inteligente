@@ -125,3 +125,22 @@ export const eliminarLibro = async (libroId) => {
         return null
     }
 }
+
+export const restaurarLibro = async (libroId) => {
+    try {
+        const response = await authFetch(`${API}/libro/${libroId}/restore`, {
+            method: 'PUT'
+        })
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al restaurar el libro.')
+        }
+        return resultado
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+        return null
+    }
+}

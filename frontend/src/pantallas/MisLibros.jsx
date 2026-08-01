@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { obtenerMisLibros, removerLibro, eliminarLibro } from '../fetch/libros'
+import { obtenerMisLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
 import { agregarFavorito } from '../fetch/fetch_favoritos'
 import { useAuth } from '../context/AuthContext'
 
@@ -52,6 +52,14 @@ function MisLibros() {
         }
     }
 
+    const handleRestaurarLibro = async (libroId) => {
+        const result = await restaurarLibro(libroId)
+        if (result) {
+            alert(result.message)
+            cargarLibros()
+        }
+    }
+
     if (cargando) return <section className="library-page"><p>Cargando...</p></section>
 
     return (
@@ -91,6 +99,13 @@ function MisLibros() {
                                             onClick={() => handleEliminarLibro(libro._id)}
                                         >
                                             Eliminar libro
+                                        </button>
+                                        <button
+                                            className="library-button"
+                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', marginLeft: '0.5rem', background: 'var(--leather)', color: 'var(--parchment)' }}
+                                            onClick={() => handleRestaurarLibro(libro._id)}
+                                        >
+                                            Restaurar libro
                                         </button>
                                     </td>
                                 </tr>

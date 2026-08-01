@@ -17,6 +17,7 @@ import myBooks from "./end_point/myBooks.js"
 import favorites from "./end_point/favorites.js"
 import changePassword from "./end_point/changePassword.js"
 import editBook from "./end_point/editBook.js"
+import restoreBook from "./end_point/restoreBook.js"
 import eliminar_libro from "./end_point/eliminar_libro.js"
 import hard_delete_libro from "./end_point/hard_delete_libro.js"
 import admin_usuarios from "./end_point/admin_usuarios.js"
@@ -50,6 +51,7 @@ app.use("/app/bibilo/logout", logout)
 app.use("/app/bibilo/refresh", refresh)
 app.use("/app/bibilo/mis-libros", myBooks)
 app.use("/app/bibilo/libro", editBook)
+app.use("/app/bibilo/libro", restoreBook)
 app.use("/app/bibilo/libro", eliminar_libro)
 app.use("/app/bibilo/libro", hard_delete_libro)
 app.use("/app/bibilo/admin/usuarios", admin_usuarios)
