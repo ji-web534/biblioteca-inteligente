@@ -1,12 +1,13 @@
 import USUARIO from "../esquemas/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
+import autenticacion from "../midleware/autenticacion.js"
 import { autorizacion } from "../midleware/autorizacion.js"
 import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
 
-router.get("/", autorizacion("admin"), async (request, response, next) => {
+router.get("/", autenticacion, autorizacion("admin"), async (request, response, next) => {
     try {
         const usuarios = await USUARIO.find().select("-contraseña")
         return response.json({ ok: true, data: usuarios })
@@ -15,7 +16,7 @@ router.get("/", autorizacion("admin"), async (request, response, next) => {
     }
 })
 
-router.put("/:id/role", autorizacion("admin"), validarCampos({
+router.put("/:id/role", autenticacion, autorizacion("admin"), validarCampos({
     params: { id: { requerido: true, tipo: "objectId" } },
     body: { role: { requerido: true, tipo: "string", mensaje: "El rol es obligatorio." } }
 }), async (request, response, next) => {
@@ -37,7 +38,7 @@ router.put("/:id/role", autorizacion("admin"), validarCampos({
     }
 })
 
-router.put("/:id/permisos", autorizacion("admin"), validarCampos({
+router.put("/:id/permisos", autenticacion, autorizacion("admin"), validarCampos({
     params: { id: { requerido: true, tipo: "objectId" } },
     body: { permisos: { requerido: true, tipo: "object", mensaje: "Los permisos son obligatorios." } }
 }), async (request, response, next) => {
