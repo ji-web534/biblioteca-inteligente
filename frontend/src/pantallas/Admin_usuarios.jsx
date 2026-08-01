@@ -77,7 +77,17 @@ function Admin_usuarios() {
             <h2 className="library-page__title">Administración de usuarios</h2>
 
             {usuarios.length === 0 ? (
-                <p className="library-page__text">No hay usuarios registrados.</p>
+                <div className="library-empty-state">
+                    <div className="library-empty-state__icon">👥</div>
+                    <h3 className="library-empty-state__title">No hay usuarios registrados</h3>
+                    <p className="library-empty-state__text">
+                        Todavía no existen usuarios en la base de datos. Los administradores pueden
+                        registrarse desde la página de inicio de sesión.
+                    </p>
+                    <Link className="library-link" to="/">
+                        Volver al inicio
+                    </Link>
+                </div>
             ) : (
                 <div className="library-table-wrap">
                     <table className="library-table">
