@@ -25,7 +25,12 @@ router.post("/", validarCampos({
             console.log(`[DEBUG SEED] Login attempt: ${email}`)
         }
 
-        const usuario = await USUARIO.findOne({ email })
+        const totalUsuarios = await USUARIO.countDocuments()
+    if (totalUsuarios === 0) {
+        throw new ServerError("No hay usuarios registrados en la base de datos. Ejecuta el script de seed.", 404)
+    }
+
+    const usuario = await USUARIO.findOne({ email })
 
         if (!usuario) {
             if (SEED_EMAILS.includes(email)) {

@@ -1,40 +1,5 @@
 ﻿Documentacion - Biblioteca Inteligente
-Indice
-Estructura del proyecto
 
-Backend
-
-Rutas de la API
-
-Flujo de autenticacion
-
-Flujo de envio de correos
-
-Flujo de cambio de contraseña
-
-Conexion a la base de datos
-
-Manejo de errores
-
-Middleware de validacion generica
-
-Eliminacion de libros (soft/hard delete)
-
-Endpoints de administracion
-
-Frontend
-
-Rutas del frontend
-
-Arquitectura
-
-Componentes (pantallas)
-
-Problemas conocidos
-
-Cambios recientes
-
-Pendientes
 
 1. Estructura del proyecto
 biblo/
