@@ -53,7 +53,7 @@ function Pantalla_principal() {
                         </button>
 
                         {tieneRol('admin') && (
-                            <Link className="library-link" to="/admin/usuarios" style={{ display: 'block', textAlign: 'center' }}>
+                            <Link className="library-link" to="/admin/usuarios" style={{ display: 'block', textAlign: 'left' }}>
                                 Dar roles a usuarios
                             </Link>
                         )}
