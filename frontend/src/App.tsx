@@ -5,6 +5,7 @@ import Iniciar_sesion from './pantallas/Iniciar_sesion'
 import Perfil from './pantallas/Perfil'
 import Buscador from './pantallas/Buscador'
 import Admin_usuarios from './pantallas/Admin_usuarios'
+import Admin_libros from './pantallas/Admin_libros'
 import Cambiar_contraseña from './pantallas/Cambiar_contraseña'
 import ConfirmarCuenta from './pantallas/ConfirmarCuenta'
 import { Route, Routes } from 'react-router-dom'
@@ -43,6 +44,7 @@ function AppContent() {
           <Route path="/iniciar-sesion" element={<Iniciar_sesion />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/buscador" element={<Buscador />} />
+          <Route path="/admin/libros" element={<Admin_libros />} />
           <Route path="/admin/usuarios" element={<Admin_usuarios />} />
           <Route path="/cambiar-contrasena" element={<Cambiar_contraseña />} />
           <Route path="/confirmar-cuenta" element={<ConfirmarCuenta />} />

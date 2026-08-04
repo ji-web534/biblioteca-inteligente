@@ -58,6 +58,12 @@ function Pantalla_principal() {
                             </Link>
                         )}
 
+                        {tieneRol('admin') && (
+                            <Link className="library-link" to="/admin/libros" style={{ display: 'block', textAlign: 'left' }}>
+                                Gestionar libros
+                            </Link>
+                        )}
+
                         <button
                             className="library-button library-button--outline"
                             onClick={logout}
