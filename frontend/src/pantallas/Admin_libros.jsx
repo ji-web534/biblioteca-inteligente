@@ -35,6 +35,8 @@ function Admin_libros() {
     }
 
     const handleRestaurar = async (libroId) => {
+        const confirmar = window.confirm('¿Restaurar este libro? Volverá a estar activo en el catálogo.')
+        if (!confirmar) return
         setRestaurando(libroId)
         try {
             const result = await restaurarLibroAdmin(libroId)
