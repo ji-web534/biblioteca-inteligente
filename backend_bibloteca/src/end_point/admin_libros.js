@@ -7,9 +7,17 @@ import { Router } from "express"
 
 const router = Router()
 
-router.get("/", autenticacion, tienePermiso("can_delete_books"), async (request, response, next) => {
+router.get("/", autenticacion, tienePermiso("can_delete_books"), validarCampos({
+    query: {
+        page: { tipo: "number", min: 1, mensaje: "La página debe ser mayor a 0." },
+        limit: { tipo: "number", min: 1, max: 50, mensaje: "El límite debe estar entre 1 y 50." }
+    }
+}), async (request, response, next) => {
     try {
         const { eliminados } = request.query
+        const page = Math.max(1, parseInt(request.query.page) || 1)
+        const limit = Math.min(50, Math.max(1, parseInt(request.query.limit) || 20))
+        const skip = (page - 1) * limit
         const filtro = {}
 
         if (eliminados === "true") {
@@ -18,8 +26,16 @@ router.get("/", autenticacion, tienePermiso("can_delete_books"), async (request,
             filtro.activo = true
         }
 
-        const libros = await LIBRO.find(filtro).sort({ createdAt: -1 })
-        return response.json({ ok: true, data: libros })
+        const [libros, total] = await Promise.all([
+            LIBRO.find(filtro).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            LIBRO.countDocuments(filtro)
+        ])
+
+        return response.json({
+            ok: true,
+            data: libros,
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) || 1 }
+        })
     } catch (error) {
         return next(error)
     }

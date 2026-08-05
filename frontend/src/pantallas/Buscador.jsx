@@ -14,6 +14,8 @@ function Buscador() {
     const [buscando, setBuscando] = useState(false)
     const [busco, setBusco] = useState(false)
     const [errorCarga, setErrorCarga] = useState('')
+    const [paginaActual, setPaginaActual] = useState(1)
+    const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 })
 
     useEffect(() => {
         cargarDatos()
@@ -48,9 +50,11 @@ function Buscador() {
         }
         setBuscando(true)
         setBusco(true)
+        setPaginaActual(1)
         try {
-            const libros = await buscarLibros(termino)
-            setResultados(libros || [])
+            const resultado = await buscarLibros(termino)
+            setResultados(resultado.data || [])
+            setPagination(resultado.pagination || { page: 1, limit: 20, total: 0, totalPages: 1 })
         } catch (error) {
             setResultados([])
         } finally {
@@ -178,6 +182,30 @@ function Buscador() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {resultados.length > 0 && (
+                <div className="library-pagination">
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual <= 1}
+                        onClick={() => setPaginaActual((p) => p - 1)}
+                    >
+                        Anterior
+                    </button>
+                    <span style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', color: 'var(--ink-soft)' }}>
+                        Página {paginaActual} de {pagination.totalPages} ({pagination.total} resultados)
+                    </span>
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual >= pagination.totalPages}
+                        onClick={() => setPaginaActual((p) => p + 1)}
+                    >
+                        Siguiente
+                    </button>
                 </div>
             )}
 

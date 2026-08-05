@@ -10,6 +10,8 @@ function Admin_libros() {
     const [error, setError] = useState("")
     const [filtroEliminados, setFiltroEliminados] = useState("todos")
     const [restaurando, setRestaurando] = useState(null)
+    const [paginaActual, setPaginaActual] = useState(1)
+    const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 })
 
     useEffect(() => {
         if (!esAdmin()) {
@@ -18,15 +20,16 @@ function Admin_libros() {
             return
         }
         cargarLibros()
-    }, [esAdmin, filtroEliminados])
+    }, [esAdmin, filtroEliminados, paginaActual])
 
     const cargarLibros = async () => {
         setCargando(true)
         setError("")
         try {
             const eliminados = filtroEliminados === "eliminados" ? true : filtroEliminados === "activos" ? false : undefined
-            const data = await obtenerAdminLibros(eliminados)
-            setLibros(data)
+            const resultado = await obtenerAdminLibros(eliminados, paginaActual)
+            setLibros(resultado.data || [])
+            setPagination(resultado.pagination || { page: 1, limit: 20, total: 0, totalPages: 1 })
         } catch (err) {
             setError(err.message)
         } finally {
@@ -172,6 +175,30 @@ function Admin_libros() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {libros.length > 0 && (
+                <div className="library-pagination">
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual <= 1}
+                        onClick={() => setPaginaActual((p) => p - 1)}
+                    >
+                        Anterior
+                    </button>
+                    <span style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', color: 'var(--ink-soft)' }}>
+                        Página {paginaActual} de {pagination.totalPages} ({pagination.total} resultados)
+                    </span>
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual >= pagination.totalPages}
+                        onClick={() => setPaginaActual((p) => p + 1)}
+                    >
+                        Siguiente
+                    </button>
                 </div>
             )}
         </section>

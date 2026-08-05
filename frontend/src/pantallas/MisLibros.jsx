@@ -9,6 +9,8 @@ function MisLibros() {
     const navigate = useNavigate()
     const [libros, setLibros] = useState([])
     const [cargando, setCargando] = useState(true)
+    const [paginaActual, setPaginaActual] = useState(1)
+    const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 })
 
     useEffect(() => {
          if (!estaAutenticado) {
@@ -20,8 +22,9 @@ function MisLibros() {
 
     const cargarLibros = async () => {
         try {
-            const data = await obtenerMisLibros()
-            setLibros(data)
+            const resultado = await obtenerMisLibros(paginaActual)
+            setLibros(resultado.data || [])
+            setPagination(resultado.pagination || { page: 1, limit: 20, total: 0, totalPages: 1 })
         } catch (error) {
             alert(error.message)
         } finally {
@@ -112,6 +115,30 @@ function MisLibros() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {libros.length > 0 && (
+                <div className="library-pagination">
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual <= 1}
+                        onClick={() => setPaginaActual((p) => p - 1)}
+                    >
+                        Anterior
+                    </button>
+                    <span style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', color: 'var(--ink-soft)' }}>
+                        Página {paginaActual} de {pagination.totalPages} ({pagination.total} resultados)
+                    </span>
+                    <button
+                        className="library-button library-button--outline"
+                        style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
+                        disabled={paginaActual >= pagination.totalPages}
+                        onClick={() => setPaginaActual((p) => p + 1)}
+                    >
+                        Siguiente
+                    </button>
                 </div>
             )}
         </section>

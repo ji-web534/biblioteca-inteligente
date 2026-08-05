@@ -29,20 +29,21 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
     }
 }
 
-export const buscarLibros = async (termino) => {
+export const buscarLibros = async (termino, page = 1, limit = 20) => {
     try {
-        const response = await fetch(`${API}/libros/buscar?q=${encodeURIComponent(termino)}`)
+        const params = new URLSearchParams({ q: termino, page: String(page), limit: String(limit) })
+        const response = await fetch(`${API}/libros/buscar?${params.toString()}`)
         const resultado = await response.json()
         if (!response.ok) {
             throw new backendError(resultado.message || 'Error al buscar libros.')
         }
-        return resultado.data
+        return resultado
     } catch (error) {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
             : error.message
         alert(mensaje)
-        return []
+        return { data: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }
     }
 }
 
@@ -66,25 +67,26 @@ export const editarLibro = async (id, datos) => {
     }
 }
 
-export const obtenerMisLibros = async () => {
+export const obtenerMisLibros = async (page = 1, limit = 20) => {
     try {
-        const response = await authFetch(`${API}/mis-libros`)
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+        const response = await authFetch(`${API}/mis-libros?${params.toString()}`)
         const resultado = await response.json()
         if (!response.ok) {
             if (response.status === 401) {
                 const mensaje = 'Token de autenticación requerido.'
                 console.error(mensaje)
-                return []
+                return { data: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }
             }
             throw new backendError(resultado.message || 'Error al obtener libros.')
         }
-        return resultado.data
+        return resultado
     } catch (error) {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
             : error.message
         console.error(mensaje)
-        return []
+        return { data: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }
     }
 }
 
