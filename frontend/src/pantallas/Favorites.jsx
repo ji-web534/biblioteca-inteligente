@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { obtenerFavoritos, quitarFavorito } from '../fetch/fetch_favoritos'
+import { obtenerFavoritos, quitarFavorito } from '../fetch/favorites'
 import { useAuth } from '../context/AuthContext'
 
-function Favoritos() {
+function Favorites() {
     const { estaAutenticado } = useAuth()
     const navigate = useNavigate()
     const [favoritos, setFavoritos] = useState([])
@@ -79,4 +79,4 @@ function Favoritos() {
     )
 }
 
-export default Favoritos
+export default Favorites

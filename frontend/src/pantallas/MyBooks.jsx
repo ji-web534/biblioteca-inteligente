@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { obtenerMisLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
-import { agregarFavorito } from '../fetch/fetch_favoritos'
+import { agregarFavorito } from '../fetch/favorites'
 import { useAuth } from '../context/AuthContext'
 
-function MisLibros() {
+function MyBooks() {
     const { estaAutenticado } = useAuth()
     const navigate = useNavigate()
     const [libros, setLibros] = useState([])
@@ -145,4 +145,4 @@ function MisLibros() {
     )
 }
 
-export default MisLibros
+export default MyBooks

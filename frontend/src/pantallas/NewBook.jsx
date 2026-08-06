@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { crearLibro } from '../fetch/libros'
 
-function Nuevo_libro() {
+function NewBook() {
     const [titulo, setTitulo] = useState('')
     const [autor, setAutor] = useState('')
     const [editorial, setEditorial] = useState('')
@@ -131,4 +131,4 @@ function Nuevo_libro() {
     )
 }
 
-export default Nuevo_libro
+export default NewBook

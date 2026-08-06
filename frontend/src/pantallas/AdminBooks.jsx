@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { obtenerAdminLibros, restaurarLibroAdmin } from "../fetch/admin_libros"
+import { obtenerAdminLibros, restaurarLibroAdmin } from "../fetch/adminBooks"
 
-function Admin_libros() {
+function AdminBooks() {
     const { esAdmin } = useAuth()
     const [libros, setLibros] = useState([])
     const [cargando, setCargando] = useState(true)
@@ -205,4 +205,4 @@ function Admin_libros() {
     )
 }
 
-export default Admin_libros
+export default AdminBooks

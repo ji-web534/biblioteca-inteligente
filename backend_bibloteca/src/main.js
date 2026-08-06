@@ -18,10 +18,10 @@ import favorites from "./end_point/favorites.js"
 import changePassword from "./end_point/changePassword.js"
 import editBook from "./end_point/editBook.js"
 import restoreBook from "./end_point/restoreBook.js"
-import eliminar_libro from "./end_point/eliminar_libro.js"
-import hard_delete_libro from "./end_point/hard_delete_libro.js"
-import admin_libros from "./end_point/admin_libros.js"
-import admin_usuarios from "./end_point/admin_usuarios.js"
+import deleteBook from "./end_point/deleteBook.js"
+import hardDeleteBook from "./end_point/hardDeleteBook.js"
+import adminBooks from "./end_point/adminBooks.js"
+import adminUsers from "./end_point/adminUsers.js"
 const app = express()
 const PORT = 8000
 
@@ -53,10 +53,10 @@ app.use("/app/bibilo/refresh", refresh)
 app.use("/app/bibilo/mis-libros", myBooks)
 app.use("/app/bibilo/libro", editBook)
 app.use("/app/bibilo/libro", restoreBook)
-app.use("/app/bibilo/libro", eliminar_libro)
-app.use("/app/bibilo/libro", hard_delete_libro)
-app.use("/app/bibilo/admin/libros", admin_libros)
-app.use("/app/bibilo/admin/usuarios", admin_usuarios)
+app.use("/app/bibilo/libro", deleteBook)
+app.use("/app/bibilo/libro", hardDeleteBook)
+app.use("/app/bibilo/admin/libros", adminBooks)
+app.use("/app/bibilo/admin/usuarios", adminUsers)
 app.use("/app/bibilo/favoritos", favorites)
 app.use("/app/bibilo/cambiar-contraseña", changePassword)
 app.use("/app/bibilo/", id)

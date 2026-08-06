@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { confirmarEmail } from '../fetch/auth'
 
-function ConfirmarCuenta() {
+function ConfirmAccount() {
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token')
     const [estado, setEstado] = useState('cargando')
@@ -46,4 +46,4 @@ function ConfirmarCuenta() {
     )
 }
 
-export default ConfirmarCuenta
+export default ConfirmAccount

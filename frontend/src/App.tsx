@@ -1,13 +1,13 @@
-import Pantalla_principal from './pantallas/Pantalla_principal'
-import Nuevo_libro from './pantallas/Nuevo_libro'
-import Nuevo_usuario from './pantallas/nuevo_usuario'
-import Iniciar_sesion from './pantallas/Iniciar_sesion'
-import Perfil from './pantallas/Perfil'
-import Buscador from './pantallas/Buscador'
-import Admin_usuarios from './pantallas/Admin_usuarios'
-import Admin_libros from './pantallas/Admin_libros'
-import Cambiar_contraseña from './pantallas/Cambiar_contraseña'
-import ConfirmarCuenta from './pantallas/ConfirmarCuenta'
+import Home from './pantallas/Home'
+import NewBook from './pantallas/NewBook'
+import Register from './pantallas/Register'
+import Login from './pantallas/Login'
+import Profile from './pantallas/Profile'
+import BookSearch from './pantallas/BookSearch'
+import AdminUsers from './pantallas/AdminUsers'
+import AdminBooks from './pantallas/AdminBooks'
+import ChangePassword from './pantallas/ChangePassword'
+import ConfirmAccount from './pantallas/ConfirmAccount'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
@@ -37,17 +37,17 @@ function AppContent() {
 
       <main className="library-main">
         <Routes>
-          <Route path="/" element={<Pantalla_principal />} />
-          <Route path="/registro" element={<Nuevo_usuario />} />
-          <Route path="/nuevo-libro" element={<Nuevo_libro />} />
-          <Route path="/nuevo-usuario" element={<Nuevo_usuario />} />
-          <Route path="/iniciar-sesion" element={<Iniciar_sesion />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/buscador" element={<Buscador />} />
-          <Route path="/admin/libros" element={<Admin_libros />} />
-          <Route path="/admin/usuarios" element={<Admin_usuarios />} />
-          <Route path="/cambiar-contrasena" element={<Cambiar_contraseña />} />
-          <Route path="/confirmar-cuenta" element={<ConfirmarCuenta />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/registro" element={<Register />} />
+          <Route path="/nuevo-libro" element={<NewBook />} />
+          <Route path="/nuevo-usuario" element={<Register />} />
+          <Route path="/iniciar-sesion" element={<Login />} />
+          <Route path="/perfil" element={<Profile />} />
+          <Route path="/buscador" element={<BookSearch />} />
+          <Route path="/admin/libros" element={<AdminBooks />} />
+          <Route path="/admin/usuarios" element={<AdminUsers />} />
+          <Route path="/cambiar-contrasena" element={<ChangePassword />} />
+          <Route path="/confirmar-cuenta" element={<ConfirmAccount />} />
         </Routes>
       </main>
 

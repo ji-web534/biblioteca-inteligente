@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { solicitarCambioContraseña } from '../fetch/cuenta'
+import { solicitarCambioContraseña } from '../fetch/account'
 
-function Pantalla_principal() {
+function Home() {
     const { estaAutenticado, usuario, logout, tieneRol } = useAuth()
     const [mailEnviado, setMailEnviado] = useState(false)
     const [mailCargando, setMailCargando] = useState(false)
@@ -114,4 +114,4 @@ function Pantalla_principal() {
     )
 }
 
-export default Pantalla_principal
+export default Home

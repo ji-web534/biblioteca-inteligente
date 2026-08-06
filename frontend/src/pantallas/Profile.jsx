@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { obtenerMisLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
-import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
+import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/favorites'
 
-function Perfil() {
+function Profile() {
     const { usuario, estaAutenticado, logout } = useAuth()
     const navigate = useNavigate()
     const [libros, setLibros] = useState([])
@@ -213,4 +213,4 @@ function Perfil() {
     )
 }
 
-export default Perfil
+export default Profile

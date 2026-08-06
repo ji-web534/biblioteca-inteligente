@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { restablecerContraseña } from '../fetch/cuenta'
+import { restablecerContraseña } from '../fetch/account'
 
-function Cambiar_contraseña() {
+function ChangePassword() {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const token = searchParams.get('token')
@@ -122,4 +122,4 @@ function Cambiar_contraseña() {
     )
 }
 
-export default Cambiar_contraseña
+export default ChangePassword

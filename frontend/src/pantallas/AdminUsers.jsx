@@ -5,7 +5,7 @@ import { obtenerUsuarios, cambiarRolUsuario } from "../fetch/admin"
 
 const ROLES = ["user", "moderator", "admin"]
 
-function Admin_usuarios() {
+function AdminUsers() {
     const { esAdmin } = useAuth()
     const [usuarios, setUsuarios] = useState([])
     const [cargando, setCargando] = useState(true)
@@ -160,4 +160,4 @@ function Admin_usuarios() {
     )
 }
 
-export default Admin_usuarios
+export default AdminUsers

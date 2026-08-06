@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { registrarUsuario } from '../fetch/auth'
 
-function nuevo_usuario() {
+function Register() {
     // los estados que vamos a usar para hacer el registro
     const [nombre, setNombre] = useState('')
     const [email, setEmail] = useState('')
@@ -126,4 +126,4 @@ function nuevo_usuario() {
     )
 }
 
-export default nuevo_usuario
+export default Register

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { obtenerMisLibros, buscarLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
-import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/fetch_favoritos'
+import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/favorites'
 import { useAuth } from '../context/AuthContext'
 
-function Buscador() {
+function BookSearch() {
     const { estaAutenticado } = useAuth()
     const [consulta, setConsulta] = useState('')
     const [resultados, setResultados] = useState([])
@@ -218,4 +218,4 @@ function Buscador() {
     )
 }
 
-export default Buscador
+export default BookSearch
