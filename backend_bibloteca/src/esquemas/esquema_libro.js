@@ -28,7 +28,8 @@ const librosesquema = new mongoose.Schema(
             type: Boolean,
             default: true
         }
-    }
+    },
+    { timestamps: true }
 )
 export const LIBRO_COLLECTION_NAME = 'libro'
 const LIBRO = mongoose.model(LIBRO_COLLECTION_NAME,librosesquema)

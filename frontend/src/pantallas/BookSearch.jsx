@@ -7,6 +7,10 @@ import { useAuth } from '../context/AuthContext'
 function BookSearch() {
     const { estaAutenticado } = useAuth()
     const [consulta, setConsulta] = useState('')
+    const [filtroGenero, setFiltroGenero] = useState('')
+    const [filtroAutor, setFiltroAutor] = useState('')
+    const [filtroDesde, setFiltroDesde] = useState('')
+    const [filtroHasta, setFiltroHasta] = useState('')
     const [resultados, setResultados] = useState([])
     const [todosLibros, setTodosLibros] = useState([])
     const [favoritos, setFavoritos] = useState([])
@@ -43,7 +47,13 @@ function BookSearch() {
     const handleBuscar = async (e) => {
         e.preventDefault()
         const termino = consulta.trim()
-        if (!termino) {
+        const filtros = {
+            genero: filtroGenero.trim(),
+            autor: filtroAutor.trim(),
+            desde: filtroDesde,
+            hasta: filtroHasta
+        }
+        if (!termino && !filtros.genero && !filtros.autor && !filtros.desde && !filtros.hasta) {
             setResultados([])
             setBusco(false)
             return
@@ -52,7 +62,29 @@ function BookSearch() {
         setBusco(true)
         setPaginaActual(1)
         try {
-            const resultado = await buscarLibros(termino)
+            const resultado = await buscarLibros(termino, filtros, 1)
+            setResultados(resultado.data || [])
+            setPagination(resultado.pagination || { page: 1, limit: 20, total: 0, totalPages: 1 })
+        } catch (error) {
+            setResultados([])
+        } finally {
+            setBuscando(false)
+        }
+    }
+
+    const handleCambiarPagina = async (nuevaPagina) => {
+        if (nuevaPagina < 1 || nuevaPagina > pagination.totalPages) return
+        const termino = consulta.trim()
+        const filtros = {
+            genero: filtroGenero.trim(),
+            autor: filtroAutor.trim(),
+            desde: filtroDesde,
+            hasta: filtroHasta
+        }
+        setBuscando(true)
+        setPaginaActual(nuevaPagina)
+        try {
+            const resultado = await buscarLibros(termino, filtros, nuevaPagina)
             setResultados(resultado.data || [])
             setPagination(resultado.pagination || { page: 1, limit: 20, total: 0, totalPages: 1 })
         } catch (error) {
@@ -124,6 +156,45 @@ function BookSearch() {
                         onChange={(e) => setConsulta(e.target.value)}
                     />
                 </div>
+
+                <div className="library-form__row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem' }}>
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Género"
+                        value={filtroGenero}
+                        onChange={(e) => setFiltroGenero(e.target.value)}
+                    />
+                    <input
+                        className="library-input"
+                        type="text"
+                        placeholder="Autor"
+                        value={filtroAutor}
+                        onChange={(e) => setFiltroAutor(e.target.value)}
+                    />
+                </div>
+
+                <div className="library-form__row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem' }}>
+                    <label className="library-input-label">
+                        Desde:
+                        <input
+                            className="library-input"
+                            type="date"
+                            value={filtroDesde}
+                            onChange={(e) => setFiltroDesde(e.target.value)}
+                        />
+                    </label>
+                    <label className="library-input-label">
+                        Hasta:
+                        <input
+                            className="library-input"
+                            type="date"
+                            value={filtroHasta}
+                            onChange={(e) => setFiltroHasta(e.target.value)}
+                        />
+                    </label>
+                </div>
+
                 <button className="library-button" type="submit">Buscar</button>
             </form>
 
@@ -191,7 +262,7 @@ function BookSearch() {
                         className="library-button library-button--outline"
                         style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
                         disabled={paginaActual <= 1}
-                        onClick={() => setPaginaActual((p) => p - 1)}
+                        onClick={() => handleCambiarPagina(paginaActual - 1)}
                     >
                         Anterior
                     </button>
@@ -202,16 +273,16 @@ function BookSearch() {
                         className="library-button library-button--outline"
                         style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem' }}
                         disabled={paginaActual >= pagination.totalPages}
-                        onClick={() => setPaginaActual((p) => p + 1)}
+                        onClick={() => handleCambiarPagina(paginaActual + 1)}
                     >
                         Siguiente
                     </button>
                 </div>
             )}
 
-            {!buscando && busco && consulta.trim() && resultados.length === 0 && (
+            {!buscando && busco && resultados.length === 0 && (consulta.trim() || filtroGenero || filtroAutor || filtroDesde || filtroHasta) && (
                 <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)', marginTop: '1rem' }}>
-                    No se encontraron libros para "{consulta}".
+                    No se encontraron libros que coincidan con la búsqueda.
                 </p>
             )}
         </section>

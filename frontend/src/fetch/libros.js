@@ -29,9 +29,16 @@ export const crearLibro = async (nombreLibro, descripcionLibro) => {
     }
 }
 
-export const buscarLibros = async (termino, page = 1, limit = 20) => {
+export const buscarLibros = async (termino, filtros = {}, page = 1, limit = 20) => {
     try {
-        const params = new URLSearchParams({ q: termino, page: String(page), limit: String(limit) })
+        const params = new URLSearchParams()
+        if (termino) params.set('q', termino)
+        if (filtros.genero) params.set('genero', filtros.genero)
+        if (filtros.autor) params.set('autor', filtros.autor)
+        if (filtros.desde) params.set('desde', filtros.desde)
+        if (filtros.hasta) params.set('hasta', filtros.hasta)
+        params.set('page', String(page))
+        params.set('limit', String(limit))
         const response = await fetch(`${API}/libros/buscar?${params.toString()}`)
         const resultado = await response.json()
         if (!response.ok) {
