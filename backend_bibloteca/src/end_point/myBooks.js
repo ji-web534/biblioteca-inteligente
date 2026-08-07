@@ -1,5 +1,6 @@
 import LIBRO from "../esquemas/esquema_libro.js"
 import autenticacion from "../midleware/autenticacion.js"
+import validarCampos from "../midleware/validar_campos.js"
 import { Router } from "express"
 
 const router = Router()
