@@ -22,6 +22,7 @@ import deleteBook from "./end_point/deleteBook.js"
 import hardDeleteBook from "./end_point/hardDeleteBook.js"
 import adminBooks from "./end_point/adminBooks.js"
 import adminUsers from "./end_point/adminUsers.js"
+import category from "./end_point/category.js"
 const app = express()
 const PORT = 8000
 
@@ -57,6 +58,7 @@ app.use("/app/bibilo/libro", deleteBook)
 app.use("/app/bibilo/libro", hardDeleteBook)
 app.use("/app/bibilo/admin/libros", adminBooks)
 app.use("/app/bibilo/admin/usuarios", adminUsers)
+app.use("/app/bibilo/categorias", category)
 app.use("/app/bibilo/favoritos", favorites)
 app.use("/app/bibilo/cambiar-contraseña", changePassword)
 app.use("/app/bibilo/", id)

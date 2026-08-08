@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { crearLibro } from '../fetch/libros'
+import { obtenerCategorias } from '../fetch/categorias'
 
 function NewBook() {
     const [titulo, setTitulo] = useState('')
@@ -8,8 +9,22 @@ function NewBook() {
     const [editorial, setEditorial] = useState('')
     const [anio, setAnio] = useState('')
     const [isbn, setIsbn] = useState('')
+    const [categoria, setCategoria] = useState('')
+    const [categorias, setCategorias] = useState([])
     const [libros, setLibros] = useState([])
     const [guardando, setGuardando] = useState(false)
+
+    useEffect(() => {
+        let activo = true
+        obtenerCategorias()
+            .then((data) => {
+                if (activo) setCategorias((data || []).filter((c) => c.activo))
+            })
+            .catch(() => {})
+        return () => {
+            activo = false
+        }
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -29,7 +44,8 @@ function NewBook() {
             .join(' | ')
 
         setGuardando(true)
-        const libroGuardado = await crearLibro(titulo.trim(), descripcion.trim())
+        const genero = categorias.find((c) => c._id === categoria)?.nombre || ''
+        const libroGuardado = await crearLibro(titulo.trim(), descripcion.trim(), genero)
         setGuardando(false)
 
         if (libroGuardado) {
@@ -39,6 +55,7 @@ function NewBook() {
                     titulo: libroGuardado.nombre ?? titulo.trim(),
                     autor: autor.trim(),
                     descripcion: libroGuardado.descripcion ?? descripcion,
+                    genero: libroGuardado.genero ?? genero,
                 },
             ])
             setTitulo('')
@@ -46,6 +63,7 @@ function NewBook() {
             setEditorial('')
             setAnio('')
             setIsbn('')
+            setCategoria('')
         }
     }
 
@@ -102,6 +120,23 @@ function NewBook() {
                         onChange={(e) => setIsbn(e.target.value)}
                     />
                 </div>
+                <div className="library-form__row">
+                    <select
+                        className="library-input"
+                        value={categoria}
+                        onChange={(e) => setCategoria(e.target.value)}
+                    >
+                        <option value="">— Sin categoría —</option>
+                        {categorias.map((cat) => (
+                            <option key={cat._id} value={cat._id}>
+                                {cat.nombre}
+                            </option>
+                        ))}
+                    </select>
+                    <div style={{ visibility: 'hidden', flex: 1 }}>
+                        <input className="library-input" type="text" readOnly tabIndex={-1} />
+                    </div>
+                </div>
                 <button className="library-button" type="submit" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar'}
                 </button>
@@ -113,6 +148,7 @@ function NewBook() {
                         <tr>
                             <th>Título</th>
                             <th>Autor</th>
+                            <th>Categoría</th>
                             <th>Descripción</th>
                         </tr>
                     </thead>
@@ -121,6 +157,7 @@ function NewBook() {
                             <tr key={index}>
                                 <td>{libro.titulo}</td>
                                 <td>{libro.autor}</td>
+                                <td>{libro.genero || '—'}</td>
                                 <td>{libro.descripcion}</td>
                             </tr>
                         ))}

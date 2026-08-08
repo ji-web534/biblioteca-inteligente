@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { solicitarCambioContraseña } from '../fetch/account'
 
 function Home() {
-    const { estaAutenticado, usuario, logout, tieneRol } = useAuth()
+    const { estaAutenticado, usuario, logout, tieneRol, tienePermiso } = useAuth()
     const [mailEnviado, setMailEnviado] = useState(false)
     const [mailCargando, setMailCargando] = useState(false)
     const [mailError, setMailError] = useState('')
@@ -61,6 +61,12 @@ function Home() {
                         {tieneRol('admin') && (
                             <Link className="library-link" to="/admin/libros" style={{ display: 'block', textAlign: 'left' }}>
                                 Gestionar libros
+                            </Link>
+                        )}
+
+                        {(tieneRol('admin') || tienePermiso('can_manage_categories')) && (
+                            <Link className="library-link" to="/admin/categorias" style={{ display: 'block', textAlign: 'left' }}>
+                                Gestionar categorías
                             </Link>
                         )}
 

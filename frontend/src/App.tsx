@@ -6,6 +6,7 @@ import Profile from './pantallas/Profile'
 import BookSearch from './pantallas/BookSearch'
 import AdminUsers from './pantallas/AdminUsers'
 import AdminBooks from './pantallas/AdminBooks'
+import AdminCategories from './pantallas/AdminCategories'
 import ChangePassword from './pantallas/ChangePassword'
 import ConfirmAccount from './pantallas/ConfirmAccount'
 import { Route, Routes } from 'react-router-dom'
@@ -46,6 +47,7 @@ function AppContent() {
           <Route path="/buscador" element={<BookSearch />} />
           <Route path="/admin/libros" element={<AdminBooks />} />
           <Route path="/admin/usuarios" element={<AdminUsers />} />
+          <Route path="/admin/categorias" element={<AdminCategories />} />
           <Route path="/cambiar-contrasena" element={<ChangePassword />} />
           <Route path="/confirmar-cuenta" element={<ConfirmAccount />} />
         </Routes>

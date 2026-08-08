@@ -8,15 +8,17 @@ const router = Router();
 router.post("/", autenticacion, validarCampos({
     body: {
         nombre: { requerido: true, tipo: "string", max: 50, sanitizar: "trim", mensaje: "El nombre no es válido." },
-        descripcion: { requerido: true, tipo: "string", max: 150, sanitizar: "trim", mensaje: "La descripción no es válida." }
+        descripcion: { requerido: true, tipo: "string", max: 150, sanitizar: "trim", mensaje: "La descripción no es válida." },
+        genero: { tipo: "string", max: 15, sanitizar: ["trim", "lowercase"], mensaje: "La categoría no es válida." }
     }
 }), async (request, response, next) => {
     try {
-        const { descripcion, nombre } = request.body;
+        const { descripcion, nombre, genero } = request.body;
 
         const nuevoLibro = new LIBRO({
             nombre,
             descripcion,
+            genero: genero?.trim() || "",
             usuarioId: request.usuarioId
         });
 
