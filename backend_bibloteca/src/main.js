@@ -23,8 +23,25 @@ import hardDeleteBook from "./end_point/hardDeleteBook.js"
 import adminBooks from "./end_point/adminBooks.js"
 import adminUsers from "./end_point/adminUsers.js"
 import category from "./end_point/category.js"
+import CATEGORIA from "./esquemas/esquema_categoria.js"
 const app = express()
 const PORT = 8000
+
+const categoriasPorDefecto = [
+    { nombre: "terror", descripcion: "Obras que buscan generar miedo o suspense." },
+    { nombre: "fantasia", descripcion: "Historias con mundos, magia o seres imaginarios." },
+    { nombre: "romance", descripcion: "Narraciones centradas en relaciones amorosas." }
+]
+
+async function sembrarCategorias() {
+    for (const categoria of categoriasPorDefecto) {
+        await CATEGORIA.findOneAndUpdate(
+            { nombre: categoria.nombre },
+            { $setOnInsert: categoria },
+            { upsert: true }
+        )
+    }
+}
 
 app.use(express.json())
 app.use(cookieParser())
@@ -69,6 +86,12 @@ try {
 } catch (error) {
     console.error("Error al conectar con MongoDB:", error.message)
     process.exit(1)
+}
+
+try {
+    await sembrarCategorias()
+} catch (error) {
+    console.error("Error al sembrar categorías:", error.message)
 }
 
 app.listen(PORT, () => {

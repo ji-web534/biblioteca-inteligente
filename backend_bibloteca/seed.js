@@ -2,7 +2,23 @@ import "dotenv/config"
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import USUARIO from "./src/esquemas/esquema_usuario.js"
+import CATEGORIA from "./src/esquemas/esquema_categoria.js"
 import { connectDB } from "./src/db/connect.js"
+
+const categoriasTest = [
+    {
+        nombre: "terror",
+        descripcion: "Obras que buscan generar miedo o suspense."
+    },
+    {
+        nombre: "fantasia",
+        descripcion: "Historias con mundos, magia o seres imaginarios."
+    },
+    {
+        nombre: "romance",
+        descripcion: "Narraciones centradas en relaciones amorosas."
+    }
+]
 
 const usuariosTest = [
     {
@@ -72,6 +88,18 @@ async function seed() {
             })
             await usuario.save()
             console.log(`Creado: ${userData.email} | Pass: ${userData.contraseña} | Role: ${userData.role}`)
+        }
+
+        for (const catData of categoriasTest) {
+            const existe = await CATEGORIA.findOne({ nombre: catData.nombre })
+            if (existe) {
+                console.log(`Categoría ya existe: ${catData.nombre}`)
+                continue
+            }
+
+            const categoria = new CATEGORIA(catData)
+            await categoria.save()
+            console.log(`Categoría creada: ${catData.nombre}`)
         }
 
         console.log("\n--- Usuarios de prueba ---")
