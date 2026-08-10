@@ -19,6 +19,10 @@ const librosesquema = new mongoose.Schema(
             required: true,
             maxlength: 150
         },
+        contenido: {
+            type: String,
+            default: ""
+        },
         usuarioId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'usuario',

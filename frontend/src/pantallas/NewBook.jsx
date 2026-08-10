@@ -11,6 +11,7 @@ function NewBook() {
     const [isbn, setIsbn] = useState('')
     const [categoria, setCategoria] = useState('')
     const [categorias, setCategorias] = useState([])
+    const [contenido, setContenido] = useState('')
     const [libros, setLibros] = useState([])
     const [guardando, setGuardando] = useState(false)
 
@@ -45,7 +46,7 @@ function NewBook() {
 
         setGuardando(true)
         const genero = categorias.find((c) => c._id === categoria)?.nombre || ''
-        const libroGuardado = await crearLibro(titulo.trim(), descripcion.trim(), genero)
+        const libroGuardado = await crearLibro(titulo.trim(), descripcion.trim(), genero, contenido.trim())
         setGuardando(false)
 
         if (libroGuardado) {
@@ -56,6 +57,8 @@ function NewBook() {
                     autor: autor.trim(),
                     descripcion: libroGuardado.descripcion ?? descripcion,
                     genero: libroGuardado.genero ?? genero,
+                    contenido: libroGuardado.contenido ?? contenido.trim(),
+                    _id: libroGuardado._id,
                 },
             ])
             setTitulo('')
@@ -64,6 +67,7 @@ function NewBook() {
             setAnio('')
             setIsbn('')
             setCategoria('')
+            setContenido('')
         }
     }
 
@@ -120,7 +124,7 @@ function NewBook() {
                         onChange={(e) => setIsbn(e.target.value)}
                     />
                 </div>
-                <div className="library-form__row">
+                <div className="library-form__row library-form__row--full">
                     <select
                         className="library-input"
                         value={categoria}
@@ -133,9 +137,15 @@ function NewBook() {
                             </option>
                         ))}
                     </select>
-                    <div style={{ visibility: 'hidden', flex: 1 }}>
-                        <input className="library-input" type="text" readOnly tabIndex={-1} />
-                    </div>
+                </div>
+                <div className="library-form__row library-form__row--full">
+                    <textarea
+                        className="library-input"
+                        rows={8}
+                        placeholder="Texto del libro (opcional)"
+                        value={contenido}
+                        onChange={(e) => setContenido(e.target.value)}
+                    />
                 </div>
                 <button className="library-button" type="submit" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar'}
@@ -150,6 +160,7 @@ function NewBook() {
                             <th>Autor</th>
                             <th>Categoría</th>
                             <th>Descripción</th>
+                            <th>Texto</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,6 +170,7 @@ function NewBook() {
                                 <td>{libro.autor}</td>
                                 <td>{libro.genero || '—'}</td>
                                 <td>{libro.descripcion}</td>
+                                <td>{libro.contenido ? '✓' : '—'}</td>
                             </tr>
                         ))}
                     </tbody>

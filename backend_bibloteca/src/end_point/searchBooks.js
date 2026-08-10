@@ -30,7 +30,8 @@ router.get("/buscar", validarCampos({
                 { nombre: regex },
                 { descripcion: regex },
                 { autor: regex },
-                { genero: regex }
+                { genero: regex },
+                { contenido: regex }
             )
         }
 

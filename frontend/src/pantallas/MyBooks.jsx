@@ -87,6 +87,7 @@ function MyBooks() {
                                     <td>{libro.descripcion}</td>
                                     <td>
                                         <ActionMenu opciones={[
+                                            { etiqueta: 'Ver libro', accion: () => navigate(`/libro/${libro._id}`) },
                                             { etiqueta: 'Agregar a favoritos', accion: () => handleAgregarFavorito(libro._id) },
                                             { etiqueta: 'Remover libro', accion: () => handleRemoverLibro(libro._id) },
                                             { etiqueta: 'Eliminar libro', accion: () => handleEliminarLibro(libro._id) },

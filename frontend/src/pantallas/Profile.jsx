@@ -148,6 +148,7 @@ function Profile() {
                                             </button>
                                         )}
                                         <ActionMenu opciones={[
+                                            { etiqueta: 'Ver libro', accion: () => navigate(`/libro/${libro._id}`) },
                                             { etiqueta: 'Remover libro', accion: () => handleRemoverLibro(libro._id) },
                                             { etiqueta: 'Eliminar libro', accion: () => handleEliminarLibro(libro._id) },
                                             { etiqueta: 'Restaurar libro', accion: () => handleRestaurarLibro(libro._id) },

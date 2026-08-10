@@ -4,6 +4,7 @@ import Register from './pantallas/Register'
 import Login from './pantallas/Login'
 import Profile from './pantallas/Profile'
 import BookSearch from './pantallas/BookSearch'
+import BookDetail from './pantallas/BookDetail'
 import AdminUsers from './pantallas/AdminUsers'
 import AdminBooks from './pantallas/AdminBooks'
 import AdminCategories from './pantallas/AdminCategories'
@@ -45,6 +46,7 @@ function AppContent() {
           <Route path="/iniciar-sesion" element={<Login />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/buscador" element={<BookSearch />} />
+          <Route path="/libro/:id" element={<BookDetail />} />
           <Route path="/admin/libros" element={<AdminBooks />} />
           <Route path="/admin/usuarios" element={<AdminUsers />} />
           <Route path="/admin/categorias" element={<AdminCategories />} />

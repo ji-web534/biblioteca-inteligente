@@ -3,14 +3,15 @@ import { authFetch } from "./authFetch"
 
 const API = 'http://localhost:8000/app/bibilo'
 
-export const crearLibro = async (nombreLibro, descripcionLibro, genero = '') => {
+export const crearLibro = async (nombreLibro, descripcionLibro, genero = '', contenido = '') => {
     try {
         const response = await authFetch(`${API}/nuevo_libro`, {
             method: 'POST',
             body: JSON.stringify({
                 nombre: nombreLibro,
                 descripcion: descripcionLibro,
-                genero
+                genero,
+                contenido
             })
         })
 
@@ -64,6 +65,23 @@ export const editarLibro = async (id, datos) => {
         const resultado = await response.json()
         if (!response.ok) {
             throw new backendError(resultado.message || 'Error al editar el libro.')
+        }
+        return resultado.data
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+        return null
+    }
+}
+
+export const obtenerLibroPorId = async (id) => {
+    try {
+        const response = await fetch(`${API}/${id}`)
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al obtener el libro.')
         }
         return resultado.data
     } catch (error) {

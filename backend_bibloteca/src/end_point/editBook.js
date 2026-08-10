@@ -11,12 +11,15 @@ router.put("/:id", autenticacion, validarCampos({
     params: { id: { requerido: true, tipo: "objectId" } },
     body: {
         nombre: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "El nombre del libro es obligatorio." },
-        descripcion: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "La descripción es obligatoria." }
+        descripcion: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "La descripción es obligatoria." },
+        autor: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "El autor es demasiado largo." },
+        genero: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "La categoría es demasiado larga." },
+        contenido: { tipo: "string", max: 500000, mensaje: "El texto del libro es demasiado largo." }
     }
 }), async (request, response, next) => {
     try {
         const { id } = request.params
-        const { nombre, descripcion, autor, genero } = request.body
+        const { nombre, descripcion, autor, genero, contenido } = request.body
 
         const libro = await LIBRO.findById(id)
 
@@ -36,6 +39,7 @@ router.put("/:id", autenticacion, validarCampos({
                 libro.descripcion = descripcion
                 libro.autor = autor?.trim() || ""
                 libro.genero = genero?.trim() || ""
+                if (contenido !== undefined) libro.contenido = contenido
                 libro.save().then(() => response.json({ ok: true, data: libro })).catch(next)
             })
         }
@@ -44,6 +48,7 @@ router.put("/:id", autenticacion, validarCampos({
         libro.descripcion = descripcion
         libro.autor = autor?.trim() || ""
         libro.genero = genero?.trim() || ""
+        if (contenido !== undefined) libro.contenido = contenido
 
         await libro.save()
 
