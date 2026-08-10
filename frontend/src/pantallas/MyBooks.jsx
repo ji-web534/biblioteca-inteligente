@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { obtenerMisLibros, removerLibro, eliminarLibro, restaurarLibro } from '../fetch/libros'
 import { agregarFavorito } from '../fetch/favorites'
 import { useAuth } from '../context/AuthContext'
+import ActionMenu from '../components/ActionMenu'
 
 function MyBooks() {
     const { estaAutenticado } = useAuth()
@@ -41,17 +42,13 @@ function MyBooks() {
         const result = await removerLibro(libroId)
         if (result) {
             setLibros((prev) => prev.filter((l) => l._id !== libroId))
-            alert(result.message)
         }
     }
 
     const handleEliminarLibro = async (libroId) => {
-        const confirmar = window.confirm('¿Eliminar este libro permanentemente? Esta acción no se puede deshacer.')
-        if (!confirmar) return
         const result = await eliminarLibro(libroId)
         if (result) {
             setLibros((prev) => prev.filter((l) => l._id !== libroId))
-            alert(result.message)
         }
     }
 
@@ -89,27 +86,12 @@ function MyBooks() {
                                     <td>{libro.nombre}</td>
                                     <td>{libro.descripcion}</td>
                                     <td>
-                                        <button
-                                            className="library-button"
-                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', marginRight: '0.5rem', background: 'var(--gold)', color: 'var(--ink)' }}
-                                            onClick={() => handleRemoverLibro(libro._id)}
-                                        >
-                                            Remover libro
-                                        </button>
-                                        <button
-                                            className="library-button"
-                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', background: 'var(--ink-error, #c00)', color: 'var(--parchment)' }}
-                                            onClick={() => handleEliminarLibro(libro._id)}
-                                        >
-                                            Eliminar libro
-                                        </button>
-                                        <button
-                                            className="library-button"
-                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', marginLeft: '0.5rem', background: 'var(--leather)', color: 'var(--parchment)' }}
-                                            onClick={() => handleRestaurarLibro(libro._id)}
-                                        >
-                                            Restaurar libro
-                                        </button>
+                                        <ActionMenu opciones={[
+                                            { etiqueta: 'Agregar a favoritos', accion: () => handleAgregarFavorito(libro._id) },
+                                            { etiqueta: 'Remover libro', accion: () => handleRemoverLibro(libro._id) },
+                                            { etiqueta: 'Eliminar libro', accion: () => handleEliminarLibro(libro._id) },
+                                            { etiqueta: 'Restaurar libro', accion: () => handleRestaurarLibro(libro._id) },
+                                        ]} />
                                     </td>
                                 </tr>
                             ))}
