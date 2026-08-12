@@ -3,15 +3,15 @@ import { authFetch } from "./authFetch"
 
 const API = 'http://localhost:8000/app/bibilo'
 
-export const crearLibro = async (nombreLibro, descripcionLibro, genero = '', contenido = '') => {
+export const crearLibro = async (nombreLibro, descripcionLibro, textoLibro, genero = '') => {
     try {
         const response = await authFetch(`${API}/nuevo_libro`, {
             method: 'POST',
             body: JSON.stringify({
                 nombre: nombreLibro,
                 descripcion: descripcionLibro,
-                genero,
-                contenido
+                texto: textoLibro,
+                genero
             })
         })
 

@@ -8,19 +8,19 @@ const router = Router();
 router.post("/", autenticacion, validarCampos({
     body: {
         nombre: { requerido: true, tipo: "string", max: 50, sanitizar: "trim", mensaje: "El nombre no es válido." },
-        descripcion: { requerido: true, tipo: "string", max: 150, sanitizar: "trim", mensaje: "La descripción no es válida." },
-        genero: { tipo: "string", max: 15, sanitizar: ["trim", "lowercase"], mensaje: "La categoría no es válida." },
-        contenido: { tipo: "string", max: 500000, mensaje: "El texto del libro es demasiado largo." }
+        descripcion: { requerido: true, tipo: "string", min: 1, max: 50, sanitizar: "trim", mensaje: "La descripción no es válida (máx. 50)." },
+        texto: { requerido: true, tipo: "string", min: 1, max: 150, sanitizar: "trim", mensaje: "El texto no es válido (máx. 150)." },
+        genero: { tipo: "string", max: 15, sanitizar: ["trim", "lowercase"], mensaje: "La categoría no es válida." }
     }
 }), async (request, response, next) => {
     try {
-        const { descripcion, nombre, genero, contenido } = request.body;
+        const { descripcion, nombre, texto, genero } = request.body;
 
         const nuevoLibro = new LIBRO({
             nombre,
             descripcion,
+            texto: texto || "",
             genero: genero?.trim() || "",
-            contenido: contenido || "",
             usuarioId: request.usuarioId
         });
 

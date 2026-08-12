@@ -49,7 +49,7 @@ function BookDetail() {
                         <p className="library-page__text">{libro.descripcion}</p>
                     )}
 
-                    {libro.contenido ? (
+                    {libro.texto ? (
                         <div
                             className="library-book-content"
                             style={{
@@ -60,7 +60,7 @@ function BookDetail() {
                                 borderRadius: '4px',
                             }}
                         >
-                            {libro.contenido}
+                            {libro.texto}
                         </div>
                     ) : (
                         <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)', marginTop: '1.5rem' }}>

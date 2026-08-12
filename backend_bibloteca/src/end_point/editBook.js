@@ -14,12 +14,12 @@ router.put("/:id", autenticacion, validarCampos({
         descripcion: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "La descripción es obligatoria." },
         autor: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "El autor es demasiado largo." },
         genero: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "La categoría es demasiado larga." },
-        contenido: { tipo: "string", max: 500000, mensaje: "El texto del libro es demasiado largo." }
+        texto: { tipo: "string", max: 150, sanitizar: "trim", mensaje: "El texto no es válido (máx. 150)." }
     }
 }), async (request, response, next) => {
     try {
         const { id } = request.params
-        const { nombre, descripcion, autor, genero, contenido } = request.body
+        const { nombre, descripcion, autor, genero, texto } = request.body
 
         const libro = await LIBRO.findById(id)
 
@@ -39,7 +39,7 @@ router.put("/:id", autenticacion, validarCampos({
                 libro.descripcion = descripcion
                 libro.autor = autor?.trim() || ""
                 libro.genero = genero?.trim() || ""
-                if (contenido !== undefined) libro.contenido = contenido
+                if (texto !== undefined) libro.texto = texto
                 libro.save().then(() => response.json({ ok: true, data: libro })).catch(next)
             })
         }
@@ -48,7 +48,7 @@ router.put("/:id", autenticacion, validarCampos({
         libro.descripcion = descripcion
         libro.autor = autor?.trim() || ""
         libro.genero = genero?.trim() || ""
-        if (contenido !== undefined) libro.contenido = contenido
+        if (texto !== undefined) libro.texto = texto
 
         await libro.save()
 

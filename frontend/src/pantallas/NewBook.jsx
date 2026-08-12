@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom'
 import { crearLibro } from '../fetch/libros'
 import { obtenerCategorias } from '../fetch/categorias'
 
+const MAX_DESCRIPCION = 50
+const MAX_TEXTO = 150
+
 function NewBook() {
     const [titulo, setTitulo] = useState('')
-    const [autor, setAutor] = useState('')
-    const [editorial, setEditorial] = useState('')
-    const [anio, setAnio] = useState('')
-    const [isbn, setIsbn] = useState('')
+    const [descripcion, setDescripcion] = useState('')
+    const [texto, setTexto] = useState('')
     const [categoria, setCategoria] = useState('')
     const [categorias, setCategorias] = useState([])
-    const [contenido, setContenido] = useState('')
     const [libros, setLibros] = useState([])
     const [guardando, setGuardando] = useState(false)
 
@@ -35,18 +35,14 @@ function NewBook() {
             return
         }
 
-        const descripcion = [
-            autor && `Autor: ${autor.trim()}`,
-            editorial && `Editorial: ${editorial.trim()}`,
-            anio && `Año: ${anio.trim()}`,
-            isbn && `ISBN: ${isbn.trim()}`,
-        ]
-            .filter(Boolean)
-            .join(' | ')
+        const descripcionTrim = descripcion.trim()
+        const textoTrim = texto.trim()
+        if (descripcionTrim.length > MAX_DESCRIPCION) return
+        if (textoTrim.length > MAX_TEXTO) return
 
         setGuardando(true)
         const genero = categorias.find((c) => c._id === categoria)?.nombre || ''
-        const libroGuardado = await crearLibro(titulo.trim(), descripcion.trim(), genero, contenido.trim())
+        const libroGuardado = await crearLibro(titulo.trim(), descripcionTrim, textoTrim, genero)
         setGuardando(false)
 
         if (libroGuardado) {
@@ -54,20 +50,15 @@ function NewBook() {
                 ...prev,
                 {
                     titulo: libroGuardado.nombre ?? titulo.trim(),
-                    autor: autor.trim(),
-                    descripcion: libroGuardado.descripcion ?? descripcion,
+                    descripcion: libroGuardado.descripcion ?? descripcionTrim,
+                    texto: libroGuardado.texto ?? textoTrim,
                     genero: libroGuardado.genero ?? genero,
-                    contenido: libroGuardado.contenido ?? contenido.trim(),
-                    _id: libroGuardado._id,
                 },
             ])
             setTitulo('')
-            setAutor('')
-            setEditorial('')
-            setAnio('')
-            setIsbn('')
+            setDescripcion('')
+            setTexto('')
             setCategoria('')
-            setContenido('')
         }
     }
 
@@ -92,38 +83,35 @@ function NewBook() {
                         onChange={(e) => setTitulo(e.target.value)}
                     />
                 </div>
-                <div className="library-form__row">
-                    <input
+
+                <div className="library-form__row library-form__row--full">
+                    <textarea
                         className="library-input"
-                        type="text"
-                        placeholder="Autor"
-                        value={autor}
-                        onChange={(e) => setAutor(e.target.value)}
+                        rows={3}
+                        maxLength={MAX_DESCRIPCION}
+                        placeholder={`Descripción (máximo ${MAX_DESCRIPCION} caracteres)`}
+                        value={descripcion}
+                        onChange={(e) => setDescripcion(e.target.value)}
                     />
-                    <input
-                        className="library-input"
-                        type="text"
-                        placeholder="Editorial"
-                        value={editorial}
-                        onChange={(e) => setEditorial(e.target.value)}
-                    />
+                    <div className="library-form__hint">
+                        {descripcion.length}/{MAX_DESCRIPCION} caracteres
+                    </div>
                 </div>
-                <div className="library-form__row">
-                    <input
+
+                <div className="library-form__row library-form__row--full">
+                    <textarea
                         className="library-input"
-                        type="text"
-                        placeholder="Año"
-                        value={anio}
-                        onChange={(e) => setAnio(e.target.value)}
+                        rows={6}
+                        maxLength={MAX_TEXTO}
+                        placeholder={`Texto (máximo ${MAX_TEXTO} caracteres)`}
+                        value={texto}
+                        onChange={(e) => setTexto(e.target.value)}
                     />
-                    <input
-                        className="library-input"
-                        type="text"
-                        placeholder="ISBN"
-                        value={isbn}
-                        onChange={(e) => setIsbn(e.target.value)}
-                    />
+                    <div className="library-form__hint">
+                        {texto.length}/{MAX_TEXTO} caracteres
+                    </div>
                 </div>
+
                 <div className="library-form__row library-form__row--full">
                     <select
                         className="library-input"
@@ -138,15 +126,6 @@ function NewBook() {
                         ))}
                     </select>
                 </div>
-                <div className="library-form__row library-form__row--full">
-                    <textarea
-                        className="library-input"
-                        rows={8}
-                        placeholder="Texto del libro (opcional)"
-                        value={contenido}
-                        onChange={(e) => setContenido(e.target.value)}
-                    />
-                </div>
                 <button className="library-button" type="submit" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar'}
                 </button>
@@ -157,8 +136,6 @@ function NewBook() {
                     <thead>
                         <tr>
                             <th>Título</th>
-                            <th>Autor</th>
-                            <th>Categoría</th>
                             <th>Descripción</th>
                             <th>Texto</th>
                         </tr>
@@ -167,10 +144,8 @@ function NewBook() {
                         {libros.map((libro, index) => (
                             <tr key={index}>
                                 <td>{libro.titulo}</td>
-                                <td>{libro.autor}</td>
-                                <td>{libro.genero || '—'}</td>
                                 <td>{libro.descripcion}</td>
-                                <td>{libro.contenido ? '✓' : '—'}</td>
+                                <td>{libro.texto}</td>
                             </tr>
                         ))}
                     </tbody>

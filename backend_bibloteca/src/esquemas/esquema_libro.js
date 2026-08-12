@@ -17,11 +17,12 @@ const librosesquema = new mongoose.Schema(
         descripcion: {
             type: String,
             required: true,
-            maxlength: 150
+            maxlength: 50
         },
-        contenido: {
+        texto: {
             type: String,
-            default: ""
+            required: true,
+            maxlength: 150
         },
         usuarioId: {
             type: mongoose.Schema.Types.ObjectId,
