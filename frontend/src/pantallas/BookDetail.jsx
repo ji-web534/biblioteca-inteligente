@@ -43,7 +43,7 @@ function BookDetail() {
                     <p className="library-page__text">
                         <strong>{libro.nombre}</strong>
                     </p>
-                    {libro.autor && <p className="library-page__text">Autor: {libro.autor}</p>}
+                    <p className="library-page__text">Autor: {libro.autor || 'Sin autor'}</p>
                     {libro.genero && <p className="library-page__text">Categoría: {libro.genero}</p>}
                     {libro.descripcion && (
                         <p className="library-page__text">{libro.descripcion}</p>

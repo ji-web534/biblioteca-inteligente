@@ -5,9 +5,11 @@ import { obtenerCategorias } from '../fetch/categorias'
 
 const MAX_DESCRIPCION = 50
 const MAX_TEXTO = 150
+const MAX_AUTOR = 50
 
 function NewBook() {
     const [titulo, setTitulo] = useState('')
+    const [autor, setAutor] = useState('')
     const [descripcion, setDescripcion] = useState('')
     const [texto, setTexto] = useState('')
     const [categoria, setCategoria] = useState('')
@@ -40,9 +42,15 @@ function NewBook() {
         if (descripcionTrim.length > MAX_DESCRIPCION) return
         if (textoTrim.length > MAX_TEXTO) return
 
+        const autorTrim = autor.trim()
+        if (autorTrim.length > MAX_AUTOR) {
+            alert(`El autor no puede superar los ${MAX_AUTOR} caracteres.`)
+            return
+        }
+
         setGuardando(true)
         const genero = categorias.find((c) => c._id === categoria)?.nombre || ''
-        const libroGuardado = await crearLibro(titulo.trim(), descripcionTrim, textoTrim, genero)
+        const libroGuardado = await crearLibro(titulo.trim(), descripcionTrim, textoTrim, genero, autorTrim)
         setGuardando(false)
 
         if (libroGuardado) {
@@ -56,6 +64,7 @@ function NewBook() {
                 },
             ])
             setTitulo('')
+            setAutor('')
             setDescripcion('')
             setTexto('')
             setCategoria('')
@@ -82,6 +91,20 @@ function NewBook() {
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
                     />
+                </div>
+
+                <div className="library-form__row library-form__row--full">
+                    <input
+                        className="library-input"
+                        type="text"
+                        maxLength={MAX_AUTOR}
+                        placeholder={`Autor (máximo ${MAX_AUTOR} caracteres)`}
+                        value={autor}
+                        onChange={(e) => setAutor(e.target.value)}
+                    />
+                    <div className="library-form__hint">
+                        {autor.length}/{MAX_AUTOR} caracteres
+                    </div>
                 </div>
 
                 <div className="library-form__row library-form__row--full">

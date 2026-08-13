@@ -12,7 +12,7 @@ const librosesquema = new mongoose.Schema(
         },
         autor: {
             type: String,
-            maxlength: 15
+            maxlength: 50
         },
         descripcion: {
             type: String,
