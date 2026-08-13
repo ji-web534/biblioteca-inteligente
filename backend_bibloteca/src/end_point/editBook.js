@@ -12,7 +12,7 @@ router.put("/:id", autenticacion, validarCampos({
     body: {
         nombre: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "El nombre del libro es obligatorio." },
         descripcion: { requerido: true, tipo: "string", sanitizar: "trim", mensaje: "La descripción es obligatoria." },
-        autor: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "El autor es demasiado largo." },
+        autor: { tipo: "string", max: 50, sanitizar: "trim", mensaje: "El autor es demasiado largo." },
         genero: { tipo: "string", max: 15, sanitizar: "trim", mensaje: "La categoría es demasiado larga." },
         texto: { tipo: "string", max: 150, sanitizar: "trim", mensaje: "El texto no es válido (máx. 150)." }
     }

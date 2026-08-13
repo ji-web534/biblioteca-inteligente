@@ -1,6 +1,7 @@
 import { backendError } from "../helpers/error_class"
+import { authFetch } from "./authFetch"
 
-const API = 'http://localhost:8000/app/bibilo'
+const API = 'http://localhost:8000/app/biblio'
 
 export async function iniciarSesion(email, contraseña) {
     const response = await fetch(`${API}/login`, {
@@ -56,4 +57,28 @@ export async function confirmarEmail(token) {
     }
 
     return resultado
+}
+
+export async function updateProfile(nombre, email) {
+    try {
+        const response = await authFetch(`${API}/profile`, {
+            method: 'PUT',
+            body: JSON.stringify({ nombre, email })
+        })
+
+        const resultado = await response.json()
+
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Hubo un problema al actualizar el perfil.')
+        }
+
+        return resultado.data
+    } catch (error) {
+        const mensaje =
+            error.message === 'Failed to fetch'
+                ? 'No se pudo conectar con el servidor.'
+                : error.message
+        alert(mensaje)
+        return null
+    }
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { actualizarToken } from '../fetch/authFetch'
-import { iniciarSesion } from '../fetch/auth'
+import { iniciarSesion, updateProfile } from '../fetch/auth'
 
 const AuthContext = createContext(null)
 
@@ -54,6 +54,15 @@ export function AuthProvider({ children }) {
         return resultado
     }
 
+    const updateProfileContext = async (nombre, email) => {
+        const data = await updateProfile(nombre, email)
+        if (data) {
+            setUsuario(data)
+            localStorage.setItem('usuario', JSON.stringify(data))
+        }
+        return data
+    }
+
     const logout = async () => {
         try {
             await fetch(`${API}/logout`, {
@@ -91,6 +100,7 @@ export function AuthProvider({ children }) {
             login,
             logout,
             refreshAccessToken,
+            updateProfileContext,
             estaAutenticado: !!token,
             tieneRol,
             tienePermiso,

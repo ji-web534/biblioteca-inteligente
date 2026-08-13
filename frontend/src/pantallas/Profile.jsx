@@ -6,12 +6,15 @@ import { obtenerFavoritos, agregarFavorito, quitarFavorito } from '../fetch/favo
 import ActionMenu from '../components/ActionMenu'
 
 function Profile() {
-    const { usuario, estaAutenticado, logout } = useAuth()
+    const { usuario, estaAutenticado, logout, updateProfileContext } = useAuth()
     const navigate = useNavigate()
     const [libros, setLibros] = useState([])
     const [favoritos, setFavoritos] = useState([])
     const [cargandoLibros, setCargandoLibros] = useState(true)
     const [cargandoFavs, setCargandoFavs] = useState(true)
+    const [nombreEdit, setNombreEdit] = useState(usuario?.nombre || '')
+    const [emailEdit, setEmailEdit] = useState(usuario?.email || '')
+    const [editando, setEditando] = useState(false)
 
     useEffect(() => {
         if (!estaAutenticado) {
@@ -83,6 +86,16 @@ function Profile() {
         }
     }
 
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault()
+        const data = await updateProfileContext(nombreEdit.trim(), emailEdit.trim())
+        if (data) {
+            setNombreEdit(data.nombre || '')
+            setEmailEdit(data.email || '')
+            setEditando(false)
+        }
+    }
+
     const esFavorito = (libroId) => (favoritos || []).some((f) => f._id === libroId)
 
     if (!estaAutenticado) return null
@@ -111,6 +124,52 @@ function Profile() {
                     {usuario?.role || 'user'}
                 </span>
             </div>
+
+            {editando ? (
+                <form className="library-form" onSubmit={handleUpdateProfile}>
+                    <div className="library-form__row library-form__row--full">
+                        <input
+                            className="library-input"
+                            type="text"
+                            placeholder="Nombre"
+                            value={nombreEdit}
+                            onChange={(e) => setNombreEdit(e.target.value)}
+                        />
+                    </div>
+                    <div className="library-form__row library-form__row--full">
+                        <input
+                            className="library-input"
+                            type="email"
+                            placeholder="Email"
+                            value={emailEdit}
+                            onChange={(e) => setEmailEdit(e.target.value)}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button className="library-button" type="submit">Guardar cambios</button>
+                        <button
+                            className="library-button"
+                            type="button"
+                            style={{ background: 'var(--ink-soft)', color: 'var(--parchment)' }}
+                            onClick={() => {
+                                setEditando(false)
+                                setNombreEdit(usuario?.nombre || '')
+                                setEmailEdit(usuario?.email || '')
+                            }}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            ) : (
+                <button
+                    className="library-button"
+                    style={{ marginBottom: '1.5rem' }}
+                    onClick={() => setEditando(true)}
+                >
+                    Editar perfil
+                </button>
+            )}
 
             <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
                 <Link className="library-link" to="/nuevo-libro" style={{ flex: 1, textAlign: 'center' }}>Agregar libro</Link>
