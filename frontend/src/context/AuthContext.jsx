@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { actualizarToken } from '../fetch/authFetch'
+import { actualizarToken, API } from '../fetch/authFetch'
 import { iniciarSesion, updateProfile } from '../fetch/auth'
 
 const AuthContext = createContext(null)

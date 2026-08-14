@@ -1,7 +1,7 @@
 import { backendError } from "../helpers/error_class"
 import { authFetch } from "./authFetch"
 
-const API = 'http://localhost:8000/app/biblio'
+const API = 'http://localhost:8000/app/bibilo'
 
 export async function iniciarSesion(email, contraseña) {
     const response = await fetch(`${API}/login`, {
