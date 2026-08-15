@@ -10,7 +10,6 @@ const CATEGORIAS_MAP = {
 
 function BookDetail() {
     const { id } = useParams()
-    console.log('ID recibido en BookDetail:', id)
     const [libro, setLibro] = useState(null)
     const [cargando, setCargando] = useState(true)
     const [error, setError] = useState('')
@@ -19,7 +18,6 @@ function BookDetail() {
         let activo = true
         const cargar = async () => {
             const data = await obtenerLibroPorId(id)
-            console.log('Respuesta del fetch (data):', data)
             if (!activo) return
             if (data) {
                 setLibro(data)
