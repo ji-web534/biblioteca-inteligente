@@ -80,11 +80,21 @@ export const editarLibro = async (id, datos) => {
 export const obtenerLibroPorId = async (id) => {
     try {
         const response = await fetch(`${API}/${id}`)
+
+        // Manejar respuesta no JSON (ej: HTML de error 404)
+        const contentType = response.headers.get('content-type')
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new backendError('El servidor respondió con un formato inválido.')
+        }
+
         const resultado = await response.json()
         if (!response.ok) {
             throw new backendError(resultado.message || 'Error al obtener el libro.')
         }
-        return resultado.data
+
+        // El backend (id.js) devuelve directamente el libro, no { data: libro }
+        console.log('Response del API /libro/:id:', resultado)
+        return resultado.data || resultado // ← Soporta ambos formatos
     } catch (error) {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
