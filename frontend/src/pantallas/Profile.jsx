@@ -116,31 +116,23 @@ function Profile() {
                 <aside
                     className="library-sidebar"
                     style={{
+                        position: 'fixed',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
                         width: sidebarOpen ? '240px' : '60px',
                         minWidth: '60px',
-                        background: 'rgba(255,252,246,0.5)',
+                        background: 'rgba(255,252,246,0.95)',
                         borderRight: '1px solid var(--border)',
-                        padding: '1.5rem',
+                        padding: '2rem 1.5rem',
                         display: 'flex',
                         flexDirection: 'column',
                         overflow: 'hidden',
-                        transition: 'width 0.3s ease-in-out'
+                        transition: 'width 0.3s ease-in-out',
+                        zIndex: 1000,
+                        boxShadow: sidebarOpen ? '2px 0 4px rgba(0,0,0,0.1)' : 'none'
                     }}
                 >
-                    {/* Botón toggle */}
-                    <button
-                        className="library-button"
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        style={{
-                            marginBottom: '1.5rem',
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.9rem',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        {sidebarOpen ? '◀' : '▶'}
-                    </button>
-
                     {/* Usuario */}
                     {sidebarOpen && (
                         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
@@ -231,7 +223,40 @@ function Profile() {
                 </aside>
 
                 {/* Content principal */}
-                <main style={{ flex: 1, padding: '2rem', overflowX: 'auto' }}>
+                <main style={{
+                    flex: 1,
+                    padding: '2rem',
+                    overflowX: 'auto',
+                    marginLeft: sidebarOpen ? '240px' : '60px',
+                    transition: 'margin-left 0.3s ease-in-out',
+                    minHeight: '100vh'
+                }}>
+                    {/* Botón de toggle flotante en el borde de la pantalla */}
+                    <button
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        style={{
+                            position: 'fixed',
+                            left: sidebarOpen ? '230px' : '50px',
+                            top: '1rem',
+                            zIndex: 1100,
+                            background: 'var(--leather)',
+                            color: 'var(--parchment)',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.2rem',
+                            transition: 'left 0.3s ease-in-out',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+                        }}
+                        title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
+                    >
+                        {sidebarOpen ? '◀' : '▶'}
+                    </button>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
                         <div style={{ marginBottom: '2rem' }}>

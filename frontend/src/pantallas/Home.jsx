@@ -1,10 +1,19 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { solicitarCambioContraseña } from '../fetch/account'
 
 function Home() {
-    const { estaAutenticado, usuario, logout, tieneRol, tienePermiso } = useAuth()
+    const { estaAutenticado } = useAuth()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (estaAutenticado) {
+            navigate('/perfil')
+        }
+    }, [estaAutenticado])
+
+    const { usuario, logout, tieneRol, tienePermiso } = useAuth()
     const [mailEnviado, setMailEnviado] = useState(false)
     const [mailCargando, setMailCargando] = useState(false)
     const [mailError, setMailError] = useState('')
