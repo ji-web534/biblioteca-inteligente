@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { obtenerLibroPorId } from '../fetch/libros'
 
+const CATEGORIAS_MAP = {
+    terror: 'Terror',
+    fantasia: 'Fantasía',
+    romance: 'Romance'
+}
+
 function BookDetail() {
     const { id } = useParams()
     console.log('ID recibido en BookDetail:', id)
@@ -46,7 +52,7 @@ function BookDetail() {
                         <strong>{libro.nombre}</strong>
                     </p>
                     <p className="library-page__text">Autor: {libro.autor || 'Sin autor'}</p>
-                    {libro.genero && <p className="library-page__text">Categoría: {libro.genero}</p>}
+                    {libro.genero && <p className="library-page__text">Categoría: {CATEGORIAS_MAP[libro.genero] || libro.genero}</p>}
                     {libro.descripcion && (
                         <p className="library-page__text">{libro.descripcion}</p>
                     )}
