@@ -49,12 +49,20 @@ function BookDetail() {
             ) : libro ? (
                 <>
                     <p className="library-page__text">
-                        <strong>{libro.nombre}</strong>
+                        <strong>Título:</strong> {libro.nombre}
                     </p>
-                    <p className="library-page__text">Autor: {libro.autor || 'Sin autor'}</p>
-                    {libro.genero && <p className="library-page__text">Categoría: {CATEGORIAS_MAP[libro.genero] || libro.genero}</p>}
+                    <p className="library-page__text">
+                        <strong>Autor:</strong> {libro.autor || 'Sin autor'}
+                    </p>
+                    {libro.genero && (
+                        <p className="library-page__text">
+                            <strong>Categoría:</strong> {CATEGORIAS_MAP[libro.genero] || libro.genero}
+                        </p>
+                    )}
                     {libro.descripcion && (
-                        <p className="library-page__text">{libro.descripcion}</p>
+                        <p className="library-page__text">
+                            <strong>Descripción:</strong> {libro.descripcion}
+                        </p>
                     )}
 
                     {libro.texto ? (
