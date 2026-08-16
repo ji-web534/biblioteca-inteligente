@@ -113,7 +113,14 @@ function Profile() {
 
     return (
         <section className="library-page">
-            <div style={{ display: 'flex', minHeight: '100vh' }}>
+            <div style={{
+                display: 'flex',
+                minHeight: '100vh',
+                width: '90%',
+                maxWidth: '90%',
+                margin: '0 auto',
+                boxSizing: 'border-box'
+            }}>
                 {/* Sidebar fijo */}
                 <aside
                     className="library-sidebar"
@@ -240,12 +247,15 @@ function Profile() {
                     )}
                 </aside>
 
-                {/* Contenido principal */}
+                {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
+                    width: '100%',
+                    maxWidth: '100%',
                     padding: '2rem',
                     overflowX: 'auto',
-                    minHeight: '100vh'
+                    minHeight: '100vh',
+                    boxSizing: 'border-box'
                 }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
