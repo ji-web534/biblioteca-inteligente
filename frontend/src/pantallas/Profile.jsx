@@ -109,68 +109,144 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
+    const sidebarWidth = sidebarOpen ? '240px' : '60px'
+
     return (
         <section className="library-page">
-            <div style={{ display: 'flex', height: '100%' }}>
-                {/* Sidebar (fijo, no desplaza el contenido) */}
+            <div style={{ display: 'flex', minHeight: '100vh' }}>
+                {/* Sidebar fijo */}
                 <aside
                     className="library-sidebar"
                     style={{
-                        position: 'fixed',
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: sidebarOpen ? '240px' : '60px',
+                        width: sidebarWidth,
                         minWidth: '60px',
                         background: 'rgba(255,252,246,0.95)',
                         borderRight: '1px solid var(--border)',
-                        padding: '2rem 1.5rem',
+                        padding: '2rem 1rem',
                         display: 'flex',
                         flexDirection: 'column',
-                        overflow: 'hidden',
                         transition: 'width 0.3s ease-in-out',
-                        zIndex: 999,
-                        boxShadow: '2px 0 4px rgba(0,0,0,0.1)'
-                    }}>
-                    {/* ... resto del sidebar sin cambios ... */}
-                </aside>
-
-                {/* Contenido principal - ocupa todo el ancho */}
-                <main style={{
-                    flex: 1,
-                    padding: '2rem',
-                    width: '100%',
-                    maxWidth: '100%',
-                    overflowX: 'auto',
-                    minHeight: '100vh',
-                    position: 'relative'
-                }}>
-                    {/* Botón de toggle fijado al borde del content (no borde de pantalla) */}
+                        boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
+                        position: 'sticky',
+                        top: 0,
+                        height: '100vh',
+                        overflowY: 'auto'
+                    }}
+                >
+                    {/* Botón toggle del sidebar */}
                     <button
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         style={{
-                            position: 'absolute',
-                            left: sidebarOpen ? '230px' : '50px',
-                            top: '1rem',
-                            zIndex: 1000,
+                            alignSelf: sidebarOpen ? 'flex-end' : 'center',
+                            marginBottom: '1.5rem',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem',
                             background: 'var(--leather)',
                             color: 'var(--parchment)',
                             border: 'none',
-                            borderRadius: '50%',
-                            width: '36px',
-                            height: '36px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '1.2rem',
-                            transition: 'left 0.3s ease-in-out',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+                            borderRadius: '4px',
+                            cursor: 'pointer'
                         }}
                         title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
                     >
-                        {sidebarOpen ? '◀' : '▶'}
+                        {sidebarOpen ? '◀ Contraer' : '▶'}
                     </button>
+
+                    {/* Usuario */}
+                    {sidebarOpen && (
+                        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+                            <h3 className="library-page__title" style={{ fontSize: '1.1rem', borderBottom: 'none', paddingBottom: 0 }}>
+                                {usuario?.nombre}
+                            </h3>
+                            <p style={{ color: 'var(--ink-soft)', fontSize: '0.85rem', margin: '0.25rem 0' }}>
+                                {usuario?.email}
+                            </p>
+                            <span style={{
+                                display: 'inline-block',
+                                padding: '0.25rem 0.75rem',
+                                fontSize: '0.8rem',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                borderRadius: '4px',
+                                background: usuario?.role === 'admin' ? 'var(--leather)' : usuario?.role === 'moderator' ? 'var(--gold)' : 'var(--border)',
+                                color: usuario?.role === 'user' ? 'var(--ink)' : 'var(--parchment)'
+                            }}>
+                                {usuario?.role || 'user'}
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Navegación */}
+                    {sidebarOpen && (
+                        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <button
+                                className="library-button"
+                                onClick={() => { setSeccionActiva('editar-perfil'); setEditando(true) }}
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Editar perfil
+                            </button>
+                            <button
+                                className="library-button"
+                                onClick={() => setSeccionActiva('mis-libros')}
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Mis libros
+                            </button>
+                            <button
+                                className="library-button"
+                                onClick={() => setSeccionActiva('favoritos')}
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Favoritos
+                            </button>
+                            <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid var(--border)' }} />
+                            <Link
+                                to="/nuevo-libro"
+                                className="library-link"
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Agregar libro
+                            </Link>
+                            <Link
+                                to="/buscador"
+                                className="library-link"
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Buscar libros
+                            </Link>
+                            <Link
+                                to="/cambiar-contrasena"
+                                className="library-link"
+                                style={{ textAlign: 'left', padding: '0.5rem 1rem', fontSize: '0.9rem' }}
+                            >
+                                Cambiar contraseña
+                            </Link>
+                            <button
+                                className="library-button"
+                                onClick={() => { logout(); navigate('/') }}
+                                style={{
+                                    textAlign: 'left',
+                                    padding: '0.5rem 1rem',
+                                    fontSize: '0.9rem',
+                                    marginTop: '2rem',
+                                    background: 'var(--ink-error)',
+                                    color: 'white'
+                                }}
+                            >
+                                Cerrar sesión
+                            </button>
+                        </nav>
+                    )}
+                </aside>
+
+                {/* Contenido principal */}
+                <main style={{
+                    flex: 1,
+                    padding: '2rem',
+                    overflowX: 'auto',
+                    minHeight: '100vh'
+                }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
                         <div style={{ marginBottom: '2rem' }}>
@@ -210,19 +286,6 @@ function Profile() {
                                     </button>
                                 </div>
                             </form>
-                        </div>
-                    )}
-
-                    {/* Botón de editar cuando no está en modo edición */}
-                    {!editando && seccionActiva === 'editar-perfil' && (
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h3 className="library-page__title" style={{ fontSize: '1.3rem' }}>Editar perfil</h3>
-                            <button
-                                className="library-button"
-                                onClick={() => setEditando(true)}
-                            >
-                                Editar perfil
-                            </button>
                         </div>
                     )}
 
