@@ -128,9 +128,10 @@ function Profile() {
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
+                        boxSizing: 'border-box',
                         background: 'rgba(255,252,246,0.95)',
                         borderRight: '1px solid var(--border)',
-                        padding: '2rem 1rem',
+                        padding: '1.5rem 0.75rem',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'width 0.3s ease-in-out',
@@ -248,13 +249,14 @@ function Profile() {
                     )}
                 </aside>
 
-                {/* Contenido principal - flexible */}
+                 {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
                     width: '100%',
-                    padding: '2rem',
+                    maxWidth: '100%',
+                    padding: '1.5rem',
                     boxSizing: 'border-box',
-                    overflowX: 'hidden'
+                    overflow: 'hidden'
                 }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
