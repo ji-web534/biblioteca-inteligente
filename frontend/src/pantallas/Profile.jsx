@@ -19,6 +19,13 @@ function Profile() {
     const [seccionActiva, setSeccionActiva] = useState('mis-libros')
 
     useEffect(() => {
+        // Forzar overflow-x hidden para prevenir scroll horizontal
+        document.documentElement.style.overflowX = 'hidden'
+        document.body.style.overflowX = 'hidden'
+        document.body.style.maxWidth = '100vw'
+    }, [])
+
+    useEffect(() => {
         if (!estaAutenticado) {
             navigate('/iniciar-sesion')
             return
