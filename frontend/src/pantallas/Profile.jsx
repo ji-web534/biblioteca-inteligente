@@ -119,7 +119,11 @@ function Profile() {
     const sidebarWidth = sidebarOpen ? '240px' : '60px'
 
     return (
-        <section className="library-page" style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw' }}>
+        <section style={{
+            overflowX: 'hidden',
+            width: '100%',
+            maxWidth: '100vw'
+        }}>
             <div style={{
                 display: 'flex',
                 minHeight: '100vh',
@@ -128,14 +132,14 @@ function Profile() {
                 boxSizing: 'border-box',
                 overflowX: 'hidden'
             }}>
-                {/* Sidebar fijo */}
+                 {/* Sidebar fijo */}
                 <aside
                     className="library-sidebar"
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
                         boxSizing: 'border-box',
-                        background: 'rgba(255,252,246,0.95)',
+                        background: '#ffffff',
                         borderRight: '1px solid var(--border)',
                         padding: '1.5rem 0.75rem',
                         display: 'flex',
