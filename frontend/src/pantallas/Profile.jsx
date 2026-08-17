@@ -119,15 +119,15 @@ function Profile() {
     const sidebarWidth = sidebarOpen ? '240px' : '60px'
 
     return (
-        <section className="library-page" style={{ overflowX: 'hidden' }}>
+        <section className="library-page" style={{ overflowX: 'hidden !important' }}>
             <div style={{
                 display: 'flex',
                 minHeight: '100vh',
                 width: '90%',
-                maxWidth: '90%',
+                maxWidth: '90% !important',
                 margin: '0 auto',
                 boxSizing: 'border-box',
-                overflowX: 'hidden'
+                overflowX: 'hidden !important'
             }}>
                 {/* Sidebar fijo */}
                 <aside
@@ -146,7 +146,8 @@ function Profile() {
                         position: 'sticky',
                         top: 0,
                         height: '100vh',
-                        overflowY: 'auto'
+                        overflowY: 'auto',
+                        overflowX: 'hidden !important'
                     }}
                 >
                     {/* Botón toggle del sidebar */}
@@ -256,14 +257,14 @@ function Profile() {
                     )}
                 </aside>
 
-                 {/* Contenido principal - flexible */}
+                  {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
-                    width: '100%',
-                    maxWidth: '100%',
+                    width: '100% !important',
+                    maxWidth: '100% !important',
                     padding: '1.5rem',
                     boxSizing: 'border-box',
-                    overflow: 'hidden'
+                    overflow: 'hidden !important'
                 }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
