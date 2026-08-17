@@ -119,7 +119,8 @@ function Profile() {
                 width: '90%',
                 maxWidth: '90%',
                 margin: '0 auto',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                overflowX: 'hidden'
             }}>
                 {/* Sidebar fijo */}
                 <aside
@@ -251,11 +252,9 @@ function Profile() {
                 <main style={{
                     flex: 1,
                     width: '100%',
-                    maxWidth: '100%',
                     padding: '2rem',
-                    overflowX: 'auto',
-                    minHeight: '100vh',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    overflowX: 'hidden'
                 }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
