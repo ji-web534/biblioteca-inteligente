@@ -148,8 +148,8 @@ function Profile() {
                         boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
                         position: 'sticky',
                         top: 0,
-                        height: '100vh',
-                        overflowY: 'auto'
+                        maxHeight: '100vh',
+                        overflow: 'hidden'
                     }}
                 >
                     {/* Botón toggle del sidebar */}
