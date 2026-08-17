@@ -112,7 +112,7 @@ function Profile() {
     const sidebarWidth = sidebarOpen ? '240px' : '60px'
 
     return (
-        <section className="library-page">
+        <section className="library-page" style={{ overflowX: 'hidden' }}>
             <div style={{
                 display: 'flex',
                 minHeight: '100vh',
