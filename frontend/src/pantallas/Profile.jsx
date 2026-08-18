@@ -128,7 +128,6 @@ function Profile() {
                 display: 'flex',
                 minHeight: '100vh',
                 width: '100%',
-                maxWidth: '100%',
                 boxSizing: 'border-box',
                 overflowX: 'hidden'
             }}>
@@ -267,7 +266,7 @@ function Profile() {
                     width: '100%',
                     maxWidth: '100%',
                     minWidth: 0,
-                    padding: '2rem',
+                    padding: '0',
                     boxSizing: 'border-box',
                     overflow: 'hidden'
                 }}>
