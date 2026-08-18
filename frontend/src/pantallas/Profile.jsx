@@ -132,7 +132,8 @@ function Profile() {
                 boxSizing: 'border-box',
                 overflowX: 'hidden'
             }}>
-                 {/* Sidebar fijo */}
+                {/* Sidebar COMENTADO para testing - usar {false && ( ... )} */}
+                {false && (
                 <aside
                     className="library-sidebar"
                     style={{
@@ -258,8 +259,9 @@ function Profile() {
                         </nav>
                     )}
                 </aside>
-
-                  {/* Contenido principal - flexible */}
+                )}
+                
+                {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
                     width: '100%',
