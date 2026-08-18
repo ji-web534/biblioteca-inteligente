@@ -37,7 +37,7 @@ function AppContent() {
         <p className="library-header__subtitle">Catálogo de obras y registros</p>
       </header>
 
-      <main className="library-main">
+      <main className="library-main no-scrollbar">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/registro" element={<Register />} />
