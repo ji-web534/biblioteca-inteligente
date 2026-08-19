@@ -120,7 +120,7 @@ function Profile() {
 
     return (
         <div style={{
-            overflowX: 'hidden',
+            overflow: 'hidden',
             width: '100%',
             maxWidth: '100%',
             boxSizing: 'border-box'
@@ -130,9 +130,10 @@ function Profile() {
                 width: '100%',
                 maxWidth: '100%',
                 boxSizing: 'border-box',
-                overflowX: 'hidden'
+                overflow: 'hidden'
             }}>
-                {/* Sidebar fijo */}
+                {/* Sidebar COMENTADO para test de sinergia */}
+                {false && (
                 <aside
                     className="library-sidebar"
                     style={{
@@ -259,8 +260,9 @@ function Profile() {
                         </nav>
                     )}
                 </aside>
-
-                  {/* Contenido principal - flexible */}
+                )}
+                
+                {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
                     width: '100%',
