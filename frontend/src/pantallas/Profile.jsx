@@ -121,13 +121,14 @@ function Profile() {
     return (
         <section style={{
             overflowX: 'hidden',
-            width: '100%',
-            maxWidth: '100vw'
+            width: 'auto',
+            maxWidth: '100%'
         }}>
             <div style={{
                 display: 'flex',
                 minHeight: '100vh',
-                width: '100%',
+                width: 'auto',
+                maxWidth: '100%',
                 boxSizing: 'border-box',
                 overflowX: 'hidden'
             }}>
