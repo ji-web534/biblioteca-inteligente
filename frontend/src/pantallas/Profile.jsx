@@ -119,14 +119,14 @@ function Profile() {
     const sidebarWidth = sidebarOpen ? '240px' : '60px'
 
     return (
-        <section style={{
+        <div style={{
             overflowX: 'hidden',
             width: '100%',
-            maxWidth: '100%'
+            maxWidth: '100%',
+            boxSizing: 'border-box'
         }}>
             <div style={{
                 display: 'flex',
-                minHeight: '100vh',
                 width: '100%',
                 maxWidth: '100%',
                 boxSizing: 'border-box',
@@ -149,7 +149,7 @@ function Profile() {
                         boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
                         position: 'sticky',
                         top: 0,
-                        height: '100vh',
+                        maxHeight: '100vh',
                         overflowY: 'auto'
                     }}
                 >
@@ -389,7 +389,7 @@ function Profile() {
                     )}
                 </main>
             </div>
-        </section>
+        </div>
     )
 }
 
