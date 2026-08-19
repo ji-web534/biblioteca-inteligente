@@ -120,19 +120,42 @@ function Profile() {
 
     return (
         <div style={{
-            overflow: 'hidden',
+            overflowX: 'hidden',
             width: '100%',
             maxWidth: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            position: 'relative'
         }}>
             <div style={{
                 display: 'flex',
                 width: '100%',
                 maxWidth: '100%',
                 boxSizing: 'border-box',
-                overflow: 'hidden'
+                overflowX: 'hidden'
             }}>
-                {/* Sidebar */}
+                {/* Botón toggle del sidebar - POSICIONADO FUERA */}
+                <button
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                    style={{
+                        position: 'fixed',
+                        left: sidebarOpen ? '240px' : '60px',
+                        top: '1.5rem',
+                        zIndex: 100,
+                        padding: '0.5rem 1rem',
+                        fontSize: '0.9rem',
+                        background: 'var(--leather)',
+                        color: 'var(--parchment)',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        transition: 'left 0.3s ease-in-out'
+                    }}
+                    title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
+                >
+                    {sidebarOpen ? '◀' : '▶'}
+                </button>
+
+                {/* Sidebar fijo */}
                 <aside
                     className="library-sidebar"
                     style={{
@@ -142,36 +165,19 @@ function Profile() {
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
-                        padding: '1.5rem 0.75rem',
+                        paddingTop: '4rem', /* Dejar espacio para el botón flotante */
+                        paddingLeft: '1.5rem',
+                        paddingRight: '0.75rem',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'width 0.3s ease-in-out',
                         boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
                         position: 'sticky',
                         top: 0,
-                        maxHeight: '100vh',
-                        overflowY: 'auto',
-                        overflowX: 'hidden'
+                        height: '100vh',
+                        overflowY: 'auto'
                     }}
                 >
-                    {/* Botón toggle del sidebar */}
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        style={{
-                            alignSelf: sidebarOpen ? 'flex-end' : 'center',
-                            marginBottom: '1.5rem',
-                            padding: '0.5rem 1rem',
-                            fontSize: '0.9rem',
-                            background: 'var(--leather)',
-                            color: 'var(--parchment)',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                        title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
-                    >
-                        {sidebarOpen ? '◀ Contraer' : '▶'}
-                    </button>
 
                     {/* Usuario */}
                     {sidebarOpen && (
@@ -260,8 +266,8 @@ function Profile() {
                         </nav>
                     )}
                 </aside>
-                
-                {/* Contenido principal - flexible */}
+
+                  {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
                     width: '100%',
