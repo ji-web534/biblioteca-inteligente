@@ -55,7 +55,7 @@ body {
 }
 
 .library-header {
-  padding: 1.5rem 2rem 1rem;
+  padding: 1.5rem 0 1rem;
   text-align: center;
   border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent);

@@ -116,7 +116,7 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
-    const sidebarWidth = sidebarOpen ? '15%' : '60px'
+    const sidebarWidth = sidebarOpen ? '25vw' : '60px'
 
     return (
         <div style={{
@@ -138,17 +138,17 @@ function Profile() {
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
-                        maxWidth: '220px',
+                        maxWidth: '25vw',
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
-                        padding: '0.75rem 0.4rem',
+                        padding: '0.5rem 0',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'width 0.3s ease-in-out',
-                        boxShadow: '2px 0 4px rgba(0,0,0,0.1)',
                         overflowY: 'auto',
-                        overflowX: 'hidden'
+                        overflowX: 'hidden',
+                        height: 'calc(100vh - 5rem)'
                     }}
                 >
                     {/* Botón toggle del sidebar */}
@@ -156,7 +156,8 @@ function Profile() {
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         style={{
                             alignSelf: sidebarOpen ? 'flex-end' : 'center',
-                            marginBottom: '1.5rem',
+                            marginTop: '0',
+                            marginBottom: '0.5rem',
                             padding: '0.5rem 1rem',
                             fontSize: '0.9rem',
                             background: 'var(--leather)',
