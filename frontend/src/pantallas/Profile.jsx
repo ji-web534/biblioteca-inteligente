@@ -132,8 +132,7 @@ function Profile() {
                 boxSizing: 'border-box',
                 overflow: 'hidden'
             }}>
-                {/* Sidebar COMENTADO para test de sinergia */}
-                {false && (
+                {/* Sidebar */}
                 <aside
                     className="library-sidebar"
                     style={{
@@ -151,7 +150,8 @@ function Profile() {
                         position: 'sticky',
                         top: 0,
                         maxHeight: '100vh',
-                        overflowY: 'auto'
+                        overflowY: 'auto',
+                        overflowX: 'hidden'
                     }}
                 >
                     {/* Botón toggle del sidebar */}
@@ -260,7 +260,6 @@ function Profile() {
                         </nav>
                     )}
                 </aside>
-                )}
                 
                 {/* Contenido principal - flexible */}
                 <main style={{
