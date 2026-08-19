@@ -116,58 +116,33 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
-    const sidebarWidth = sidebarOpen ? '240px' : '60px'
+    const sidebarWidth = sidebarOpen ? '200px' : '60px'
 
     return (
         <div style={{
-            overflowX: 'hidden',
+            overflow: 'hidden',
             width: '100%',
             maxWidth: '100%',
-            boxSizing: 'border-box',
-            position: 'relative'
+            boxSizing: 'border-box'
         }}>
             <div style={{
                 display: 'flex',
                 width: '100%',
                 maxWidth: '100%',
                 boxSizing: 'border-box',
-                overflowX: 'hidden'
+                overflow: 'hidden'
             }}>
-                {/* Botón toggle del sidebar - POSICIONADO FUERA */}
-                <button
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    style={{
-                        position: 'fixed',
-                        left: sidebarOpen ? '240px' : '60px',
-                        top: '1.5rem',
-                        zIndex: 100,
-                        padding: '0.5rem 1rem',
-                        fontSize: '0.9rem',
-                        background: 'var(--leather)',
-                        color: 'var(--parchment)',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        transition: 'left 0.3s ease-in-out'
-                    }}
-                    title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
-                >
-                    {sidebarOpen ? '◀' : '▶'}
-                </button>
-
-                {/* Sidebar fijo */}
+                {/* Sidebar */}
                 <aside
                     className="library-sidebar"
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
-                        maxWidth: '250px',
+                        maxWidth: '200px',
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
-                        paddingTop: '4rem', /* Dejar espacio para el botón flotante */
-                        paddingLeft: '1.5rem',
-                        paddingRight: '0.75rem',
+                        padding: '1rem 0.5rem',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'width 0.3s ease-in-out',
@@ -175,9 +150,28 @@ function Profile() {
                         position: 'sticky',
                         top: 0,
                         height: '100vh',
-                        overflowY: 'auto'
+                        overflowY: 'auto',
+                        overflowX: 'hidden'
                     }}
                 >
+                    {/* Botón toggle del sidebar */}
+                    <button
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        style={{
+                            alignSelf: sidebarOpen ? 'flex-end' : 'center',
+                            marginBottom: '1.5rem',
+                            padding: '0.5rem 1rem',
+                            fontSize: '0.9rem',
+                            background: 'var(--leather)',
+                            color: 'var(--parchment)',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                        }}
+                        title={sidebarOpen ? "Contraer sidebar" : "Expandir sidebar"}
+                    >
+                        {sidebarOpen ? '◀ Contraer' : '▶'}
+                    </button>
 
                     {/* Usuario */}
                     {sidebarOpen && (
@@ -266,14 +260,14 @@ function Profile() {
                         </nav>
                     )}
                 </aside>
-
-                  {/* Contenido principal - flexible */}
+                
+                 {/* Contenido principal - flexible */}
                 <main style={{
                     flex: 1,
                     width: '100%',
                     maxWidth: '100%',
                     minWidth: 0,
-                    padding: '2rem',
+                    padding: '1.5rem',
                     boxSizing: 'border-box',
                     overflow: 'hidden'
                 }}>
