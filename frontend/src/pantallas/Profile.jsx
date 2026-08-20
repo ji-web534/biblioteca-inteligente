@@ -109,7 +109,7 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
-    const sidebarWidth = sidebarOpen ? '50%' : '60px'
+    const sidebarWidth = sidebarOpen ? '25%' : '60px'
 
     return (
         <div style={{
@@ -133,7 +133,7 @@ function Profile() {
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
-                        padding: '0.5rem',
+                        padding: '0.5rem 0.75rem',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'flex-basis 0.3s ease-in-out',
@@ -253,10 +253,8 @@ function Profile() {
                 <main style={{
                     flex: '1 1 0',
                     flexShrink: 0,
-                    width: '100%',
-                    maxWidth: '100%',
                     minWidth: 0,
-                    padding: '0.5rem',
+                    padding: '0.75rem',
                     boxSizing: 'border-box',
                     overflow: 'hidden'
                 }}>
