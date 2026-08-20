@@ -129,22 +129,21 @@ function Profile() {
             boxSizing: 'border-box'
         }}>
             {/* Sidebar + Main */}
-            <aside
-                className="library-sidebar"
+            <div style={{ display: 'flex', width: '100%', overflow: 'hidden' }}>
+                <aside
+                    className="library-sidebar"
                     style={{
-                        width: sidebarWidth,
+                        flex: `0 0 ${sidebarWidth}`,
                         minWidth: '60px',
-                        maxWidth: '240px',
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
                         padding: '0.5rem 0',
                         display: 'flex',
                         flexDirection: 'column',
-                        transition: 'width 0.3s ease-in-out',
+                        transition: 'flex-basis 0.3s ease-in-out',
                         overflowY: 'auto',
-                        overflowX: 'hidden',
-                        height: 'calc(100vh - 5rem)'
+                        overflowX: 'hidden'
                     }}
                 >
                     {/* Botón toggle del sidebar */}
@@ -384,7 +383,8 @@ function Profile() {
                     )}
                 </main>
             </div>
-        )
-    }
+        </div>
+    )
+}
 
 export default Profile
