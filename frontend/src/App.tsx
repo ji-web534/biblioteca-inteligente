@@ -2,7 +2,10 @@ import Home from './pantallas/Home'
 import NewBook from './pantallas/NewBook'
 import Register from './pantallas/Register'
 import Login from './pantallas/Login'
-import Profile from './pantallas/Profile'
+import ProfileLayout from './pantallas/profile/ProfileLayout'
+import MisLibros from './pantallas/profile/MisLibros'
+import Favoritos from './pantallas/profile/Favoritos'
+import EditarPerfil from './pantallas/profile/EditarPerfil'
 import BookSearch from './pantallas/BookSearch'
 import BookDetail from './pantallas/BookDetail'
 import AdminUsers from './pantallas/AdminUsers'
@@ -44,7 +47,12 @@ function AppContent() {
           <Route path="/nuevo-libro" element={<NewBook />} />
           <Route path="/nuevo-usuario" element={<Register />} />
           <Route path="/iniciar-sesion" element={<Login />} />
-          <Route path="/perfil" element={<Profile />} />
+          <Route path="/perfil" element={<ProfileLayout />}>
+            <Route index element={<MisLibros />} />
+            <Route path="mis-libros" element={<MisLibros />} />
+            <Route path="favoritos" element={<Favoritos />} />
+            <Route path="editar-perfil" element={<EditarPerfil />} />
+          </Route>
           <Route path="/buscador" element={<BookSearch />} />
           <Route path="/libro/:id" element={<BookDetail />} />
           <Route path="/admin/libros" element={<AdminBooks />} />
