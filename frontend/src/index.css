@@ -83,16 +83,16 @@ body {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1rem;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .library-page {
   background: rgba(255, 252, 246, 0.72);
   border: 1px solid var(--border);
   box-shadow: 0 12px 30px var(--shadow);
-  padding: 2.5rem 2rem;
+  padding: 1.5rem 1rem;
 }
 
 .library-page__actions {

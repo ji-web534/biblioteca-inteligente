@@ -19,13 +19,6 @@ function Profile() {
     const [seccionActiva, setSeccionActiva] = useState('mis-libros')
 
     useEffect(() => {
-        // Forzar overflow-x hidden para prevenir scroll horizontal
-        document.documentElement.style.overflowX = 'hidden'
-        document.body.style.overflowX = 'hidden'
-        document.body.style.maxWidth = '100vw'
-    }, [])
-
-    useEffect(() => {
         if (!estaAutenticado) {
             navigate('/iniciar-sesion')
             return
@@ -129,7 +122,7 @@ function Profile() {
             boxSizing: 'border-box'
         }}>
             {/* Sidebar + Main */}
-            <div style={{ display: 'flex', width: '100%', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', width: '100%', overflow: 'hidden', minHeight: 0 }}>
                 <aside
                     className="library-sidebar"
                     style={{
@@ -138,7 +131,7 @@ function Profile() {
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
-                        padding: '0.5rem 0',
+                        padding: '0.5rem',
                         display: 'flex',
                         flexDirection: 'column',
                         transition: 'flex-basis 0.3s ease-in-out',
@@ -260,14 +253,14 @@ function Profile() {
                     width: '100%',
                     maxWidth: '100%',
                     minWidth: 0,
-                    padding: '1rem',
+                    padding: '0.5rem',
                     boxSizing: 'border-box',
                     overflow: 'hidden'
                 }}>
                     {/* Formulario de edición perfil */}
                     {editando && seccionActiva === 'editar-perfil' && (
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h3 className="library-page__title" style={{ fontSize: '1.3rem' }}>Editar perfil</h3>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <h3 className="library-page__title" style={{ fontSize: '1.2rem' }}>Editar perfil</h3>
                             <form className="library-form" onSubmit={handleUpdateProfile}>
                                 <div className="library-form__row library-form__row--full">
                                     <input
@@ -309,7 +302,7 @@ function Profile() {
                     {/* Mis libros */}
                     {seccionActiva === 'mis-libros' && (
                         <div>
-                            <h3 className="library-page__title" style={{ fontSize: '1.3rem' }}>Mis Libros</h3>
+                            <h3 className="library-page__title" style={{ fontSize: '1.1rem' }}>Mis Libros</h3>
                             <p className="library-page__text" style={{ fontSize: '0.9rem' }}>Libros que has creado ({libros.length})</p>
                             {cargandoLibros ? <p>Cargando...</p> : libros.length === 0 ? (
                                 <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)' }}>Aún no has creado ningún libro.</p>
@@ -353,7 +346,7 @@ function Profile() {
                     {/* Favoritos */}
                     {seccionActiva === 'favoritos' && (
                         <div>
-                            <h3 className="library-page__title" style={{ fontSize: '1.3rem' }}>Favoritos</h3>
+                            <h3 className="library-page__title" style={{ fontSize: '1.1rem' }}>Favoritos</h3>
                             <p className="library-page__text" style={{ fontSize: '0.9rem' }}>Tus libros favoritos ({favoritos.length})</p>
                             {cargandoFavs ? <p>Cargando...</p> : favoritos.length === 0 ? (
                                 <p style={{ fontStyle: 'italic', color: 'var(--ink-soft)' }}>No tienes libros favoritos aún.</p>
