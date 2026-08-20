@@ -116,25 +116,21 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
-    const sidebarWidth = sidebarOpen ? '240px' : '60px'
+    const sidebarWidth = sidebarOpen ? '50%' : '60px'
 
     return (
         <div style={{
-            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
             width: '100%',
             maxWidth: '100%',
+            overflow: 'hidden',
             boxSizing: 'border-box'
         }}>
-            <div style={{
-                display: 'flex',
-                width: '100%',
-                maxWidth: '100%',
-                boxSizing: 'border-box',
-                overflow: 'hidden'
-            }}>
-                {/* Sidebar */}
-                <aside
-                    className="library-sidebar"
+            {/* Sidebar + Main */}
+            <aside
+                className="library-sidebar"
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
@@ -388,8 +384,7 @@ function Profile() {
                     )}
                 </main>
             </div>
-        </div>
-    )
-}
+        )
+    }
 
 export default Profile
