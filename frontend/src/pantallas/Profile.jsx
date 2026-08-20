@@ -115,7 +115,7 @@ function Profile() {
         <div style={{
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
+            height: '100%',
             width: '100%',
             maxWidth: '100%',
             overflow: 'hidden',
