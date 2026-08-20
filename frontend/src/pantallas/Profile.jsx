@@ -116,7 +116,7 @@ function Profile() {
 
     if (!estaAutenticado) return null
 
-    const sidebarWidth = sidebarOpen ? '25vw' : '60px'
+    const sidebarWidth = sidebarOpen ? '240px' : '60px'
 
     return (
         <div style={{
@@ -138,7 +138,7 @@ function Profile() {
                     style={{
                         width: sidebarWidth,
                         minWidth: '60px',
-                        maxWidth: '25vw',
+                        maxWidth: '240px',
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
