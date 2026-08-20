@@ -122,12 +122,14 @@ function Profile() {
             boxSizing: 'border-box'
         }}>
             {/* Sidebar + Main */}
-            <div style={{ display: 'flex', width: '100%', overflow: 'hidden', minHeight: 0 }}>
+            <div style={{ display: 'flex', width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden', minHeight: 0, gap: 0 }}>
                 <aside
                     className="library-sidebar"
                     style={{
                         flex: `0 0 ${sidebarWidth}`,
+                        flexShrink: 0,
                         minWidth: '60px',
+                        maxWidth: '100%',
                         boxSizing: 'border-box',
                         background: '#ffffff',
                         borderRight: '1px solid var(--border)',
@@ -249,7 +251,8 @@ function Profile() {
                 
                  {/* Contenido principal - flexible */}
                 <main style={{
-                    flex: 1,
+                    flex: '1 1 0',
+                    flexShrink: 0,
                     width: '100%',
                     maxWidth: '100%',
                     minWidth: 0,
