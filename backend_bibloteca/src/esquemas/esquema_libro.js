@@ -24,6 +24,9 @@ const librosesquema = new mongoose.Schema(
             required: true,
             maxlength: 150
         },
+        portada: {
+            type: String
+        },
         usuarioId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'usuario',
