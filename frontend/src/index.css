@@ -16,47 +16,19 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  overflow-x: hidden !important;
-  max-width: 100% !important;
-  width: auto !important;
 }
 
 html {
   font-size: 16px;
-<<<<<<< HEAD
   overflow-x: hidden;
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
-  height: 100%;
   width: 100%;
-  max-width: 100%;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-=======
-  overflow-x: hidden !important;
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
-  margin: 0 !important;
-  padding: 0 !important;
-  width: auto !important;
-  max-width: 100% !important;
-}
-
-body {
-  margin: 0 !important;
-  padding: 0 !important;
   min-height: 100vh;
-  width: auto !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
->>>>>>> 36e994f19caba8d3a1cd02d9f15160648c7c3526
+  max-width: 100vw;
+  overflow-x: hidden;
   font-family: 'Lora', Georgia, 'Times New Roman', serif;
   color: var(--ink);
   background:
@@ -67,42 +39,19 @@ body {
 
 #root {
   min-height: 100vh;
-<<<<<<< HEAD
-  max-width: 100%;
-}
-
-.library-app {
-  height: 100%;
-  max-width: 100%;
-=======
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  box-sizing: border-box;
 }
 
 .library-app {
   min-height: 100vh;
-  max-width: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
->>>>>>> 36e994f19caba8d3a1cd02d9f15160648c7c3526
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 }
 
 .library-header {
-  padding: 0;
+  padding: 1.5rem 2rem 1rem;
   text-align: center;
   border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent);
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .library-header__title {
@@ -124,25 +73,16 @@ body {
 
 .library-main {
   flex: 1;
-  width: 100%;
-  max-width: 100%;
+  width: min(920px, 100%);
   margin: 0 auto;
-<<<<<<< HEAD
-  padding: 0;
-  box-sizing: border-box;
-  overflow: hidden;
-=======
-  padding: 2.5rem 1.5rem 3rem;
-  box-sizing: border-box;
-  overflow-x: hidden;
->>>>>>> 36e994f19caba8d3a1cd02d9f15160648c7c3526
+  padding: 0.5rem;
 }
 
 .library-page {
   background: rgba(255, 252, 246, 0.72);
   border: 1px solid var(--border);
   box-shadow: 0 12px 30px var(--shadow);
-  padding: 1.5rem 1rem;
+  padding: 2.5rem 2rem;
 }
 
 .library-page__actions {
@@ -198,9 +138,7 @@ body {
 }
 
 .library-link {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
+  display: inline-block;
   padding: 0.7rem 1.4rem;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 1.1rem;
@@ -296,15 +234,13 @@ body {
 }
 
 .library-table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.45);
 }
 
 .library-table {
   width: 100%;
-  max-width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.92rem;
 }
@@ -315,10 +251,6 @@ body {
   text-align: left;
   border-bottom: 1px solid var(--border);
   vertical-align: top;
-  overflow: hidden;
-  white-space: nowrap;
-  min-width: 0;
-  max-width: 100%;
 }
 
 .library-table th {
@@ -329,8 +261,6 @@ body {
   text-transform: uppercase;
   color: var(--leather-dark);
   background: rgba(232, 222, 203, 0.65);
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .library-table tbody tr:nth-child(even) {
