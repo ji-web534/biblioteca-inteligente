@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { crearLibro } from '../fetch/libros'
 import { obtenerCategorias } from '../fetch/categorias'
+import UploadImage from '../components/UploadImage'
 
 const MAX_DESCRIPCION = 50
 const MAX_TEXTO = 150
@@ -16,6 +17,7 @@ function NewBook() {
     const [categorias, setCategorias] = useState([])
     const [libros, setLibros] = useState([])
     const [guardando, setGuardando] = useState(false)
+    const [portada, setPortada] = useState('')
 
     useEffect(() => {
         let activo = true
@@ -50,7 +52,7 @@ function NewBook() {
 
         setGuardando(true)
         const genero = categorias.find((c) => c._id === categoria)?.nombre || ''
-        const libroGuardado = await crearLibro(titulo.trim(), descripcionTrim, textoTrim, genero, autorTrim)
+        const libroGuardado = await crearLibro(titulo.trim(), descripcionTrim, textoTrim, genero, autorTrim, portada)
         setGuardando(false)
 
         if (libroGuardado) {
@@ -68,6 +70,7 @@ function NewBook() {
             setDescripcion('')
             setTexto('')
             setCategoria('')
+            setPortada('')
         }
     }
 
@@ -149,6 +152,13 @@ function NewBook() {
                         ))}
                     </select>
                 </div>
+                <div className="library-form__row library-form__row--full">
+                    <label className="library-page__text" style={{ margin: 0 }}>
+                        Portada (opcional, máx. 5MB)
+                    </label>
+                    <UploadImage onUpload={setPortada} />
+                </div>
+
                 <button className="library-button" type="submit" disabled={guardando}>
                     {guardando ? 'Guardando...' : 'Guardar'}
                 </button>
