@@ -20,12 +20,13 @@ async function refreshYReintentar(url, options) {
         const refreshData = await refreshResponse.json()
         actualizarToken(refreshData.token)
 
+        const esFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
         return await fetch(url, {
             ...options,
             credentials: 'include',
             headers: {
+                ...(esFormData ? {} : { 'Content-Type': 'application/json' }),
                 ...options.headers,
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${refreshData.token}`
             }
         })
@@ -36,8 +37,9 @@ async function refreshYReintentar(url, options) {
 }
 
 export async function authFetch(url, options = {}) {
+    const esFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
     const headers = {
-        'Content-Type': 'application/json',
+        ...(esFormData ? {} : { 'Content-Type': 'application/json' }),
         ...options.headers,
         ...(tokenActual ? { 'Authorization': `Bearer ${tokenActual}` } : {})
     }

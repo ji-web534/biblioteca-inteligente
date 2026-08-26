@@ -1,10 +1,9 @@
 import { useState } from 'react'
+import { authFetch, API } from '../fetch/authFetch'
 
-const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME
-const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET
-
+// Pre-validación solo para UX; la validación real ocurre en el backend.
 const TIPOS_PERMITIDOS = ['image/jpeg', 'image/png', 'image/webp']
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+const MAX_SIZE = 5 * 1024 * 1024
 
 function UploadImage({ onUpload, urlActual = '' }) {
     const [url, setUrl] = useState(urlActual)
@@ -13,6 +12,7 @@ function UploadImage({ onUpload, urlActual = '' }) {
 
     const handleChange = async (e) => {
         const file = e.target.files?.[0]
+        e.target.value = ''
         if (!file) return
 
         if (!TIPOS_PERMITIDOS.includes(file.type)) {
@@ -30,22 +30,21 @@ function UploadImage({ onUpload, urlActual = '' }) {
 
         try {
             const formData = new FormData()
-            formData.append('file', file)
-            formData.append('upload_preset', UPLOAD_PRESET)
+            formData.append('imagen', file)
 
-            const response = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-                { method: 'POST', body: formData }
-            )
+            const response = await authFetch(`${API}/portada`, {
+                method: 'POST',
+                body: formData
+            })
 
-            const resultado = await response.json()
+            const resultado = await response.json().catch(() => ({}))
 
             if (!response.ok) {
-                throw new Error(resultado.error?.message || 'Error al subir la imagen.')
+                throw new Error(resultado.message || 'Error al subir la imagen.')
             }
 
-            setUrl(resultado.secure_url)
-            onUpload?.(resultado.secure_url)
+            setUrl(resultado.data.url)
+            onUpload?.(resultado.data.url)
         } catch (err) {
             console.error(err.message)
             setError(err.message || 'Error inesperado al subir la imagen.')
@@ -56,7 +55,12 @@ function UploadImage({ onUpload, urlActual = '' }) {
 
     return (
         <div>
-            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleChange} />
+            <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleChange}
+                disabled={subiendo}
+            />
             {subiendo && <p style={{ fontSize: '0.85rem' }}>Subiendo imagen...</p>}
             {error && <p style={{ color: 'var(--ink-error)', fontSize: '0.85rem' }}>{error}</p>}
             {url && (
