@@ -10,8 +10,6 @@ import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
 
-const SEED_EMAILS = ["admin@test.com", "juan@test.com", "maria@test.com"]
-
 router.post("/", validarCampos({
     body: {
         email: { requerido: true, tipo: "string", sanitizar: ["trim", "lowercase"], mensaje: "Email y contraseña son obligatorios." },
@@ -21,35 +19,20 @@ router.post("/", validarCampos({
     try {
         const { email, contraseña } = request.body
 
-        if (SEED_EMAILS.includes(email)) {
-            console.log(`[DEBUG SEED] Login attempt: ${email}`)
+        const totalUsuarios = await USUARIO.countDocuments()
+        if (totalUsuarios === 0) {
+            throw new ServerError("No hay usuarios registrados en la base de datos. Ejecuta el script de seed.", 404)
         }
 
-        const totalUsuarios = await USUARIO.countDocuments()
-    if (totalUsuarios === 0) {
-        throw new ServerError("No hay usuarios registrados en la base de datos. Ejecuta el script de seed.", 404)
-    }
-
-    const usuario = await USUARIO.findOne({ email })
+        const usuario = await USUARIO.findOne({ email })
 
         if (!usuario) {
-            if (SEED_EMAILS.includes(email)) {
-                console.log(`[DEBUG SEED] Usuario no encontrado en DB: ${email}`)
-            }
             throw new ServerError("Credenciales inválidas.", 401)
         }
 
         const contraseñaValida = await bcrypt.compare(contraseña, usuario.contraseña)
         if (!contraseñaValida) {
-            if (SEED_EMAILS.includes(email)) {
-                console.log(`[DEBUG SEED] Contraseña incorrecta para: ${email}`)
-                console.log(`[DEBUG SEED] Hash almacenado: ${usuario.contraseña?.substring(0, 30)}...`)
-            }
             throw new ServerError("Credenciales inválidas.", 401)
-        }
-
-        if (SEED_EMAILS.includes(email)) {
-            console.log(`[DEBUG SEED] Login exitoso: ${email}`)
         }
 
         const token = jwt.sign(

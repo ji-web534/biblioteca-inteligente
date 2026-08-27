@@ -1,6 +1,5 @@
-import jwt from "jsonwebtoken"
-import ENVIRONMENT from "../../config/environment.js"
 import ServerError from "../helpers/error_class.js"
+import verificarJWT from "../helpers/verificar_jwt.js"
 
 async function autenticacion(request, response, next) {
     try {
@@ -11,16 +10,13 @@ async function autenticacion(request, response, next) {
         }
 
         const token = header.split(" ")[1]
-        const decoded = jwt.verify(token, ENVIRONMENT.JWT_SECRET)
+        const decoded = verificarJWT(token)
 
         request.usuarioId = decoded.id
         request.usuarioRole = decoded.role
         request.usuarioPermisos = decoded.permisos || {}
         return next()
     } catch (error) {
-        if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
-            return next(new ServerError("Token inválido o expirado.", 401))
-        }
         return next(error)
     }
 }
