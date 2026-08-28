@@ -1,9 +1,11 @@
 import { resend } from "../../config/email_config.js";
 import ENVIRONMENT from "../../config/environment.js";
 import jwt from "jsonwebtoken";
+import escaparHTML from "./escapar_html.js";
 
 async function enviarEmailConfirmacion(nombreUsuario, emailDestino) {
   try {
+    const nombreSeguro = escaparHTML(nombreUsuario);
     const token = jwt.sign(
       { email: emailDestino },
       ENVIRONMENT.JWT_SECRET,
@@ -16,10 +18,10 @@ async function enviarEmailConfirmacion(nombreUsuario, emailDestino) {
     const { data, error } = await resend.emails.send({
       from: 'Biblioteca Inteligente <onboarding@resend.dev>', 
       to: emailDestino, 
-      subject: `¡Hola ${nombreUsuario}, gracias por registrarte en mi proyecto!`,
+      subject: `¡Hola ${nombreSeguro}, gracias por registrarte en mi proyecto!`,
       html: `
         <div style="font-family: sans-serif; padding: 30px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 8px;">
-          <h1 style="color: #4f46e5; font-size: 24px; text-align: center;">¡Hola, ${nombreUsuario}! 🚀</h1>
+          <h1 style="color: #4f46e5; font-size: 24px; text-align: center;">¡Hola, ${nombreSeguro}! 🚀</h1>
           
           <p style="font-size: 16px; line-height: 1.5; text-align: center;">
             Gracias por registrarte en la <strong>Biblioteca Inteligente</strong>. Para poder activar tu cuenta y empezar a catalogar tus obras, necesitamos que confirmes tu dirección de correo electrónico.

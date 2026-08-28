@@ -1,9 +1,11 @@
 import { resend } from "../../config/email_config.js"
 import ENVIRONMENT from "../../config/environment.js"
 import jwt from "jsonwebtoken"
+import escaparHTML from "./escapar_html.js"
 
 async function enviarEmailCambioContraseña(nombreUsuario, emailDestino) {
   try {
+    const nombreSeguro = escaparHTML(nombreUsuario)
     const token = jwt.sign(
       { email: emailDestino },
       ENVIRONMENT.JWT_SECRET,
@@ -16,8 +18,6 @@ async function enviarEmailCambioContraseña(nombreUsuario, emailDestino) {
     }
     const enlaceCambio = `${baseUrl}/cambiar-contrasena?token=${token}`
 
-    console.log("URL generada para el email:", enlaceCambio)
-
     const { data, error } = await resend.emails.send({
       from: 'Biblioteca Inteligente <onboarding@resend.dev>',
       to: emailDestino,
@@ -27,7 +27,7 @@ async function enviarEmailCambioContraseña(nombreUsuario, emailDestino) {
           <h1 style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 42px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 6px; color: #3f2a20;">Biblioteca</h1>
           <p style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; margin: 0 0 32px; color: #8b7355; font-style: italic;">Restablecer contraseña</p>
           <hr style="border: none; border-top: 1px solid #c9b89a; width: 80px; margin: 0 0 32px;">
-          <p style="font-size: 16px; margin: 0 0 28px; color: #2a2118; line-height: 1.6;">Hola, <strong style="color: #5c3d2e;">${nombreUsuario}</strong>. Recibimos una solicitud para restablecer tu contraseña. Hacé clic en el botón de abajo para continuar.</p>
+          <p style="font-size: 16px; margin: 0 0 28px; color: #2a2118; line-height: 1.6;">Hola, <strong style="color: #5c3d2e;">${nombreSeguro}</strong>. Recibimos una solicitud para restablecer tu contraseña. Hacé clic en el botón de abajo para continuar.</p>
           <a href="${enlaceCambio}" style="display: inline-block; padding: 14px 36px; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; font-weight: 600; letter-spacing: 0.04em; text-decoration: none; color: #f3ecdf; background: linear-gradient(180deg, #5c3d2e 0%, #3f2a20 100%); border: 1px solid #3f2a20; border-radius: 0;">Restablecer contraseña</a>
           <p style="font-size: 13px; margin-top: 36px; color: #4a3f32;">Si el botón no funciona, copiá este enlace en tu navegador:</p>
           <p style="font-size: 12px; margin-top: 4px; color: #8b7355; word-break: break-all;">${enlaceCambio}</p>

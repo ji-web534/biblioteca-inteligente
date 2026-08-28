@@ -26,8 +26,12 @@ const errorHandler = (error, request, response, next) => {
         return response.status(400).json({ message })
     }
 
+    if (process.env.MODE !== "production") {
+        console.error("[ERROR]", error)
+    }
+
     return response.status(500).json({
-        message: error.message ?? "Ocurrió un error interno en el servidor"
+        message: "Ocurrió un error interno en el servidor."
     })
 }
 

@@ -25,6 +25,12 @@ import hardDeleteBook from "./end_point/hardDeleteBook.js"
 import adminBooks from "./end_point/adminBooks.js"
 import adminUsers from "./end_point/adminUsers.js"
 import category from "./end_point/category.js"
+import {
+    limitarLogin,
+    limitarRegistro,
+    limitarSolicitudPassword,
+    limitarRefresh
+} from "./midleware/rate_limit.js"
 import CATEGORIA from "./esquemas/esquema_categoria.js"
 const app = express()
 const PORT = 8000
@@ -45,7 +51,7 @@ async function sembrarCategorias() {
     }
 }
 
-app.use(express.json())
+app.use(express.json({ limit: "100kb" }))
 app.use(cookieParser())
 
 app.use((request, response, next) => {
@@ -65,11 +71,11 @@ app.use("/app/bibilo/nuevo_libro", createBook)
 app.use("/app/bibilo/autor/", author)
 app.use("/app/bibilo/buscador", buscador_libros)
 app.use("/app/bibilo/libros", searchBooks)
-app.use("/app/bibilo/nuevo_usuario", register)
+app.use("/app/bibilo/nuevo_usuario", limitarRegistro, register)
 app.use("/app/bibilo/verificacion", confirmEmail)
-app.use("/app/bibilo/login", login)
+app.use("/app/bibilo/login", limitarLogin, login)
 app.use("/app/bibilo/logout", logout)
-app.use("/app/bibilo/refresh", refresh)
+app.use("/app/bibilo/refresh", limitarRefresh, refresh)
 app.use("/app/bibilo/mis-libros", myBooks)
 app.use("/app/bibilo/libro", editBook)
 app.use("/app/bibilo/libro", restoreBook)

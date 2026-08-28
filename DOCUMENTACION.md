@@ -125,9 +125,9 @@ Todas las rutas se montan en `src/main.js` bajo distintos prefijos.
 
 **Endpoints de cambio de contraseña** (`/app/bibilo/cambiar-contraseña`):
 
-- `POST /solicitar` — requiere `{ email }`. `verificarUsuario` busca el email en DB y envía el correo con enlace de restablecimiento.
-- `POST /` — requiere `{ nuevaContrasena }`. Usuario autenticado. Cambia la contraseña sin pedir la actual.
-- `POST /restablecer` — requiere `{ token, nuevaContrasena }`. Verifica el JWT, busca al usuario por email y actualiza la contraseña.
+- `POST /solicitar` — requiere `{ email }`. Busca el usuario en DB y envía el correo con enlace de restablecimiento. Devuelve **siempre** la misma respuesta genérica (para no enumerar emails).
+- `POST /` — requiere `{ nuevaContrasena }`. **Autenticado** (JWT). Cambia la contraseña del usuario identificado por `request.usuarioId` (id del token), sin pedir la actual.
+- `POST /restablecer` — requiere `{ token, nuevaContrasena }`. Verifica el JWT (helper `verificarJWT`), busca al usuario por email y actualiza la contraseña.
 
 **Búsqueda con filtros y paginación** (`GET /app/bibilo/libros/buscar`):
 
@@ -178,7 +178,7 @@ Usa **Resend** como proveedor (`config/email_config.js`).
 
 ### 2.5 Flujo de cambio de contraseña
 
-1. Usuario pulsa "Cambiar contraseña" → `solicitarCambioContraseña(email)` → `POST /cambiar-contraseña/solicitar` → `verificarUsuario` → `enviarEmailCambioContraseña`.
+1. Usuario pulsa "Cambiar contraseña" → `solicitarCambioContraseña(email)` → `POST /cambiar-contraseña/solicitar` → busca el usuario y envía `enviarEmailCambioContraseña` (respuesta genérica siempre).
 2. Usuario recibe el correo y abre el enlace `http://localhost:5173/cambiar-contrasena?token=...` (ruta de `App.tsx` que renderiza `ChangePassword.jsx`; lee `?token=` con `useSearchParams`).
 3. Usuario ingresa y confirma la nueva contraseña → `restablecerContraseña(token, nuevaContrasena)` → `POST /cambiar-contraseña/restablecer`, que verifica el JWT, busca al usuario y actualiza la contraseña.
 
@@ -308,6 +308,16 @@ Definidas en `App.tsx` con React Router:
 - El backend en modo local necesita MongoDB (o el fallback en memoria que tarda en arrancar la primera vez).
 - Algunos componentes (p.ej. `BookSearch.jsx`) mantienen funciones/estado sin uso claro (restaurar libro dentro de vistas que filtran por `activo`).
 - En `Profile.jsx` y otras vistas, los botones de restaurar no se muestran porque las listas filtran `activo: true`; la restauración se hace desde el panel de administración.
+
+### 4.1 Bugs de seguridad pendientes de arreglar (detectados en auditoría)
+
+> Estado: los fixes críticos (verificación de JWT en `confirmEmail`, autenticación en `changePassword`, eliminación de logs sensibles, mensajes de error genéricos en `error_handler`) ya se aplicaron. Quedan estas **observaciones menores** documentadas para revisar más adelante:
+
+1. **Timing attack en `POST /cambiar-contraseña/solicitar`** (`changePassword.js`) — la respuesta siempre es genérica (200), pero el tiempo de respuesta **difiere** si el email existe (hace `findOne` + envía correo) vs no existe (solo `findOne`). Un atacante podría **enumerar emails** midiendo el tiempo de respuesta. *Arreglo sugerido:* normalizar el tiempo (p. ej. aplicar un pequeño `await` artificial cuando no existe, o eliminar el acceso a DB cuando no hay email y responder siempre de forma idéntica). Severidad: baja/media.
+
+2. **`error_handler.js` no loguea en producción** (`MODE === "production"`) — en dev se hace `console.error("[ERROR]", error)`, pero en producción **no se registra nada** del error desconocido en el servidor, lo que dificulta diagnosticar fallas reales en producción. *Arreglo sugerido:* loguear en producción **solo** el `error.name` y `error.message` (sin datos del body/usuario), por ejemplo vía `console.error` o un logger estructurado. Severidad: baja (disponibilidad de diagnóstico).
+
+3. **Enumeración residual en `confirmEmail.js`** — si el email del JWT de confirmación no existe en DB, devuelve `404 "No se encontró un usuario con ese email."`. Para explotarlo el atacante necesita forjar un JWT firmado (requiere `JWT_SECRET`), por lo que **no es explotable de forma real** hoy; no obstante, es una diferencia de patrón frente a los demás flujos de email (que devuelven respuesta genérica). *Arreglo sugerido (opcional):* devolver la misma respuesta genérica de éxito aunque no exista el usuario. Severidad: muy baja (requiere secret).
 
 ---
 
