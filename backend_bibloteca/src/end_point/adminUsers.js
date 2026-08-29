@@ -7,6 +7,16 @@ import validarCampos from "../midleware/validar_campos.js"
 
 const router = Router()
 
+const ROLES_VALIDOS = ["user", "moderator", "admin"]
+
+const PERMISOS_VALIDOS = [
+    "can_delete_books",
+    "can_suspend_users",
+    "can_edit_others_books",
+    "can_manage_categories",
+    "can_manage_users"
+]
+
 router.get("/", autenticacion, autorizacion("admin"), async (request, response, next) => {
     try {
         const usuarios = await USUARIO.find().select("-contraseña")
@@ -27,6 +37,10 @@ router.put("/:id/role", autenticacion, autorizacion("admin"), validarCampos({
         const usuario = await USUARIO.findById(id)
         if (!usuario) {
             throw new ServerError("Usuario no encontrado.", 404)
+        }
+
+        if (!ROLES_VALIDOS.includes(role)) {
+            throw new ServerError("Rol no válido.", 400)
         }
 
         usuario.role = role
@@ -51,7 +65,12 @@ router.put("/:id/permisos", autenticacion, autorizacion("admin"), validarCampos(
             throw new ServerError("Usuario no encontrado.", 404)
         }
 
-        usuario.permisos = permisos
+        const permisosLimpios = {}
+        PERMISOS_VALIDOS.forEach((campo) => {
+            permisosLimpios[campo] = typeof permisos[campo] === "boolean" ? permisos[campo] : false
+        })
+
+        usuario.permisos = permisosLimpios
         await usuario.save()
 
         return response.json({ ok: true, message: "Permisos actualizados.", data: usuario })
