@@ -1,6 +1,7 @@
 import "dotenv/config"
 import express from "express"
 import cookieParser from "cookie-parser"
+import helmet from "helmet"
 import createBook from "./end_point/createBook.js"
 import id from "./end_point/id.js"
 import author from "./end_point/author.js"
@@ -53,6 +54,11 @@ async function sembrarCategorias() {
 
 app.use(express.json({ limit: "100kb" }))
 app.use(cookieParser())
+
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: false
+}))
 
 app.use((request, response, next) => {
     response.header("Access-Control-Allow-Origin", "http://localhost:5173")
