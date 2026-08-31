@@ -45,8 +45,14 @@ router.get("/buscar", validarCampos({
 
         if (desde || hasta) {
             filtro.createdAt = {}
-            if (desde) filtro.createdAt.$gte = new Date(desde)
-            if (hasta) filtro.createdAt.$lte = new Date(hasta)
+
+            if (desde && !isNaN(Date.parse(desde))) {
+                filtro.createdAt.$gte = new Date(desde)
+            }
+
+            if (hasta && !isNaN(Date.parse(hasta))) {
+                filtro.createdAt.$lte = new Date(hasta)
+            }
         }
 
         if (condiciones.length > 0) {
