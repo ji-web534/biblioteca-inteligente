@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", validarCampos({
     body: { token: { requerido: true, tipo: "string", mensaje: "Token de verificación requerido." } }
-}), async (request, response, next) => {
+), async (request, response, next) => {
     try {
         const { token } = request.body;
         const decoded = verificarJWT(token);
@@ -17,23 +17,27 @@ router.post("/", validarCampos({
             throw new ServerError("Token inválido.", 401);
         }
 
+        // Buscamos usuario por email del token
         const usuarioActualizado = await USUARIO.findOneAndUpdate(
             { email: decoded.email },
             { $set: { confirm: true } },
             { new: true }
         ).select("-contraseña");
 
-        if (!usuarioActualizado) {
-            throw new ServerError("No se encontró un usuario con ese email.", 404);
-        }
-
+        // Siempre respondemos igual, aunque el usuario no existiera (el token
+        // firmado con JWT_SECRET dificulta forzar emails arbitrarios).
         return response.status(201).json({
             message: "Usuario verificado con éxito.",
             data: {
-                id: usuarioActualizado._id,
-                email: usuarioActualizado.email
+                id: usuarioActualizado?.id || '',
+                email: usuarioActualizado?.email || ''
             }
         });
+
+    } catch (error) {
+        return next(error);
+    }
+});
 
     } catch (error) {
         return next(error);

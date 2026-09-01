@@ -28,6 +28,9 @@ const errorHandler = (error, request, response, next) => {
 
     if (process.env.MODE !== "production") {
         console.error("[ERROR]", error)
+    } else {
+        // En producción: solo registramos nombre y mensaje, sin stack ni datos sensibles
+        console.error(`[ERROR ${error.name || 'Unknown'}]: ${error.message || 'Unknown error'}`)
     }
 
     return response.status(500).json({

@@ -9,8 +9,8 @@ router.post("/", autenticacion, async (request, response, next) => {
         const refreshTokenCookie = request.cookies?.refreshToken
 
         if (refreshTokenCookie) {
-            await REFRESH_TOKEN.updateOne(
-                { token: refreshTokenCookie },
+            await REFRESH_TOKEN.updateMany(
+                { usuarioId: request.usuarioId },
                 { status: "revoked" }
             )
         }
