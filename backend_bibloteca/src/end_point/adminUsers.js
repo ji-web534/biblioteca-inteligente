@@ -46,7 +46,7 @@ router.put("/:id/role", autenticacion, autorizacion("admin"), validarCampos({
         usuario.role = role
         await usuario.save()
 
-        return response.json({ ok: true, message: `Rol actualizado a "${role}".`, data: usuario })
+        return response.json({ ok: true, message: `Rol actualizado a "${role}".`, data: { ...usuario.toObject(), contraseña: undefined } })
     } catch (error) {
         return next(error)
     }
