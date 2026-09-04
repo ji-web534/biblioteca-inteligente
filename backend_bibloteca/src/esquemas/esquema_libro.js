@@ -8,6 +8,7 @@ const librosesquema = new mongoose.Schema(
         },
         genero: {
             type: String,
+            enum: ["terror", "fantasia", "romance"],
             maxlength: 15
         },
         autor: {

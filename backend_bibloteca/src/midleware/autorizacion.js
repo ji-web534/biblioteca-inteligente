@@ -1,5 +1,4 @@
 import USUARIO from "../esquemas/esquema_usuario.js"
-import MODERACION from "../esquemas/esquema_moderacion.js"
 import ServerError from "../helpers/error_class.js"
 
 const autorizacion = (...rolesPermitidos) => {
@@ -50,30 +49,4 @@ const tienePermiso = (permiso) => {
     }
 }
 
-const esModeradorContexto = (contexto, contextoId) => {
-    return async (request, response, next) => {
-        try {
-            if (request.usuarioRole === "admin") {
-                return next()
-            }
-
-            const moderacion = await MODERACION.findOne({
-                usuarioId: request.usuarioId,
-                contexto,
-                contextoId,
-                activo: true
-            })
-
-            if (moderacion) {
-                request.permisosContexto = moderacion.permisos
-                return next()
-            }
-
-            throw new ServerError("No es moderador de este contexto.", 403)
-        } catch (error) {
-            return next(error)
-        }
-    }
-}
-
-export { autorizacion, tienePermiso, esModeradorContexto }
+export { autorizacion, tienePermiso }
