@@ -73,7 +73,7 @@ router.put("/:id/permisos", autenticacion, autorizacion("admin"), validarCampos(
         usuario.permisos = permisosLimpios
         await usuario.save()
 
-        return response.json({ ok: true, message: "Permisos actualizados.", data: usuario })
+        return response.json({ ok: true, message: "Permisos actualizados.", data: { ...usuario.toObject(), contraseña: undefined } })
     } catch (error) {
         return next(error)
     }

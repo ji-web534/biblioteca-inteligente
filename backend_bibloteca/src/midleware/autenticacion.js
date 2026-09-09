@@ -12,6 +12,10 @@ async function autenticacion(request, response, next) {
         const token = header.split(" ")[1]
         const decoded = verificarJWT(token)
 
+        if (!decoded || !decoded.id) {
+            throw new ServerError("Token inválido.", 401)
+        }
+
         request.usuarioId = decoded.id
         request.usuarioRole = decoded.role
         request.usuarioPermisos = decoded.permisos || {}

@@ -9,7 +9,7 @@ const router = Router()
 
 router.delete("/:id/hard", autenticacion, validarCampos({
     params: { id: { requerido: true, tipo: "objectId" } }
-}), tienePermiso("can_delete_books"), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { id } = request.params
 
@@ -17,6 +17,15 @@ router.delete("/:id/hard", autenticacion, validarCampos({
 
         if (!libro) {
             throw new ServerError("Libro no encontrado.", 404)
+        }
+
+        if (libro.usuarioId?.toString() !== request.usuarioId) {
+            await new Promise((resolver, rechazar) => {
+                tienePermiso("can_delete_books")(request, response, (error) => {
+                    if (error) return rechazar(error)
+                    return resolver()
+                })
+            })
         }
 
         await LIBRO.deleteOne({ _id: id })

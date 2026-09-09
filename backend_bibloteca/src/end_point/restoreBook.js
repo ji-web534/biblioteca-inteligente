@@ -9,7 +9,7 @@ const router = Router()
 
 router.put("/:id/restore", autenticacion, validarCampos({
     params: { id: { requerido: true, tipo: "objectId" } }
-}), tienePermiso("can_delete_books"), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { id } = request.params
 
@@ -21,6 +21,15 @@ router.put("/:id/restore", autenticacion, validarCampos({
 
         if (libro.activo) {
             throw new ServerError("El libro ya está activo.", 400)
+        }
+
+        if (libro.usuarioId?.toString() !== request.usuarioId) {
+            await new Promise((resolver, rechazar) => {
+                tienePermiso("can_delete_books")(request, response, (error) => {
+                    if (error) return rechazar(error)
+                    return resolver()
+                })
+            })
         }
 
         libro.activo = true
