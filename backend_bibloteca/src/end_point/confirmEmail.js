@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", validarCampos({
     body: { token: { requerido: true, tipo: "string", mensaje: "Token de verificación requerido." } }
-), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { token } = request.body;
         const decoded = verificarJWT(token);
@@ -33,11 +33,6 @@ router.post("/", validarCampos({
                 email: usuarioActualizado?.email || ''
             }
         });
-
-    } catch (error) {
-        return next(error);
-    }
-});
 
     } catch (error) {
         return next(error);

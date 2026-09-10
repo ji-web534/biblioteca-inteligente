@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-import { obtenerUsuarios, cambiarRolUsuario } from "../fetch/admin"
+import { obtenerUsuarios, cambiarRolUsuario, cambiarPermisosUsuario } from "../fetch/admin"
 
 const ROLES = ["user", "moderator", "admin"]
+
+const PERMISOS = [
+    { key: "can_delete_books", label: "Borrar libros" },
+    { key: "can_suspend_users", label: "Suspender usuarios" },
+    { key: "can_edit_others_books", label: "Editar libros ajenos" },
+    { key: "can_manage_categories", label: "Gestionar categorías" },
+    { key: "can_manage_users", label: "Gestionar usuarios" },
+]
 
 function AdminUsers() {
     const { esAdmin } = useAuth()
@@ -11,6 +19,7 @@ function AdminUsers() {
     const [cargando, setCargando] = useState(true)
     const [error, setError] = useState("")
     const [guardando, setGuardando] = useState(null)
+    const [guardandoPermiso, setGuardandoPermiso] = useState(null)
 
     useEffect(() => {
         if (!esAdmin()) {
@@ -43,6 +52,25 @@ function AdminUsers() {
             alert(err.message)
         } finally {
             setGuardando(null)
+        }
+    }
+
+    const handleCambiarPermiso = async (idUsuario, key, valor) => {
+        setGuardandoPermiso(`${idUsuario}:${key}`)
+        try {
+            const permisosActuales = usuarios.find((u) => u._id === idUsuario)?.permisos || {}
+            const nuevosPermisos = { ...permisosActuales, [key]: valor }
+            const resultado = await cambiarPermisosUsuario(idUsuario, nuevosPermisos)
+            const permisosGuardados = resultado?.data?.permisos || nuevosPermisos
+            setUsuarios((prev) =>
+                prev.map((u) =>
+                    u._id === idUsuario ? { ...u, permisos: permisosGuardados } : u
+                )
+            )
+        } catch (err) {
+            alert(err.message)
+        } finally {
+            setGuardandoPermiso(null)
         }
     }
 
@@ -96,6 +124,7 @@ function AdminUsers() {
                                 <th>Nombre</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>Permisos</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -127,6 +156,35 @@ function AdminUsers() {
                                         >
                                             {usuario.role}
                                         </span>
+                                    </td>
+                                    <td>
+                                        {PERMISOS.map((permiso) => (
+                                            <label
+                                                key={permiso.key}
+                                                style={{
+                                                    display: "block",
+                                                    fontSize: "0.8rem",
+                                                    whiteSpace: "nowrap",
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={Boolean(usuario.permisos?.[permiso.key])}
+                                                    onChange={(e) =>
+                                                        handleCambiarPermiso(
+                                                            usuario._id,
+                                                            permiso.key,
+                                                            e.target.checked
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        guardandoPermiso ===
+                                                        `${usuario._id}:${permiso.key}`
+                                                    }
+                                                />{" "}
+                                                {permiso.label}
+                                            </label>
+                                        ))}
                                     </td>
                                     <td>
                                         <select

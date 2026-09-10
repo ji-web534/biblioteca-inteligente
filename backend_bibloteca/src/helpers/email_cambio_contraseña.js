@@ -37,14 +37,14 @@ async function enviarEmailCambioContraseña(nombreUsuario, emailDestino) {
     })
 
     if (error) {
-      console.error("Error al enviar correo de cambio de contraseña:", error)
+      console.error("Error al enviar correo de cambio de contraseña:", error?.message)
       throw new Error(error.message)
     }
     console.log("Correo de cambio de contraseña enviado. ID:", data.id)
     return { success: true, id: data.id }
 
   } catch (error) {
-    console.error("Error al enviar correo de cambio de contraseña:", error)
+    console.error("Error al enviar correo de cambio de contraseña:", error?.message)
     throw error
   }
 }

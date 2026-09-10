@@ -2,6 +2,7 @@ import "dotenv/config"
 import express from "express"
 import cookieParser from "cookie-parser"
 import helmet from "helmet"
+import ENVIRONMENT from "../config/environment.js"
 import createBook from "./end_point/createBook.js"
 import id from "./end_point/id.js"
 import author from "./end_point/author.js"
@@ -29,8 +30,8 @@ import category from "./end_point/category.js"
 import {
     limitarLogin,
     limitarRegistro,
-    limitarSolicitudPassword,
-    limitarRefresh
+    limitarRefresh,
+    limitarVerificacion
 } from "./midleware/rate_limit.js"
 import CATEGORIA from "./esquemas/esquema_categoria.js"
 const app = express()
@@ -61,7 +62,7 @@ app.use(helmet({
 }))
 
 app.use((request, response, next) => {
-    response.header("Access-Control-Allow-Origin", "http://localhost:5173")
+    response.header("Access-Control-Allow-Origin", ENVIRONMENT.URL_FRONTEND ?? "http://localhost:5173")
     response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
     response.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
     response.header("Access-Control-Allow-Credentials", "true")
@@ -78,7 +79,7 @@ app.use("/app/bibilo/autor/", author)
 app.use("/app/bibilo/buscador", buscador_libros)
 app.use("/app/bibilo/libros", searchBooks)
 app.use("/app/bibilo/nuevo_usuario", limitarRegistro, register)
-app.use("/app/bibilo/verificacion", confirmEmail)
+app.use("/app/bibilo/verificacion", limitarVerificacion, confirmEmail)
 app.use("/app/bibilo/login", limitarLogin, login)
 app.use("/app/bibilo/logout", logout)
 app.use("/app/bibilo/refresh", limitarRefresh, refresh)

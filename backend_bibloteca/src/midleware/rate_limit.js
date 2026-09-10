@@ -32,3 +32,9 @@ export const limitarRefresh = hacerLimite(
     30,
     "Demasiadas peticiones de refresco de sesión. Intenta de nuevo en unos minutos."
 )
+
+export const limitarVerificacion = hacerLimite(
+    60 * 60 * 1000,
+    10,
+    "Demasiados intentos de verificación. Intenta más tarde."
+)

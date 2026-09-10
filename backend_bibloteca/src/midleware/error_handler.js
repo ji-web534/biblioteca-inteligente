@@ -19,11 +19,10 @@ const errorHandler = (error, request, response, next) => {
         return response.status(error.status).json({ message: error.message })
     }
 
-    if (error.name === "ValidationError") {
-        const message = Object.values(error.errors)
-            .map((err) => err.message)
-            .join(" ")
-        return response.status(400).json({ message })
+    if (error.name === "ValidationError" || error.name === "CastError") {
+        return response.status(400).json({
+            message: "Los datos enviados no son válidos."
+        })
     }
 
     if (process.env.MODE !== "production") {

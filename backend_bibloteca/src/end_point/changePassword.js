@@ -1,15 +1,18 @@
+import bcrypt from "bcrypt"
 import USUARIO from "../esquemas/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 import autenticacion from "../midleware/autenticacion.js"
+import verificarJWT from "../helpers/verificar_jwt.js"
+import { limitarSolicitudPassword } from "../midleware/rate_limit.js"
 import validarCampos from "../midleware/validar_campos.js"
 import enviarEmailCambioContraseña from "../helpers/email_cambio_contraseña.js"
 
 const router = Router()
 
-router.post("/solicitar", validarCampos({
+router.post("/solicitar", limitarSolicitudPassword, validarCampos({
     body: { email: { requerido: true, tipo: "string", sanitizar: ["trim", "lowercase"], mensaje: "El email no es válido." } }
-), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { email } = request.body
 
@@ -35,7 +38,7 @@ router.post("/solicitar", validarCampos({
 
 router.post("/", autenticacion, validarCampos({
     body: { nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "La nueva contraseña es obligatoria." } }
-), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { nuevaContraseña } = request.body
         const usuario = await USUARIO.findById(request.usuarioId)
@@ -57,18 +60,16 @@ router.post("/", autenticacion, validarCampos({
     }
 })
 
-router.post("/restablecer", validarCampos({
+router.post("/restablecer", limitarSolicitudPassword, validarCampos({
     body: {
         token: { requerido: true, tipo: "string", mensaje: "Token y nueva contraseña son obligatorios." },
         nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "Token y nueva contraseña son obligatorios." }
     }
-), async (request, response, next) => {
+}), async (request, response, next) => {
     try {
         const { token, nuevaContraseña } = request.body
 
-        // Verificar JWT con el helper centralizado
-        const { default: verificarJWT } = await import("../helpers/verificar_jwt.js")
-        const decoded = await verificarJWT(token)
+        const decoded = verificarJWT(token)
 
         const usuario = await USUARIO.findOne({ email: decoded.email })
         if (!usuario) {

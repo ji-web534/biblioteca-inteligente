@@ -30,7 +30,7 @@ router.post("/", validarCampos({
         try {
             await enviarEmailConfirmacion(nuevoUsuario.nombre, nuevoUsuario.email)
         } catch (mailError) {
-            console.error("Error al enviar el mail de confirmación:", mailError)
+            console.error("Error al enviar el mail de confirmación:", mailError?.message)
         }
 
         const usuarioGuardado = nuevoUsuario.toObject()

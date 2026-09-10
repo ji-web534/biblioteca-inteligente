@@ -49,14 +49,14 @@ async function enviarEmailConfirmacion(nombreUsuario, emailDestino) {
     });
   
     if (error) {
-      console.error("Error interno en Resend:", error);
+      console.error("Error interno en Resend:", error?.message);
       throw new Error(error.message);
     }
     console.log("Correo enviado con éxito. ID del mensaje:", data.id);
     return { success: true, id: data.id };
     
   } catch (error) {
-    console.error("Error interno en Resend:", error);
+    console.error("Error interno en Resend:", error?.message);
     throw error; 
   }
 }
