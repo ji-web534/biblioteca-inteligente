@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { actualizarToken, API } from '../fetch/authFetch'
+import { API } from '../fetch/authFetch'
+import { setToken as guardarToken, clearToken } from '../fetch/tokenStore'
 import { iniciarSesion, updateProfile } from '../fetch/auth'
 
 const AuthContext = createContext(null)
@@ -22,12 +23,12 @@ export function AuthProvider({ children }) {
 
             const resultado = await response.json()
             setToken(resultado.token)
-            actualizarToken(resultado.token)
+            guardarToken(resultado.token)
         } catch (error) {
             setToken(null)
             setUsuario(null)
             localStorage.removeItem('usuario')
-            actualizarToken(null)
+            clearToken()
         } finally {
             setCargando(false)
         }
@@ -49,7 +50,7 @@ export function AuthProvider({ children }) {
         setToken(resultado.token)
         setUsuario(resultado.data)
         localStorage.setItem('usuario', JSON.stringify(resultado.data))
-        actualizarToken(resultado.token)
+        guardarToken(resultado.token)
 
         return resultado
     }
@@ -76,7 +77,7 @@ export function AuthProvider({ children }) {
             setToken(null)
             setUsuario(null)
             localStorage.removeItem('usuario')
-            actualizarToken(null)
+            clearToken()
         }
     }
 

@@ -1,9 +1,13 @@
+import { getToken, setToken, clearToken } from './tokenStore'
+
 export const API = 'http://localhost:8000/app/bibilo'
 
-let tokenActual = null
-
 export function actualizarToken(nuevoToken) {
-    tokenActual = nuevoToken
+    if (!nuevoToken) {
+        clearToken()
+        return
+    }
+    setToken(nuevoToken)
 }
 
 async function refreshYReintentar(url, options) {
@@ -18,7 +22,7 @@ async function refreshYReintentar(url, options) {
         }
 
         const refreshData = await refreshResponse.json()
-        actualizarToken(refreshData.token)
+        setToken(refreshData.token)
 
         const esFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
         return await fetch(url, {
@@ -31,17 +35,18 @@ async function refreshYReintentar(url, options) {
             }
         })
     } catch (error) {
-        actualizarToken(null)
+        clearToken()
         throw error
     }
 }
 
 export async function authFetch(url, options = {}) {
     const esFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
+    const token = getToken()
     const headers = {
         ...(esFormData ? {} : { 'Content-Type': 'application/json' }),
         ...options.headers,
-        ...(tokenActual ? { 'Authorization': `Bearer ${tokenActual}` } : {})
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     }
 
     let response = await fetch(url, {
@@ -50,13 +55,9 @@ export async function authFetch(url, options = {}) {
         headers
     })
 
-    if (response.status === 401 && tokenActual) {
+    if (response.status === 401 && getToken()) {
         response = await refreshYReintentar(url, options)
     }
 
     return response
-}
-
-export function getToken() {
-    return tokenActual
 }

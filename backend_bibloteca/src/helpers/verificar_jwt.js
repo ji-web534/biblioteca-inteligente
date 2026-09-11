@@ -8,7 +8,7 @@ export default function verificarJWT(token) {
     }
 
     try {
-        return jwt.verify(token, ENVIRONMENT.JWT_SECRET)
+        return jwt.verify(token, ENVIRONMENT.JWT_SECRET, { algorithms: ["HS256"] })
     } catch (error) {
         if (error.name === "TokenExpiredError") {
             throw new ServerError("Token expirado.", 401)
