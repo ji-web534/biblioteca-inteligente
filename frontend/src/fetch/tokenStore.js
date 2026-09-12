@@ -1,15 +1,16 @@
-// Único dueño del token de acceso en el frontend.
-// Si mañana cambia el almacenamiento (memoria, cookie, etc.), se edita solo este archivo.
-let tokenActual = null
+// Único dueño del estado de sesión en el frontend.
+// El access token viaja en cookie httpOnly (ilegible desde JS); aquí solo vive un flag
+// para saber si corresponde intentar el refresh ante un 401.
+let sesionActiva = false
 
-export function getToken() {
-    return tokenActual
+export function haySesion() {
+    return sesionActiva
 }
 
-export function setToken(nuevoToken) {
-    tokenActual = nuevoToken
+export function marcarSesion() {
+    sesionActiva = true
 }
 
-export function clearToken() {
-    tokenActual = null
+export function limpiarSesion() {
+    sesionActiva = false
 }

@@ -31,6 +31,7 @@ router.post("/", async (request, response, next) => {
         }
 
         response.clearCookie("refreshToken")
+        response.clearCookie("accessToken")
 
         return response.json({
             ok: true,

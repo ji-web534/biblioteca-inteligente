@@ -63,13 +63,19 @@ router.post("/", validarCampos({
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
+        response.cookie("accessToken", token, {
+            httpOnly: true,
+            secure: process.env.MODE === "production",
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
+        })
+
         const usuarioData = usuario.toObject()
         delete usuarioData.contraseña
 
         return response.json({
             ok: true,
             message: "Sesión iniciada correctamente.",
-            token,
             data: usuarioData
         })
     } catch (error) {

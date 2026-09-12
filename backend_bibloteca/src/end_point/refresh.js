@@ -81,9 +81,15 @@ router.post("/", async (request, response, next) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
+        response.cookie("accessToken", newAccessToken, {
+            httpOnly: true,
+            secure: process.env.MODE === "production",
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
+        })
+
         return response.json({
-            ok: true,
-            token: newAccessToken
+            ok: true
         })
     } catch (error) {
         return next(error)

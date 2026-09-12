@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { API } from '../fetch/authFetch'
-import { setToken as guardarToken, clearToken } from '../fetch/tokenStore'
+import { marcarSesion, limpiarSesion } from '../fetch/tokenStore'
 import { iniciarSesion, updateProfile } from '../fetch/auth'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
     const [usuario, setUsuario] = useState(null)
-    const [token, setToken] = useState(null)
+    const [sesion, setSesion] = useState(false)
     const [cargando, setCargando] = useState(true)
 
     const refreshAccessToken = useCallback(async () => {
@@ -21,14 +21,14 @@ export function AuthProvider({ children }) {
                 throw new Error('Refresh failed')
             }
 
-            const resultado = await response.json()
-            setToken(resultado.token)
-            guardarToken(resultado.token)
+            await response.json()
+            setSesion(true)
+            marcarSesion()
         } catch (error) {
-            setToken(null)
+            setSesion(false)
             setUsuario(null)
             localStorage.removeItem('usuario')
-            clearToken()
+            limpiarSesion()
         } finally {
             setCargando(false)
         }
@@ -47,10 +47,10 @@ export function AuthProvider({ children }) {
     const login = async (email, contraseña) => {
         const resultado = await iniciarSesion(email, contraseña)
 
-        setToken(resultado.token)
+        setSesion(true)
         setUsuario(resultado.data)
         localStorage.setItem('usuario', JSON.stringify(resultado.data))
-        guardarToken(resultado.token)
+        marcarSesion()
 
         return resultado
     }
@@ -68,16 +68,15 @@ export function AuthProvider({ children }) {
         try {
             await fetch(`${API}/logout`, {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include'
             })
         } catch (error) {
             console.error('Error al cerrar sesión:', error)
         } finally {
-            setToken(null)
+            setSesion(false)
             setUsuario(null)
             localStorage.removeItem('usuario')
-            clearToken()
+            limpiarSesion()
         }
     }
 
@@ -96,13 +95,12 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             usuario,
-            token,
             cargando,
             login,
             logout,
             refreshAccessToken,
             updateProfileContext,
-            estaAutenticado: !!token,
+            estaAutenticado: sesion,
             tieneRol,
             tienePermiso,
             esAdmin,
