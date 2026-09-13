@@ -3,10 +3,7 @@ import verificarJWT from "../helpers/verificar_jwt.js"
 
 async function autenticacion(request, response, next) {
     try {
-        const header = request.headers.authorization
-        const tokenCookie = request.cookies?.accessToken
-        const tokenHeader = header && header.startsWith("Bearer ") ? header.split(" ")[1] : null
-        const token = tokenCookie || tokenHeader
+        const token = request.cookies?.accessToken
 
         if (!token) {
             throw new ServerError("Token de autenticación requerido.", 401)
