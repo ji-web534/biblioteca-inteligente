@@ -2,33 +2,35 @@ import { haySesion, marcarSesion, limpiarSesion } from './tokenStore'
 
 export const API = 'http://localhost:8000/app/bibilo'
 
-async function refreshYReintentar(url, options) {
-    try {
-        const refreshResponse = await fetch(`${API}/refresh`, {
-            method: 'POST',
-            credentials: 'include'
-        })
+let refreshEnProceso = null
 
-        if (!refreshResponse.ok) {
-            throw new Error('Refresh failed')
-        }
-
-        await refreshResponse.json()
-        marcarSesion()
-
-        const esFormData = typeof FormData !== 'undefined' && options.body instanceof FormData
-        return await fetch(url, {
-            ...options,
-            credentials: 'include',
-            headers: {
-                ...(esFormData ? {} : { 'Content-Type': 'application/json' }),
-                ...options.headers
-            }
-        })
-    } catch (error) {
-        limpiarSesion()
-        throw error
+async function refrescarSesion() {
+    if (refreshEnProceso) {
+        return refreshEnProceso
     }
+
+    refreshEnProceso = fetch(`${API}/refresh`, {
+        method: 'POST',
+        credentials: 'include'
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Refresh failed')
+            }
+            return response.json()
+        })
+        .then(() => {
+            marcarSesion()
+        })
+        .catch((error) => {
+            limpiarSesion()
+            throw error
+        })
+        .finally(() => {
+            refreshEnProceso = null
+        })
+
+    return refreshEnProceso
 }
 
 export async function authFetch(url, options = {}) {
@@ -38,14 +40,18 @@ export async function authFetch(url, options = {}) {
         ...options.headers
     }
 
-    let response = await fetch(url, {
-        ...options,
-        credentials: 'include',
-        headers
-    })
+    const ejecutar = () =>
+        fetch(url, {
+            ...options,
+            credentials: 'include',
+            headers
+        })
+
+    let response = await ejecutar()
 
     if (response.status === 401 && haySesion()) {
-        response = await refreshYReintentar(url, options)
+        await refrescarSesion()
+        response = await ejecutar()
     }
 
     return response
