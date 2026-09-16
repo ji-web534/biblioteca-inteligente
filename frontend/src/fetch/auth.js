@@ -59,6 +59,22 @@ export async function confirmarEmail(token) {
     return resultado
 }
 
+export async function reenviarVerificacion(email) {
+    const response = await fetch(`${API}/reenviar-verificacion`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    })
+
+    const resultado = await response.json()
+
+    if (!response.ok) {
+        throw new Error(resultado.message || 'No se pudo reenviar la verificación.')
+    }
+
+    return resultado
+}
+
 export async function updateProfile(nombre, email) {
     try {
         const response = await authFetch(`${API}/profile`, {

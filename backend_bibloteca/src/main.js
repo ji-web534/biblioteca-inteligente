@@ -12,6 +12,7 @@ import buscador_libros from "./servicios/buscador_libros.js"
 import searchBooks from "./end_point/searchBooks.js"
 import register from "./end_point/register.js"
 import confirmEmail from "./end_point/confirmEmail.js"
+import reenviarConfirmacion from "./end_point/reenviarConfirmacion.js"
 import login from "./end_point/login.js"
 import logout from "./end_point/logout.js"
 import refresh from "./end_point/refresh.js"
@@ -31,7 +32,8 @@ import {
     limitarLogin,
     limitarRegistro,
     limitarRefresh,
-    limitarVerificacion
+    limitarVerificacion,
+    limitarReenvioVerificacion
 } from "./midleware/rate_limit.js"
 import CATEGORIA from "./esquemas/esquema_categoria.js"
 const app = express()
@@ -80,6 +82,7 @@ app.use("/app/bibilo/buscador", buscador_libros)
 app.use("/app/bibilo/libros", searchBooks)
 app.use("/app/bibilo/nuevo_usuario", limitarRegistro, register)
 app.use("/app/bibilo/verificacion", limitarVerificacion, confirmEmail)
+app.use("/app/bibilo/reenviar-verificacion", limitarReenvioVerificacion, reenviarConfirmacion)
 app.use("/app/bibilo/login", limitarLogin, login)
 app.use("/app/bibilo/logout", logout)
 app.use("/app/bibilo/refresh", limitarRefresh, refresh)

@@ -37,7 +37,7 @@ router.post("/solicitar", limitarSolicitudPassword, validarCampos({
 })
 
 router.post("/", autenticacion, validarCampos({
-    body: { nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "La nueva contraseña es obligatoria." } }
+    body: { nuevaContraseña: { requerido: true, tipo: "string", min: 6, max: 72, mensaje: "La nueva contraseña es obligatoria." } }
 }), async (request, response, next) => {
     try {
         const { nuevaContraseña } = request.body
@@ -63,7 +63,7 @@ router.post("/", autenticacion, validarCampos({
 router.post("/restablecer", limitarSolicitudPassword, validarCampos({
     body: {
         token: { requerido: true, tipo: "string", mensaje: "Token y nueva contraseña son obligatorios." },
-        nuevaContraseña: { requerido: true, tipo: "string", min: 6, mensaje: "Token y nueva contraseña son obligatorios." }
+        nuevaContraseña: { requerido: true, tipo: "string", min: 6, max: 72, mensaje: "Token y nueva contraseña son obligatorios." }
     }
 }), async (request, response, next) => {
     try {

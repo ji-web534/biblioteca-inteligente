@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { reenviarVerificacion } from '../fetch/auth'
 
 function Login() {
     const { login } = useAuth()
@@ -9,6 +10,7 @@ function Login() {
     const [password, setPassword] = useState('')
     const [guardando, setGuardando] = useState(false)
     const [errorMensaje, setErrorMensaje] = useState('')
+    const [reenviando, setReenviando] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -22,6 +24,23 @@ function Login() {
             setErrorMensaje(error.message)
         } finally {
             setGuardando(false)
+        }
+    }
+
+    const handleReenviar = async () => {
+        if (!email) {
+            setErrorMensaje('Ingresa tu correo electrónico para reenviar la verificación.')
+            return
+        }
+        setReenviando(true)
+        setErrorMensaje('')
+        try {
+            await reenviarVerificacion(email)
+            setErrorMensaje('Si el correo existe y no está verificado, recibirás un nuevo enlace de confirmación.')
+        } catch (error) {
+            setErrorMensaje(error.message)
+        } finally {
+            setReenviando(false)
         }
     }
 
@@ -68,6 +87,16 @@ function Login() {
                     {guardando ? 'Entrando...' : 'Entrar'}
                 </button>
             </form>
+
+            <button
+                className="library-link library-link--secondary"
+                type="button"
+                onClick={handleReenviar}
+                disabled={reenviando}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
+                {reenviando ? 'Reenviando...' : '¿No recibiste el correo de verificación? Reenviar'}
+            </button>
 
             <Link className="library-link library-link--secondary" to="/nuevo-usuario">
                 ¿No tiene cuenta? Regístrese

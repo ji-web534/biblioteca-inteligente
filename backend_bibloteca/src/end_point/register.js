@@ -9,9 +9,9 @@ const router = Router()
 
 router.post("/", validarCampos({
     body: {
-        nombre: { requerido: true, tipo: "string", min: 1, sanitizar: "trim", mensaje: "El nombre no es válido." },
-        email: { requerido: true, tipo: "string", sanitizar: ["trim", "lowercase"], mensaje: "El email no es válido." },
-        contraseña: { requerido: true, tipo: "string", min: 6, mensaje: "La contraseña no es válida." }
+        nombre: { requerido: true, tipo: "string", min: 1, max: 50, sanitizar: "trim", mensaje: "El nombre no es válido." },
+        email: { requerido: true, tipo: "string", min: 3, max: 254, sanitizar: ["trim", "lowercase"], coincidir: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, mensaje: "El email no es válido." },
+        contraseña: { requerido: true, tipo: "string", min: 6, max: 72, mensaje: "La contraseña no es válida." }
     }
 }), async (request, response, next) => {
     try {

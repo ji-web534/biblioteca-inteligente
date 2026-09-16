@@ -38,3 +38,9 @@ export const limitarVerificacion = hacerLimite(
     10,
     "Demasiados intentos de verificación. Intenta más tarde."
 )
+
+export const limitarReenvioVerificacion = hacerLimite(
+    60 * 60 * 1000,
+    5,
+    "Demasiados reenvíos de verificación. Intenta más tarde."
+)

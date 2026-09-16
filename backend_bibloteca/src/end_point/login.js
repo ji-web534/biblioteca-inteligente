@@ -35,6 +35,10 @@ router.post("/", validarCampos({
             throw new ServerError("Credenciales inválidas.", 401)
         }
 
+        if (!usuario.confirm) {
+            throw new ServerError("Debes verificar tu correo electrónico antes de iniciar sesión.", 403)
+        }
+
         const token = jwt.sign(
             { id: usuario._id, email: usuario.email, nombre: usuario.nombre, role: usuario.role, permisos: usuario.permisos },
             ENVIRONMENT.JWT_SECRET,
