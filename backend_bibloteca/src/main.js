@@ -19,6 +19,7 @@ import refresh from "./end_point/refresh.js"
 import myBooks from "./end_point/myBooks.js"
 import changePassword from "./end_point/changePassword.js"
 import favorites from "./end_point/favorites.js"
+import comentarios from "./end_point/comentarios.js"
 import updateProfile from "./end_point/updateProfile.js"
 import uploadPortada from "./end_point/upload_portada.js"
 import editBook from "./end_point/editBook.js"
@@ -95,6 +96,7 @@ app.use("/app/bibilo/admin/libros", adminBooks)
 app.use("/app/bibilo/admin/usuarios", adminUsers)
 app.use("/app/bibilo/categorias", category)
 app.use("/app/bibilo/favoritos", favorites)
+app.use("/app/bibilo/comentarios", comentarios)
 app.use("/app/bibilo/portada", uploadPortada)
 app.use("/app/bibilo", updateProfile)
 app.use("/app/bibilo/cambiar-contraseña", changePassword)
