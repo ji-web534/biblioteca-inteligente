@@ -24,14 +24,23 @@ function BookDetail() {
         let activo = true
         const cargar = async () => {
             const data = await obtenerLibroPorId(id)
-            const lista = await obtenerComentarios(id)
+            const todas = []
+            let pagina = 1
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                const res = await obtenerComentarios(id, pagina)
+                if (!res.data || res.data.length === 0) break
+                todas.push(...res.data)
+                if (todas.length >= res.pagination.total) break
+                pagina++
+            }
             if (!activo) return
             if (data) {
                 setLibro(data)
             } else {
                 setError('No se pudo encontrar el libro.')
             }
-            setComentarios(lista || [])
+            setComentarios(todas)
             setCargando(false)
         }
         cargar()

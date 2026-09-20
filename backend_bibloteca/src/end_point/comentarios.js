@@ -4,26 +4,53 @@ import autenticacion from "../midleware/autenticacion.js"
 import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
+import { limitarComentarios } from "../midleware/rate_limit.js"
 
 const router = Router()
 
 router.get("/:libroId", validarCampos({
-    params: { libroId: { requerido: true, tipo: "objectId" } }
+    params: { libroId: { requerido: true, tipo: "objectId" } },
+    query: {
+        page: { tipo: "number", min: 1, mensaje: "La página debe ser mayor a 0." },
+        limit: { tipo: "number", min: 1, max: 50, mensaje: "El límite debe estar entre 1 y 50." }
+    }
 }), async (request, response, next) => {
     try {
         const { libroId } = request.params
 
-        const comentarios = await COMENTARIO.find({ libroId })
-            .sort({ createdAt: -1 })
-            .populate("usuarioId", "nombre")
+        const libro = await LIBRO.findById(libroId)
+        if (!libro) {
+            throw new ServerError("Libro no encontrado.", 404)
+        }
 
-        return response.json({ ok: true, data: comentarios })
+        if (!libro.activo) {
+            throw new ServerError("El libro fue eliminado.", 404)
+        }
+
+        const page = Math.max(1, parseInt(request.query.page) || 1)
+        const limit = Math.min(50, Math.max(1, parseInt(request.query.limit) || 20))
+        const skip = (page - 1) * limit
+
+        const [comentarios, total] = await Promise.all([
+            COMENTARIO.find({ libroId })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("usuarioId", "nombre"),
+            COMENTARIO.countDocuments({ libroId })
+        ])
+
+        return response.json({
+            ok: true,
+            data: comentarios,
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) || 1 }
+        })
     } catch (error) {
         return next(error)
     }
 })
 
-router.post("/:libroId", autenticacion, validarCampos({
+router.post("/:libroId", autenticacion, limitarComentarios, validarCampos({
     params: { libroId: { requerido: true, tipo: "objectId" } },
     body: {
         texto: { requerido: true, tipo: "string", min: 1, max: 500, sanitizar: "trim", mensaje: "El comentario no es válido." }

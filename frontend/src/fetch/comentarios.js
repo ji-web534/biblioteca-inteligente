@@ -3,20 +3,23 @@ import { authFetch } from "./authFetch"
 
 const API = 'http://localhost:8000/app/bibilo'
 
-export const obtenerComentarios = async (libroId) => {
+const LIMITE = 50
+
+export const obtenerComentarios = async (libroId, page = 1) => {
     try {
-        const response = await fetch(`${API}/comentarios/${libroId}`)
+        const params = new URLSearchParams({ page: String(page), limit: String(LIMITE) })
+        const response = await fetch(`${API}/comentarios/${libroId}?${params.toString()}`)
         const resultado = await response.json()
         if (!response.ok) {
             throw new backendError(resultado.message || 'Error al cargar los comentarios.')
         }
-        return resultado.data
+        return resultado
     } catch (error) {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
             : error.message
         alert(mensaje)
-        return []
+        return { data: [], pagination: { page: 1, limit: LIMITE, total: 0, totalPages: 1 } }
     }
 }
 
