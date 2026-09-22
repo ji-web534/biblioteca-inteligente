@@ -13,6 +13,7 @@ import AdminBooks from './pantallas/AdminBooks'
 import AdminCategories from './pantallas/AdminCategories'
 import ChangePassword from './pantallas/ChangePassword'
 import ConfirmAccount from './pantallas/ConfirmAccount'
+import Feed from './pantallas/Feed'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
@@ -60,6 +61,7 @@ function AppContent() {
           <Route path="/admin/categorias" element={<AdminCategories />} />
           <Route path="/cambiar-contrasena" element={<ChangePassword />} />
           <Route path="/confirmar-cuenta" element={<ConfirmAccount />} />
+          <Route path="/mi-feed" element={<Feed />} />
         </Routes>
       </main>
 
