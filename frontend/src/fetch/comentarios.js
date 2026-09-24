@@ -5,6 +5,24 @@ const API = 'http://localhost:8000/app/bibilo'
 
 const LIMITE = 50
 
+export const obtenerFeedComentarios = async (page = 1, limit = LIMITE) => {
+    try {
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+        const response = await fetch(`${API}/comentarios?${params.toString()}`)
+        const resultado = await response.json()
+        if (!response.ok) {
+            throw new backendError(resultado.message || 'Error al cargar el feed.')
+        }
+        return resultado
+    } catch (error) {
+        const mensaje = error.message === 'Failed to fetch'
+            ? 'No se pudo conectar con el servidor.'
+            : error.message
+        alert(mensaje)
+        return { data: [], pagination: { page: 1, limit, total: 0, totalPages: 1 } }
+    }
+}
+
 export const obtenerComentarios = async (libroId, page = 1) => {
     try {
         const params = new URLSearchParams({ page: String(page), limit: String(LIMITE) })

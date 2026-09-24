@@ -8,6 +8,37 @@ import { limitarComentarios } from "../midleware/rate_limit.js"
 
 const router = Router()
 
+router.get("/", validarCampos({
+    query: {
+        page: { tipo: "number", min: 1, mensaje: "La página debe ser mayor a 0." },
+        limit: { tipo: "number", min: 1, max: 50, mensaje: "El límite debe estar entre 1 y 50." }
+    }
+}), async (request, response, next) => {
+    try {
+        const page = Math.max(1, parseInt(request.query.page) || 1)
+        const limit = Math.min(50, Math.max(1, parseInt(request.query.limit) || 20))
+        const skip = (page - 1) * limit
+
+        const [comentarios, total] = await Promise.all([
+            COMENTARIO.find()
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate("libroId", "nombre autor")
+                .populate("usuarioId", "nombre"),
+            COMENTARIO.countDocuments()
+        ])
+
+        return response.json({
+            ok: true,
+            data: comentarios,
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) || 1 }
+        })
+    } catch (error) {
+        return next(error)
+    }
+})
+
 router.get("/:libroId", validarCampos({
     params: { libroId: { requerido: true, tipo: "objectId" } },
     query: {
