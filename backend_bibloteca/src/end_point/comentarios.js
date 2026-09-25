@@ -19,14 +19,17 @@ router.get("/", validarCampos({
         const limit = Math.min(50, Math.max(1, parseInt(request.query.limit) || 20))
         const skip = (page - 1) * limit
 
+        const librosActivos = await LIBRO.find({ activo: true }).select("_id")
+        const librosActivosIds = librosActivos.map((libro) => libro._id)
+
         const [comentarios, total] = await Promise.all([
-            COMENTARIO.find()
+            COMENTARIO.find({ libroId: { $in: librosActivosIds } })
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
                 .populate("libroId", "nombre autor")
                 .populate("usuarioId", "nombre"),
-            COMENTARIO.countDocuments()
+            COMENTARIO.countDocuments({ libroId: { $in: librosActivosIds } })
         ])
 
         return response.json({
