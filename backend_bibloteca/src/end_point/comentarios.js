@@ -4,11 +4,11 @@ import autenticacion from "../midleware/autenticacion.js"
 import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
-import { limitarComentarios } from "../midleware/rate_limit.js"
+import { limitarComentarios, limitarFeed } from "../midleware/rate_limit.js"
 
 const router = Router()
 
-router.get("/", validarCampos({
+router.get("/", limitarFeed, validarCampos({
     query: {
         page: { tipo: "number", min: 1, mensaje: "La página debe ser mayor a 0." },
         limit: { tipo: "number", min: 1, max: 50, mensaje: "El límite debe estar entre 1 y 50." }

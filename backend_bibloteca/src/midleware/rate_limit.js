@@ -50,3 +50,9 @@ export const limitarComentarios = hacerLimite(
     10,
     "Demasiados comentarios publicados. Intenta de nuevo en unos minutos."
 )
+
+export const limitarFeed = hacerLimite(
+    60 * 1000,
+    30,
+    "Demasiadas peticiones al feed. Intenta de nuevo en unos minutos."
+)
