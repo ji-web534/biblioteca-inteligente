@@ -44,6 +44,7 @@ biblo/
 │       │   ├──── adminUsers.js           -> GET /, PUT /:id/role, PUT /:id/permisos
 │       │   ├──── category.js             -> GET /, POST /, PUT /:id, DELETE /:id
 │       │   ├──── favorites.js            -> GET /, POST /:libroId, DELETE /:libroId
+│       │   ├──── comentarios.js          -> GET / (feed global), GET /:libroId, POST /:libroId, DELETE /:comentarioId
 │       │   ├──── upload_portada.js       -> POST / (subida firmada a Cloudinary, autenticado)
 │       │   ├──── author.js               -> GET /:autor
 │       │   └──── id.js                   -> GET /:id
@@ -51,6 +52,7 @@ biblo/
 │       │   ├──── esquema_libro.js         (incluye activo, timestamps, portada y enum de género)
 │       │   ├──── esquema_usuario.js
 │       │   ├──── esquema_categoria.js
+│       │   ├──── esquema_comentario.js    (libroId, usuarioId, texto máx 500, timestamps, índice libroId+createdAt)
 │       │   └──── esquema_refresh_token.js (token, usuarioId, familia, status, timestamps)
 │       ├──── helpers/
 │       │   ├──── error_class.js          -> Clase ServerError
@@ -128,6 +130,7 @@ Todas las rutas se montan en `src/main.js` bajo distintos prefijos.
 | `/app/bibilo/libro`                    | `hardDeleteBook.js`    | DELETE `/:id/hard` (permanente)                                 | Cookie + dueño O `can_delete_books` |
 | `/app/bibilo/mis-libros`               | `myBooks.js`           | GET `/` (paginado)                                              | Cookie |
 | `/app/bibilo/favoritos`                | `favorites.js`         | GET `/`, POST `/:libroId`, DELETE `/:libroId`                   | Cookie |
+| `/app/bibilo/comentarios`              | `comentarios.js`       | GET `/` (feed global), GET `/:libroId`, POST `/:libroId`, DELETE `/:comentarioId` | GET: No; POST/DELETE: Cookie |
 | `/app/bibilo/categorias`               | `category.js`          | GET `/`, POST `/`, PUT `/:id`, DELETE `/:id`                    | GET: No; resto: Cookie + `can_manage_categories` |
 | `/app/bibilo/autor/`                   | `author.js`            | GET `/:autor`                                                   | No   |
 | `/app/bibilo/admin/libros`             | `adminBooks.js`        | GET `/`, PUT `/:id/restore` (gestión libros)                    | Cookie + `can_delete_books` |
@@ -150,6 +153,13 @@ Todas las rutas se montan en `src/main.js` bajo distintos prefijos.
 **Búsqueda con filtros y paginación** (`GET /app/bibilo/libros/buscar`):
 
 Query params opcionales: `q` (texto), `genero`, `autor`, `desde` (fecha `YYYY-MM-DD`), `hasta`, `page` (default 1), `limit` (default 20, máx 50). Devuelve `{ ok, data, pagination: { page, limit, total, totalPages } }`. El filtro de fecha se aplica sobre el campo `createdAt` (timestamps). Solo devuelve libros con `activo: true`.
+
+**Comentarios de libros** (`/app/bibilo/comentarios`):
+
+- `GET /` — **feed global** de comentarios recientes. Solo incluye comentarios de libros `activo: true`. Ordena por `createdAt` desc, pagina (`page`/`limit`, default 20, máx 50) y puebla `libroId` (nombre, autor) y `usuarioId` (nombre). Público, con rate limit `limitarFeed`.
+- `GET /:libroId` — lista los comentarios de un libro (público, paginado). Exige que el libro exista y esté `activo` (404 si no). Puebla `usuarioId` (nombre).
+- `POST /:libroId` — crea un comentario. **Autenticado** (cookie) y con rate limit `limitarComentarios` (10/15 min). Valida `texto` (trim, 1-500). Exige libro existente y `activo`. Devuelve el comentario con autor poblado.
+- `DELETE /:comentarioId` — elimina un comentario. **Autenticado**: solo el dueño del comentario o `admin`/`moderator` (403 si no). 404 si el comentario no existe. El texto se guarda crudo en MongoDB (el renderizado en React escapa HTML por defecto; los campos de usuario poblados exponen solo `nombre`).
 
 **Endpoints de administración:**
 
@@ -263,7 +273,7 @@ router.post("/", validarCampos({
 
 ### 2.10 Paginación
 
-Los endpoints `searchBooks.js`, `myBooks.js` y `adminBooks.js` aceptan `page` (default 1) y `limit` (default 20, máx 50) y devuelven `{ data, pagination: { page, limit, total, totalPages } }`. El frontend muestra controles Anterior/Siguiente y el total de resultados.
+Los endpoints `searchBooks.js`, `myBooks.js`, `adminBooks.js` y `comentarios.js` (feed y lista por libro) aceptan `page` (default 1) y `limit` (default 20, máx 50) y devuelven `{ data, pagination: { page, limit, total, totalPages } }`. El frontend muestra controles Anterior/Siguiente y el total de resultados; el feed usa acumulación con "Cargar más".
 
 ### 2.11 Rate limiting
 
@@ -277,6 +287,8 @@ Definidos en `midleware/rate_limit.js` (factory `hacerLimite`). Se aplican en `m
 | `limitarRefresh` | 15 min | 30 | `POST /refresh` |
 | `limitarVerificacion` | 60 min | 10 | `POST /verificacion` |
 | `limitarReenvioVerificacion` | 60 min | 5 | `POST /reenviar-verificacion` |
+| `limitarComentarios` | 15 min | 10 | `POST /comentarios/:libroId` |
+| `limitarFeed` | 1 min | 30 | `GET /comentarios` (feed) |
 
 Además, `express.json({ limit: "100kb" })` corta cuerpos gigantes y `helmet` (con `contentSecurityPolicy: false` y `crossOriginResourcePolicy: false`) aplica cabeceras de seguridad. CORS restringe a `ENVIRONMENT.URL_FRONTEND ?? "http://localhost:5173"` con `credentials: true`.
 
@@ -297,7 +309,8 @@ Definidas en `App.tsx` con React Router:
 | `/nuevo-libro`        | NewBook          | Altas de libro + portada                                  |
 | `/perfil`             | ProfileLayout    | Perfil con subvistas (MisLibros, Favoritos, EditarPerfil) |
 | `/buscador`           | BookSearch       | Búsqueda con filtros en el catálogo                    |
-| `/libro/:id`          | BookDetail       | Detalle de un libro                                     |
+| `/mi-feed`            | Feed             | Feed global de comentarios recientes con "Cargar más"  |
+| `/libro/:id`          | BookDetail       | Detalle de un libro (incluye caja de comentarios)     |
 | `/admin/usuarios`     | AdminUsers       | Gestionar roles y permisos (admin)                       |
 | `/admin/libros`       | AdminBooks       | Gestionar libros, incluye restaurar eliminados           |
 | `/admin/categorias`   | AdminCategories  | Gestionar categorías (admin)                             |
@@ -322,6 +335,7 @@ Definidas en `App.tsx` con React Router:
 | `auth.js`      | `iniciarSesion`, `registrarUsuario`, `confirmarEmail`, `reenviarVerificacion`, `updateProfile` |
 | `libros.js`    | `crearLibro`, `buscarLibros(termino, filtros, page, limit)`, `editarLibro`, `obtenerMisLibros(page, limit)`, `removerLibro`, `eliminarLibro`, `restaurarLibro` |
 | `favorites.js` | `obtenerFavoritos`, `agregarFavorito`, `quitarFavorito` |
+| `comentarios.js` | `obtenerFeedComentarios`, `obtenerComentarios(libroId, page)`, `crearComentario`, `eliminarComentario` |
 | `account.js`   | `solicitarCambioContraseña`, `restablecerContraseña` |
 | `admin.js`     | `obtenerUsuarios`, `cambiarRolUsuario`, `cambiarPermisosUsuario` |
 | `adminBooks.js`| `obtenerAdminLibros(eliminados, page, limit)`, `restaurarLibroAdmin` |
@@ -339,7 +353,8 @@ Definidas en `App.tsx` con React Router:
 | `Favoritos.jsx` | Lista de favoritos con botón para quitar. |
 | `EditarPerfil.jsx` | Edición de nombre/email vía `updateProfile`. |
 | `BookSearch.jsx` | Búsqueda sobre el catálogo con filtros (texto, género, autor, fecha desde/hasta) y paginación. |
-| `BookDetail.jsx` | Detalle de un libro por id. |
+| `BookDetail.jsx` | Detalle de un libro por id + caja de comentarios (lista, publicar si hay sesión, eliminar si es dueño/admin/moderator). |
+| `Feed.jsx` | Feed global de comentarios recientes: carga página 1 y acumula con "Cargar más"; cada ítem enlaza al libro. |
 | `ChangePassword.jsx` | Lee `?token=`. Formulario de nueva contraseña + confirmación. |
 | `ConfirmAccount.jsx` | Lee `?token=`. Confirma la cuenta. |
 | `AdminUsers.jsx` | Lista usuarios, cambia roles y permisos (switches granulares). |
@@ -375,6 +390,9 @@ Definidas en `App.tsx` con React Router:
 8. **Permisos granulares aplicados**: delete/restore/hardDelete con regla "dueño O `can_delete_books`"; categorías con `can_manage_categories`; `adminUsers` sin exponer el hash bcrypt.
 9. **Error handler robusto**: errores de DB → 503, ValidationError/CastError → 400 genérico, 500 genérico con log sanitizado en producción.
 10. **Renombrado backend/frontend a inglés**: todos los archivos `end_point/` y las pantallas del frontend pasaron a nombres en inglés.
+11. **Caja de comentarios en libros**: schema `esquema_comentario`, endpoints GET/POST/DELETE con validación de `texto` (trim, 1-500), delete solo dueño o `admin`/`moderator`, populate solo `nombre` del autor, y caja de comentarios en `BookDetail.jsx`.
+12. **Feed global de comentarios**: `GET /comentarios` con libro y autor poblados, paginado y orden desc; la pantalla `Feed.jsx` en `/mi-feed` acumula páginas con "Cargar más". Solo muestra comentarios de libros activos.
+13. **Rate limits de comentarios**: `limitarComentarios` (10/15 min) en el POST y `limitarFeed` (30/min) en el feed global.
 
 ---
 
