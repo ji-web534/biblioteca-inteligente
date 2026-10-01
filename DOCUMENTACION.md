@@ -277,7 +277,7 @@ Los endpoints `searchBooks.js`, `myBooks.js`, `adminBooks.js` y `comentarios.js`
 
 ### 2.11 Rate limiting
 
-Definidos en `midleware/rate_limit.js` (factory `hacerLimite`). Se aplican en `main.js` a los endpoints sensibles:
+Definidos en `midleware/rate_limit.js` (factory `hacerLimite`). Se aplican en `main.js` o en el router de cada endpoint sensible:
 
 | Limiter | Ventana | Máx | Endpoint |
 |---------|---------|-----|----------|
