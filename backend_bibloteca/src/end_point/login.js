@@ -19,11 +19,6 @@ router.post("/", validarCampos({
     try {
         const { email, contraseña } = request.body
 
-        const totalUsuarios = await USUARIO.countDocuments()
-        if (totalUsuarios === 0) {
-            throw new ServerError("No hay usuarios registrados en la base de datos. Ejecuta el script de seed.", 404)
-        }
-
         const usuario = await USUARIO.findOne({ email })
 
         if (!usuario) {
