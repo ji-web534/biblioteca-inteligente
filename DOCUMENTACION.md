@@ -373,7 +373,7 @@ Definidas en `App.tsx` con React Router:
 
 > La migración a cookies httpOnly (access en cookie, rotación con detección de familia, single-flight en refresh) cerró las líneas principales. Quedan observaciones menores:
 
-1. **Timing attack en `POST /cambiar-contraseña/solicitar`** (`changePassword.js`) — la respuesta siempre es genérica (200), pero el tiempo de respuesta **difiere** si el email existe (hace `findOne` + envía correo) vs no existe (solo `findOne`). Un atacante podría **enumerar emails** midiendo el tiempo de respuesta. *Arreglo sugerido:* normalizar el tiempo (p. ej. aplicar un pequeño `await` artificial cuando no existe, o responder siempre de forma idéntica). Severidad: baja/media.
+1. **~~Timing attack en `POST /cambiar-contraseña/solicitar`~~ (resuelto)** (`changePassword.js`) — cuando el email no existe se aplica un retraso fijo de 300ms (`setTimeout`) que iguala la duración de la respuesta con el caso que sí envía el correo, evitando la enumeración por timing.
 2. **~~`POST /login` da 404 si no hay usuarios en DB~~ (resuelto)** — `login.js` ya no chequea si la base está vacía; con DB sin usuarios `findOne` cae en el mismo 401 "Credenciales inválidas." y no revela el estado de la base.
 
 ---

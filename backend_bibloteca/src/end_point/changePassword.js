@@ -25,6 +25,9 @@ router.post("/solicitar", limitarSolicitudPassword, validarCampos({
             } catch (mailError) {
                 // Error de envío ignorado: response siempre es el mismo
             }
+        } else {
+            // Iguala la duración de la respuesta para no filtrar por timing si el email existe
+            await new Promise((resolve) => setTimeout(resolve, 300))
         }
 
         return response.json({
