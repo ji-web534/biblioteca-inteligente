@@ -3,6 +3,7 @@ import autenticacion from "../midleware/autenticacion.js"
 import validarCampos from "../midleware/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
+import serializarUsuario from "../helpers/serializar_usuario.js"
 
 const router = Router()
 
@@ -46,7 +47,7 @@ router.put(
                 request.usuarioId,
                 { $set: actualizaciones },
                 { new: true, runValidators: true }
-            ).select("-contraseña -permisos")
+            )
 
             if (!usuario) {
                 throw new ServerError("Usuario no encontrado.", 404)
@@ -55,7 +56,7 @@ router.put(
             return response.json({
                 ok: true,
                 message: "Perfil actualizado con éxito.",
-                data: usuario
+                data: serializarUsuario(usuario)
             })
         } catch (error) {
             if (error.code === 11000) {

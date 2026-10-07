@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken"
 import ENVIRONMENT from "../../config/environment.js"
 import { Router } from "express"
 import validarCampos from "../midleware/validar_campos.js"
+import serializarUsuario from "../helpers/serializar_usuario.js"
 
 const router = Router()
 
@@ -69,8 +70,7 @@ router.post("/", validarCampos({
             maxAge: 15 * 60 * 1000
         })
 
-        const usuarioData = usuario.toObject()
-        delete usuarioData.contraseña
+        const usuarioData = serializarUsuario(usuario)
 
         return response.json({
             ok: true,

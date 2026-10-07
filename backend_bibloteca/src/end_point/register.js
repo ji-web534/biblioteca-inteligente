@@ -4,6 +4,7 @@ import { Router } from "express"
 import bcrypt from "bcrypt"
 import enviarEmailConfirmacion from "../helpers/email_confirmacion.js"
 import validarCampos from "../midleware/validar_campos.js"
+import serializarUsuario from "../helpers/serializar_usuario.js"
 
 const router = Router()
 
@@ -33,13 +34,10 @@ router.post("/", validarCampos({
             console.error("Error al enviar el mail de confirmación:", mailError?.message)
         }
 
-        const usuarioGuardado = nuevoUsuario.toObject()
-        delete usuarioGuardado.contraseña
-
         return response.status(201).json({
             ok: true,
             message: "Usuario creado y guardado con éxito. Por favor, verifica tu correo electrónico.",
-            data: usuarioGuardado,
+            data: serializarUsuario(nuevoUsuario),
         })
 
     } catch (error) {
