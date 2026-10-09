@@ -369,12 +369,12 @@ Definidas en `App.tsx` con React Router:
 - En local con `MODE=development` las cookies no llevan flag `Secure`, por lo que funcionan sobre `http://localhost`. En producción (`MODE=production`) el flag `Secure` exige HTTPS.
 - Las claves reales de Cloudinary/Resend/JWT viven en el `.env` local y no se commitean; al desplegar hay que rotarlas y setearlas por ambiente.
 
-### 4.1 Observaciones de seguridad abiertas
+### 4.1 Observaciones de seguridad resueltas
 
-> La migración a cookies httpOnly (access en cookie, rotación con detección de familia, single-flight en refresh) cerró las líneas principales. Quedan observaciones menores:
+Historial de observaciones de seguridad ya corregidas:
 
-1. **~~Timing attack en `POST /cambiar-contraseña/solicitar`~~ (resuelto)** (`changePassword.js`) — cuando el email no existe se aplica un retraso fijo de 300ms (`setTimeout`) que iguala la duración de la respuesta con el caso que sí envía el correo, evitando la enumeración por timing.
-2. **~~`POST /login` da 404 si no hay usuarios en DB~~ (resuelto)** — `login.js` ya no chequea si la base está vacía; con DB sin usuarios `findOne` cae en el mismo 401 "Credenciales inválidas." y no revela el estado de la base.
+1. **Timing attack en `POST /cambiar-contraseña/solicitar`** (`changePassword.js`) — cuando el email no existe se aplica un retraso fijo de 300ms (`setTimeout`) que iguala la duración de la respuesta con el caso que sí envía el correo, evitando la enumeración por timing.
+2. **`POST /login` daba 404 si no hay usuarios en DB** — `login.js` ya no chequea si la base está vacía; con DB sin usuarios `findOne` cae en el mismo 401 "Credenciales inválidas." y no revela el estado de la base.
 
 ---
 
@@ -393,6 +393,9 @@ Definidas en `App.tsx` con React Router:
 11. **Caja de comentarios en libros**: schema `esquema_comentario`, endpoints GET/POST/DELETE con validación de `texto` (trim, 1-500), delete solo dueño o `admin`/`moderator`, populate solo `nombre` del autor, y caja de comentarios en `BookDetail.jsx`.
 12. **Feed global de comentarios**: `GET /comentarios` con libro y autor poblados, paginado y orden desc; la pantalla `Feed.jsx` en `/mi-feed` acumula páginas con "Cargar más". Solo muestra comentarios de libros activos.
 13. **Rate limits de comentarios**: `limitarComentarios` (10/15 min) en el POST y `limitarFeed` (30/min) en el feed global.
+14. **Login sin revelar estado de la DB**: eliminado el 404 cuando no hay usuarios; ahora siempre responde 401 "Credenciales inválidas." tanto si el email no existe como si la contraseña es incorrecta.
+15. **Anti-enumeración por timing en `/cambiar-contraseña/solicitar`**: se aplica un retraso fijo de 300ms cuando el email no existe para igualar la duración de la respuesta con la del caso que envía el correo.
+16. **DTO mínimo de usuario**: `serializar_usuario.js` devuelve solo `{_id, nombre, email, role, permisos}` en `register`, `login` y `updateProfile` (sin `contraseña`, `confirm`, timestamps ni metadatos; `updateProfile` además ya no pierde los `permisos` al editar el perfil).
 
 ---
 
@@ -401,7 +404,6 @@ Definidas en `App.tsx` con React Router:
 - [ ] Tests automatizados (backend y frontend).
 - [ ] Dashboard de administrador con estadísticas de uso.
 - [ ] Singleton/actualización en caliente del catálogo (reindexación) al editar/eliminar.
-- [ ] Completar observaciones de 4.1 (timing attack en `/solicitar`, 404 en login sin usuarios).
 
 ---
 
