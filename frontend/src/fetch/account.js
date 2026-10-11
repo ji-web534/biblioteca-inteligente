@@ -1,6 +1,5 @@
 import { backendError } from "../helpers/error_class"
-
-const API = 'http://localhost:8000/app/bibilo'
+import { API } from "./config"
 
 export async function solicitarCambioContraseña(email) {
     try {

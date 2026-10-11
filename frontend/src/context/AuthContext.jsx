@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { API } from '../fetch/authFetch'
+import { API } from '../fetch/config'
 import { marcarSesion, limpiarSesion } from '../fetch/tokenStore'
 import { iniciarSesion, updateProfile } from '../fetch/auth'
 
@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
 
     const refreshAccessToken = useCallback(async () => {
         try {
-            const response = await fetch('http://localhost:8000/app/bibilo/refresh', {
+            const response = await fetch(`${API}/refresh`, {
                 method: 'POST',
                 credentials: 'include'
             })

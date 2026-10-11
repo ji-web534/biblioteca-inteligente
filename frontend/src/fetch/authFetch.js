@@ -1,6 +1,7 @@
 import { haySesion, marcarSesion, limpiarSesion } from './tokenStore'
+import { API } from './config'
 
-export const API = 'http://localhost:8000/app/bibilo'
+export { API }
 
 let refreshEnProceso = null
 
