@@ -67,9 +67,10 @@ biblo/
 │       │   ├──── error_handler.js        -> Manejador global de errores
 │       │   ├──── rate_limit.js           -> Limitadores por endpoint (ver 2.11)
 │       │   ├──── libros_autenticador.js  -> Busca libro por nombre desde el body
-│       │   ├──── check_passwords.js      -> Script de debug de contraseñas
-│       │   ├──── check_users.js          -> Script de debug de usuarios
 │       │   └──── validar_campos.js       -> Middleware de validación genérica por schema
+│       ├──── scripts/                  -> Scripts ejecutables standalone
+│       │   ├──── check_passwords.js      -> Script de debug de contraseñas
+│       │   └──── check_users.js          -> Script de debug de usuarios
 │       └──── servicios/
 │           └──── buscador_libros.js      -> POST / - busca libro por nombre
 │
