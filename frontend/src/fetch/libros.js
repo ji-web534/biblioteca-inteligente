@@ -92,9 +92,8 @@ export const obtenerLibroPorId = async (id) => {
             throw new backendError(resultado.message || 'Error al obtener el libro.')
         }
 
-        // El backend (id.js) devuelve directamente el libro, no { data: libro }
-        console.log('Response del API /libro/:id:', resultado)
-        return resultado.data || resultado // ← Soporta ambos formatos
+        // id.js devuelve el libro directamente, no { data: libro }
+        return resultado
     } catch (error) {
         const mensaje = error.message === 'Failed to fetch'
             ? 'No se pudo conectar con el servidor.'
