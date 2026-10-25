@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 const categoriaSchema = new mongoose.Schema(
     {
-        nombre: {
+    nombre: {
             type: String,
             required: true,
             unique: true,
