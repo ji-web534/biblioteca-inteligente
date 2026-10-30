@@ -1,6 +1,6 @@
-import LIBRO from "../esquemas/esquema_libro.js"
+import LIBRO from "../models/esquema_libro.js"
 import { Router } from "express"
-import validarCampos from "../midleware/validar_campos.js"
+import validarCampos from "../middlewares/validar_campos.js"
 
 const router = Router()
 

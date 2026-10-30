@@ -1,4 +1,4 @@
-import LIBRO from "../esquemas/esquema_libro.js"
+import LIBRO from "../models/esquema_libro.js"
 import ServerError from "../helpers/error_class.js"
 
 async function libros_autenticador(request, response, next) {

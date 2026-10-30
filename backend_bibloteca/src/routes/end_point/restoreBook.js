@@ -1,7 +1,7 @@
-import LIBRO from "../esquemas/esquema_libro.js"
-import autenticacion from "../midleware/autenticacion.js"
-import { tienePermiso } from "../midleware/autorizacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import LIBRO from "../models/esquema_libro.js"
+import autenticacion from "../middlewares/autenticacion.js"
+import { tienePermiso } from "../middlewares/autorizacion.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 

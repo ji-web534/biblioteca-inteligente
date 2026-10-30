@@ -1,10 +1,10 @@
-import COMENTARIO from "../esquemas/esquema_comentario.js"
-import LIBRO from "../esquemas/esquema_libro.js"
-import autenticacion from "../midleware/autenticacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import COMENTARIO from "../models/esquema_comentario.js"
+import LIBRO from "../models/esquema_libro.js"
+import autenticacion from "../middlewares/autenticacion.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
-import { limitarComentarios, limitarFeed } from "../midleware/rate_limit.js"
+import { limitarComentarios, limitarFeed } from "../middlewares/rate_limit.js"
 
 const router = Router()
 

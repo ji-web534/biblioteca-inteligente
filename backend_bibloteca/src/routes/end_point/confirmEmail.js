@@ -1,8 +1,8 @@
-import USUARIO from "../esquemas/esquema_usuario.js";
+import USUARIO from "../models/esquema_usuario.js";
 import ServerError from "../helpers/error_class.js";
 import verificarJWT from "../helpers/verificar_jwt.js";
 import { Router } from "express";
-import validarCampos from "../midleware/validar_campos.js";
+import validarCampos from "../middlewares/validar_campos.js";
 
 const router = Router();
 

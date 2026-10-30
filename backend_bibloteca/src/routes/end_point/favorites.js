@@ -1,7 +1,7 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
-import LIBRO from "../esquemas/esquema_libro.js"
-import autenticacion from "../midleware/autenticacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import USUARIO from "../models/esquema_usuario.js"
+import LIBRO from "../models/esquema_libro.js"
+import autenticacion from "../middlewares/autenticacion.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 

@@ -1,4 +1,4 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 
 const autorizacion = (...rolesPermitidos) => {

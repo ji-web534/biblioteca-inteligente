@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt"
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
-import autenticacion from "../midleware/autenticacion.js"
+import autenticacion from "../middlewares/autenticacion.js"
 import verificarJWT from "../helpers/verificar_jwt.js"
-import { limitarSolicitudPassword } from "../midleware/rate_limit.js"
-import validarCampos from "../midleware/validar_campos.js"
+import { limitarSolicitudPassword } from "../middlewares/rate_limit.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import enviarEmailCambioContraseña from "../helpers/email_cambio_contraseña.js"
 
 const router = Router()

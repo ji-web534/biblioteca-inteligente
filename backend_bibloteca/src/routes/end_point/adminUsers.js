@@ -1,9 +1,9 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
-import autenticacion from "../midleware/autenticacion.js"
-import { autorizacion } from "../midleware/autorizacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import autenticacion from "../middlewares/autenticacion.js"
+import { autorizacion } from "../middlewares/autorizacion.js"
+import validarCampos from "../middlewares/validar_campos.js"
 
 const router = Router()
 

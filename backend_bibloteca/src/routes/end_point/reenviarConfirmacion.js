@@ -1,7 +1,7 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import { Router } from "express"
 import enviarEmailConfirmacion from "../helpers/email_confirmacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import validarCampos from "../middlewares/validar_campos.js"
 
 const router = Router()
 

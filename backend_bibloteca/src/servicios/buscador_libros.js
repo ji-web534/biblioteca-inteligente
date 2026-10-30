@@ -1,5 +1,5 @@
 import { Router } from "express"
-import libros_autenticador from "../midleware/libros_autenticador.js"
+import libros_autenticador from "../middlewares/libros_autenticador.js"
 
 const router = Router()
 

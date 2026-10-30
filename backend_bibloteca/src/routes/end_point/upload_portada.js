@@ -1,5 +1,5 @@
 import { Router } from "express"
-import autenticacion from "../midleware/autenticacion.js"
+import autenticacion from "../middlewares/autenticacion.js"
 import { manejarErroresImagen, subirBufferCloudinary } from "../config/cloudinary_config.js"
 
 const router = Router()

@@ -1,4 +1,4 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -98,7 +98,7 @@ app.use("/app/bibilo/favoritos", favorites);
 app.use("/app/bibilo/comentarios", comentarios);
 app.use("/app/bibilo/portada", uploadPortada);
 app.use("/app/bibilo", updateProfile);
-app.use("/app/bibilo/cambiar-contraseña", changePassword);
+app.use("/app/bibilo/cambiar-contrase�a", changePassword);
 app.use("/app/bibilo/", id);
 app.use(errorHandler);
 

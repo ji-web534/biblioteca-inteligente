@@ -1,4 +1,4 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import app, { sembrarCategorias } from "./app.js";
 import { connectDB } from "./db/connect.js";
 
@@ -14,7 +14,7 @@ try {
 try {
     await sembrarCategorias();
 } catch (error) {
-    console.error("Error al sembrar categorías:", error.message);
+    console.error("Error al sembrar categor�as:", error.message);
 }
 
 app.listen(PORT, () => {

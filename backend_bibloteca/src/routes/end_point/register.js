@@ -1,9 +1,9 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import ServerError from "../helpers/error_class.js"
 import { Router } from "express"
 import bcrypt from "bcrypt"
 import enviarEmailConfirmacion from "../helpers/email_confirmacion.js"
-import validarCampos from "../midleware/validar_campos.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import serializarUsuario from "../helpers/serializar_usuario.js"
 
 const router = Router()

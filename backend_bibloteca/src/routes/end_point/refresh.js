@@ -1,5 +1,5 @@
-import USUARIO from "../esquemas/esquema_usuario.js"
-import REFRESH_TOKEN from "../esquemas/esquema_refresh_token.js"
+import USUARIO from "../models/esquema_usuario.js"
+import REFRESH_TOKEN from "../models/esquema_refresh_token.js"
 import ServerError from "../helpers/error_class.js"
 import jwt from "jsonwebtoken"
 import ENVIRONMENT from "../../config/environment.js"

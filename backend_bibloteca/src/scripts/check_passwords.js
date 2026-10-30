@@ -1,7 +1,7 @@
 import "dotenv/config"
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
-import USUARIO from "../esquemas/esquema_usuario.js"
+import USUARIO from "../models/esquema_usuario.js"
 import { connectDB } from "../db/connect.js"
 
 async function fixPasswords() {

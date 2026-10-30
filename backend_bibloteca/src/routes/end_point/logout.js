@@ -1,4 +1,4 @@
-import REFRESH_TOKEN from "../esquemas/esquema_refresh_token.js"
+import REFRESH_TOKEN from "../models/esquema_refresh_token.js"
 import ENVIRONMENT from "../../config/environment.js"
 import jwt from "jsonwebtoken"
 import { Router } from "express"

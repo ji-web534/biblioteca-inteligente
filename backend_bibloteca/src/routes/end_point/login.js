@@ -1,12 +1,12 @@
 import crypto from "crypto"
-import USUARIO from "../esquemas/esquema_usuario.js"
-import REFRESH_TOKEN from "../esquemas/esquema_refresh_token.js"
+import USUARIO from "../models/esquema_usuario.js"
+import REFRESH_TOKEN from "../models/esquema_refresh_token.js"
 import ServerError from "../helpers/error_class.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import ENVIRONMENT from "../../config/environment.js"
 import { Router } from "express"
-import validarCampos from "../midleware/validar_campos.js"
+import validarCampos from "../middlewares/validar_campos.js"
 import serializarUsuario from "../helpers/serializar_usuario.js"
 
 const router = Router()
